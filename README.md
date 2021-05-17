@@ -7,14 +7,14 @@
 - Survey systems
 - Assignment (homework) submission systems
 
-It would be very counterproductive if the programmer has to hardcode a form everytime a new one is needed. **FOF makes it happen.**
+It would be very counterproductive if the programmer has to hardcode a form everytime a new one is needed. **fog.js makes it happen.**
 
 ## Phase 1: The form structure builder
 
-To start, you need to provide a user interface for users to build forms, by using the form structure builder.
+To start, a user interface is needed so users can build forms themselves. The form structure builder does the job.
 
-- With the form structure builder, users can create their forms using different types. 
-- Externally, the form structure builder is intuitive and allows building forms with a few clicks. Internally, it stores the structure as a json string that can be easily retrieved and stored by your application.
+- With the form structure builder, users can intuitivelly create their forms using different form field types. 
+- Internally, the builder stores the form structure as a json string that can be easily retrieved and stored by your application.
 
 ## Phase 2: The form itself
 
