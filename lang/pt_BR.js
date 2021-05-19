@@ -57,8 +57,7 @@ function getFogDictionary() {
         "structure.table.header.type": "Tipo",
         "structure.table.header.customattribute": "Atributo Pers.",
         "structure.table.message.add": "Insira a descrição do novo item",
-        "structure.table.message.delete.1": "Tem certeza que deseja apagar o item na posição ",
-        "structure.table.message.delete.2": "? "
+        "structure.table.message.delete": "Tem certeza que deseja apagar o item na posição <position>?"
     };
     
 }
