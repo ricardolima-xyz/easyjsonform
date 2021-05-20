@@ -57,8 +57,7 @@ class Fog {
     }
 
     static editItem(elementId, position) {
-        // TODO: EDIT ITEM ACCORDING TO THE FOG FIELD
-        alert("EDIT elementId:" + elementId + " Position:" + position);
+        this.structure[elementId][position].showEditControl(elementId, position);
     }
 
     static moveItem(elementId, position, offset) {
@@ -168,8 +167,8 @@ class Fog {
 
 class FogField { 
     type = null;
-    description = null;
-    customattribute = null;
+    description = '';
+    customattribute = '';
     mandatory = false;
     spec = null;
 }
@@ -177,13 +176,11 @@ class FogField {
 class FogFieldText extends FogField {
 
     type = 'text';
-    description = '';
 
     static createFogBuilderControls(elementId) {
-
         let toolbar = document.getElementById(elementId + '-fog-builder-toolbar');
-        
         let button = document.createElement('button');
+        button.type = 'button';
         button.id = toolbar.id + '-button-txt';
         button.innerHTML = Fog.dictionary["structure.table.button.add.text"];
         button.addEventListener("click", function() {
@@ -191,5 +188,48 @@ class FogFieldText extends FogField {
             Fog.updateView(elementId);
         });
         toolbar.appendChild(button);
+    }
+
+    showEditControl(elementId, position) {
+        let tbody = document.getElementById(elementId + '-fog-builder-tbody');
+
+        let tr = tbody.insertRow(position + 1);
+        let td = tr.insertCell(-1);
+        let mandatoryChecked = Fog.structure[elementId][position].mandatory ? "checked" : ""; 
+        td.colSpan = 9;
+        td.innerHTML = `<div style="padding: 1rem; display: grid; grid-gap: 0.55rem; grid-template-columns: 1fr 1fr;">
+		<label for="tex_des_${elementId}">${Fog.dictionary['item.description']}</label>
+        <input  id="tex_des_${elementId}" type="text" value="${Fog.structure[elementId][position].description}"/>
+        <label for="tex_cat_${elementId}">${Fog.dictionary['item.customattribute']}</label>
+        <input  id="tex_cat_${elementId}" type="text" value="${Fog.structure[elementId][position].customattribute}"/>
+        <span style="grid-column-start: 1; grid-column-end: 3;">
+        <input  id="tex_man_${elementId}" type="checkbox" ${mandatoryChecked}/>
+        <label for="tex_man_${elementId}">${Fog.dictionary['item.mandatory']}</label>
+        </span>
+        </div>`;
+        
+        console.log(td.firstChild);
+        let buttonSave = document.createElement('button');
+        buttonSave.type = 'button';
+        buttonSave.innerHTML = Fog.dictionary['item.action.save'];
+        buttonSave.addEventListener("click", function() {
+            Fog.structure[elementId][position].description = document.getElementById(`tex_des_${elementId}`).value;
+            Fog.structure[elementId][position].customattribute = document.getElementById(`tex_cat_${elementId}`).value;
+            Fog.structure[elementId][position].mandatory = document.getElementById(`tex_man_${elementId}`).checked;
+            tbody.deleteRow(position + 1);
+            Fog.updateView(elementId);
+        });
+        td.firstChild.appendChild(buttonSave);
+
+        let buttonCancel = document.createElement('button');
+        buttonCancel.type = 'button';
+        buttonCancel.innerHTML = Fog.dictionary['item.action.cancel'];
+        buttonCancel.addEventListener("click", function() {
+            tbody.deleteRow(position + 1);
+            tbody.rows[position].cells[7].firstChild.style.setProperty("display", "block", "important");
+        });
+        td.firstChild.appendChild(buttonCancel);
+
+        tbody.rows[position].cells[7].firstChild.style.setProperty("display", "none", "important");
     }
 }
