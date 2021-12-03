@@ -1,107 +1,268 @@
+class FogField { 
+    type = null;
+    description = '';
+    customattribute = '';
+    mandatory = false;
+    spec = null;
+    value = null;
+
+    constructor(json = null) {
+        if (json) {
+            this.description = json.description;
+            this.customattribute = json.customattribute;
+            this.mandatory = json.mandatory;
+            this.spec = json.spec;
+            this.value = json.value;
+        }
+    }
+}
+
+class FogFieldText extends FogField {
+    type = 'text';
+
+    builderEditorCreate(builderUpdateCallback) {
+        // Creating edit control
+        let editControl = document.createElement('div');
+        editControl.style.padding = '1rem';
+        editControl.style.display = 'grid';
+        editControl.style.gridGap = '0.55rem';
+        editControl.style.gridTemplateColumns = '1fr 1fr';
+        // Description field
+        let lblDescription = document.createElement('label');
+        lblDescription.htmlFor = 'fog-builder-field-description';
+        lblDescription.textContent = Fog.dictionary['item.description'];
+        let iptDescription = document.createElement('input');
+        iptDescription.id = 'fog-builder-field-description';
+        iptDescription.type = 'text';
+        iptDescription.value = this.description;
+        iptDescription.onchange = () => {this.description = iptDescription.value; builderUpdateCallback();};
+        editControl.appendChild(lblDescription);
+        editControl.appendChild(iptDescription);
+        // Custom attribute field
+        let lblCustomAttribute = document.createElement('label');
+        lblCustomAttribute.htmlFor = 'fog-builder-field-customattribute';
+        lblCustomAttribute.textContent = Fog.dictionary['item.customattribute'];
+        let iptCustomAttribute = document.createElement('input');
+        iptCustomAttribute.id = 'fog-builder-field-customattribute';
+        iptCustomAttribute.type = 'text';
+        iptCustomAttribute.value = this.customattribute;
+        iptCustomAttribute.onchange = () => {this.customattribute = iptCustomAttribute.value; builderUpdateCallback();};
+        editControl.appendChild(lblCustomAttribute);
+        editControl.appendChild(iptCustomAttribute);
+        // Mandatory field
+        let lblMandatory = document.createElement('label');
+        lblMandatory.htmlFor = 'fog-builder-field-mandatory';
+        lblMandatory.textContent = Fog.dictionary['item.mandatory'];
+        let iptMandatory = document.createElement('input');
+        iptMandatory.id = 'fog-builder-field-mandatory';
+        iptMandatory.type = 'checkbox';
+        iptMandatory.checked = this.mandatory;
+        iptMandatory.onchange = () => {this.mandatory = iptMandatory.checked; builderUpdateCallback();};
+        let spnMandatory = document.createElement('span');
+        spnMandatory.style.gridColumnStart = '1';
+        spnMandatory.style.gridColumnEnd = '3';
+        spnMandatory.appendChild(iptMandatory);
+        spnMandatory.appendChild(lblMandatory);
+        editControl.appendChild(spnMandatory);
+        // Returning edit control
+        return editControl;
+    }
+
+    formFieldCreate() {
+        // TODO under construction...
+        let formField = document.createElement('div');
+        let lblFormField = document.createElement('label');
+        lblFormField.htmlFor = 'fog-builder-field-customattribute';
+        lblFormField.textContent = Fog.dictionary['item.customattribute'];
+        let iptFormField = document.createElement('input');
+        iptFormField.id = 'fog-builder-field-customattribute';
+        iptFormField.type = 'text';
+        iptFormField.value = this.value;
+        formField.appendChild(lblFormField);
+        formField.appendChild(iptFormField);
+        return formField;
+/* 
+
+        $result = "
+        <label for=\"{$htmlName}[{$index}]\">{$this->description}";
+        if ($this->mandatory) $result .= "<small>".DynamicFormHelper::_('control.restriction.start').DynamicFormHelper::_('control.restriction.mandatory').DynamicFormHelper::_('control.restriction.end')."</small>";
+        $result .= "</label>
+        <input type=\"text\" name=\"{$htmlName}[{$index}]\" id=\"{$htmlName}[{$index}]\"";
+        $result .= "value=\"".htmlentities($this->content, ENT_QUOTES, 'utf-8')."\"";
+        $result .= ($active) ? "" : " disabled=\"disabled\"";
+        $result .= " />";
+        return $result; */
+    }
+}
+
 class Fog {
 
+    constructor(id, structure = null) {
+        if (id) this.id = id;
+        else throw new Error('Id is mandatory');
+        
+        if (structure) this.structure = this.loadStructure(structure);
+        else this.structure = [];
+    }
+
+    // TODO: READ SAVED VALUES IN structure
+    loadStructure(structure) {
+        let fogStructure = [];
+        structure.forEach(element => {
+            let classs = Fog.registeredClasses[element.type];
+            if(classs) fogStructure.push(new classs(element));
+        });
+        return fogStructure;
+    }
+
     /**
-     * Creates the Fog Builder in the document.
-     * 
-     * @param {string} elementId The element on the page which will be made invisible, being
-     * replaced on the screen by the form builder and which will store the form structure in
-     * its value
+     * Creates the Fog Builder element to be added in the page.
      */
-    static createFogBuilder(elementId) {
-        // TODO: READ POSSIBLE SAVED VALUES IN element elementID
-        // AND CONVERT THEM INTO structure items
-
-        // Creating the entry in the internal structure array
-        this.structure[elementId] = Array();
-
-        // Creating the elements in the document
-        let element = document.getElementById(elementId);
-        let parentElement = element.parentElement;        
+    builderCreate() {
+        // Creating builder element
+        this.builder = document.createElement('div');
+        this.builder.id = this.id + '-fog-builder';       
 
         // Creating toolbar
         let formBuilderToolbar = document.createElement('div');
-        formBuilderToolbar.id = elementId + '-fog-builder-toolbar';
+        formBuilderToolbar.id = this.id + '-fog-builder-toolbar';
+        this.builder.appendChild(formBuilderToolbar);
+
+        // Inserting add buttons to the toolbar 
+        for (const [type, classs] of Object.entries(Fog.registeredClasses)) {
+            let toolbar = formBuilderToolbar;
+            let button = document.createElement('button');
+            button.type = 'button';
+            button.innerHTML = Fog.dictionary[`structure.table.button.add.${type}`];
+            button.onclick = () => {this.structure.push(new classs()); this.builderUpdate();};
+            toolbar.appendChild(button);
+        }
 
         // Creating table
+        let formBuilderTable = document.createElement('table');
         let formBuilderTHead = document.createElement('thead');
         let formBuilderTBody = document.createElement('tbody');
-        let formBuilderTable = document.createElement('table');
+        formBuilderTBody.id = this.id + '-fog-builder-tbody';
         formBuilderTHead.innerHTML = `
-        <th>${this.dictionary['structure.table.header.position']}</th>
-        <th>${this.dictionary['structure.table.header.type']}</th>
-        <th>${this.dictionary['structure.table.header.description']}</th>
-        <th>${this.dictionary['structure.table.header.customattribute']}</th>
-        <th>${this.dictionary['structure.table.header.mandatory']}</th>
-        <th colspan="4">${this.dictionary['structure.table.header.options']}</th>`;
+        <th>${Fog.dictionary['structure.table.header.position']}</th>
+        <th>${Fog.dictionary['structure.table.header.type']}</th>
+        <th>${Fog.dictionary['structure.table.header.description']}</th>
+        <th>${Fog.dictionary['structure.table.header.customattribute']}</th>
+        <th>${Fog.dictionary['structure.table.header.mandatory']}</th>
+        <th colspan="4">${Fog.dictionary['structure.table.header.options']}</th>`;
         formBuilderTable.appendChild(formBuilderTHead);
         formBuilderTable.appendChild(formBuilderTBody);
-        formBuilderTBody.id = elementId + '-fog-builder-tbody';
-        
-        // Inserting elements in the document and hiding the original one
-        parentElement.insertBefore(formBuilderToolbar, element);
-        parentElement.insertBefore(formBuilderTable, element);
-        element.style.display = 'none';
+        this.builder.appendChild(formBuilderTable);
+        this.builderUpdate();
 
-        // Iterating through registered fog fields
-        FogFieldText.createFogBuilderControls(elementId);
-        
-        console.log(this.structure);
+        return this.builder;
     }
 
-    static deleteItem(elementId, position) {
-        if(confirm(this.dictionary['structure.table.message.delete'].replace('<position>', position+1)))
+    builderDeleteItem(position) {
+        if(confirm(Fog.dictionary['structure.table.message.delete'].replace('<position>', position+1)))
         {
-            this.structure[elementId].splice(position, 1);
-            this.updateView(elementId);
+            this.structure.splice(position, 1);
+            this.builderUpdate();
         }
     }
 
-    static editItem(elementId, position) {
-        this.structure[elementId][position].showEditControl(elementId, position);
+    builderEditItem(position) {
+        let tbody = this.builder.children[1].children[1];
+        let tr = tbody.insertRow(position + 1);
+        let td = tr.insertCell(-1);
+        td.colSpan = 9;
+        let editor = this.structure[position].builderEditorCreate(() => {
+            let currentRow = this.builder.children[1].children[1].children[position];
+            currentRow.children[2].textContent = this.structure[position].description;
+            currentRow.children[3].textContent = this.structure[position].customattribute;
+            currentRow.children[4].innerHTML = this.structure[position].mandatory ? 
+                '<div style=\'text-align: center\'>&#8226;</div>': '';
+        });
+        let btnClose = document.createElement('button');
+        btnClose.textContent = Fog.dictionary['item.action.close'];
+        editor.appendChild(document.createElement('span')); // Empty space on grid
+        editor.appendChild(btnClose);
+        td.appendChild(editor);
+        tbody.rows[position].cells[5].firstChild.style.visibility = 'hidden';
+        tbody.rows[position].cells[6].firstChild.style.visibility = 'hidden';
+        tbody.rows[position].cells[7].firstChild.style.visibility = 'hidden';
+        tbody.rows[position].cells[8].firstChild.style.visibility = 'hidden';
+        btnClose.onclick = () => {
+            tbody.deleteRow(position + 1);
+            tbody.rows[position].cells[5].firstChild.style.visibility = 'visible';
+            tbody.rows[position].cells[6].firstChild.style.visibility = 'visible';
+            tbody.rows[position].cells[7].firstChild.style.visibility = 'visible';
+            tbody.rows[position].cells[8].firstChild.style.visibility = 'visible';
+            this.builderUpdate();
+        };
     }
 
-    static moveItem(elementId, position, offset) {
-        if (position+offset >= this.structure[elementId].length || position+offset < 0) return;
-        let currentItem = this.structure[elementId][position];
-        let movedItem = this.structure[elementId][position+offset];
-        this.structure[elementId][position+offset] = currentItem;
-        this.structure[elementId][position] = movedItem;
-        this.updateView(elementId);
+    builderMoveItem(position, offset) {
+        if (position+offset >= this.structure.length || position+offset < 0) return;
+        let currentItem = this.structure[position];
+        let movedItem = this.structure[position+offset];
+        this.structure[position+offset] = currentItem;
+        this.structure[position] = movedItem;
+        this.builderUpdate();
     }
 
-    static updateView(elementId) {
-        // Updating form control
-        document.getElementById(elementId).value = JSON.stringify(this.structure[elementId]);
-        // Updating table
-        let tbody = document.getElementById(elementId + '-fog-builder-tbody');
+    builderUpdate() {
+        let tbody = this.builder.children[1].children[1];
         while (tbody.rows.length > 0) tbody.deleteRow(-1);
-        for (let j = 0; j < this.structure[elementId].length; j++)
-        {
+        this.structure.forEach((element, i) => {
             let tr = tbody.insertRow(-1);
-            tr.insertCell(-1).innerHTML = j+1;
-            tr.insertCell(-1).innerHTML = this.dictionary['item.' + this.structure[elementId][j].type];
-            tr.insertCell(-1).innerHTML = this.structure[elementId][j].description;
-            tr.insertCell(-1).innerHTML = this.structure[elementId][j].customattribute;
-            tr.insertCell(-1).innerHTML = (this.structure[elementId][j].mandatory) ? '&#8226;' : '';
-            tr.insertCell(-1).innerHTML = `<button type="button" style="background-color:Transparent;border:none;outline:none;" onclick="Fog.moveItem('${elementId}', ${j}, -1)">${this.upButton}</button>`;
-            tr.insertCell(-1).innerHTML = `<button type="button" style="background-color:Transparent;border:none;outline:none;" onclick="Fog.moveItem('${elementId}', ${j}, +1)">${this.downButton}</button>`;
-            tr.insertCell(-1).innerHTML = `<button type="button" style="background-color:Transparent;border:none;outline:none;" onclick="Fog.editItem('${elementId}', ${j})">${this.editButton}</button>`;
-            tr.insertCell(-1).innerHTML = `<button type="button" style="background-color:Transparent;border:none;outline:none;" onclick="Fog.deleteItem('${elementId}', ${j})">${this.deleteButton}</button>`;
-            tr.childNodes[3].style.textAlign = 'center';
-            tr.childNodes[4].style.textAlign = 'center';
+            tr.insertCell(-1).textContent = i+1;
+            tr.insertCell(-1).textContent = Fog.dictionary['item.' + element.type];
+            tr.insertCell(-1).textContent = element.description;
+            tr.insertCell(-1).textContent = element.customattribute;
+            tr.insertCell(-1).innerHTML = element.mandatory ? '<div style=\'text-align: center\'>&#8226;</div>': '';
+
+            let btnMoveUp = document.createElement('button');
+            btnMoveUp.type = 'button';
+            btnMoveUp.style.backgroundColor = 'Transparent';
+            btnMoveUp.style.border = 'none';
+            btnMoveUp.style.outline = 'none';
+            btnMoveUp.innerHTML = Fog.upButton;
+            btnMoveUp.onclick = () => this.builderMoveItem(i, -1);
+            tr.insertCell(-1).appendChild(btnMoveUp);
+
+            let btnMoveDown = document.createElement('button');
+            btnMoveDown.type = 'button';
+            btnMoveDown.style.backgroundColor = 'Transparent';
+            btnMoveDown.style.border = 'none';
+            btnMoveDown.style.outline = 'none';
+            btnMoveDown.innerHTML = Fog.downButton;
+            btnMoveDown.onclick = () => this.builderMoveItem(i, +1);
+            tr.insertCell(-1).appendChild(btnMoveDown);
+
+            let btnEdit = document.createElement('button');
+            btnEdit.type = 'button';
+            btnEdit.style.backgroundColor = 'Transparent';
+            btnEdit.style.border = 'none';
+            btnEdit.style.outline = 'none';
+            btnEdit.innerHTML = Fog.editButton;
+            btnEdit.onclick = () => this.builderEditItem(i);
+            tr.insertCell(-1).appendChild(btnEdit);
             
-        }
+            let btnDelete = document.createElement('button');
+            btnDelete.type = 'button';
+            btnDelete.style.backgroundColor = 'Transparent';
+            btnDelete.style.border = 'none';
+            btnDelete.style.outline = 'none';
+            btnDelete.innerHTML = Fog.deleteButton;
+            btnDelete.onclick = () => this.builderDeleteItem(i);
+            tr.insertCell(-1).appendChild(btnDelete);
+        });
     }
-
-    static structure = {};
-
 
     // Resources
+    static registeredClasses = {
+        'text': FogFieldText,
+    };
     static editButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>';
-    static deleteButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg>';
+    static deleteButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16"><path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/></svg>';
     static downButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg>';
     static upButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
-
     static dictionary = {
         "control.action.change": "Change",
         "control.restriction.end": ")",
@@ -122,8 +283,7 @@ class Fog {
         "dynamicform.validation.error.file.exceeded.size":"File on field <field> has exceeded the maximum size",
         "dynamicform.validation.error.file.wrong.type":"File on field <field> is of a type not permitted",
         "dynamicform.validation.error.file.upload.error":"Error on uploading the file on field <field>",	
-        "item.action.cancel": "Cancel",
-        "item.action.save": "Save",
+        "item.action.close": "Close",
         "item.bigtext": "Big text",
         "item.bigtext.spec.maxwords": "Maximum of words",
         "item.bigtext.spec.minwords": "Minimum of words",
@@ -159,77 +319,6 @@ class Fog {
         "structure.table.header.position": "Position",
         "structure.table.header.type": "Type",
         "structure.table.header.customattribute": "Custom attr.",
-        "structure.table.message.add": "Enter the description of the new item",
         "structure.table.message.delete": "Are you sure you want to delete item at position <position>?"
     };
-}
-
-
-class FogField { 
-    type = null;
-    description = '';
-    customattribute = '';
-    mandatory = false;
-    spec = null;
-}
-
-class FogFieldText extends FogField {
-
-    type = 'text';
-
-    static createFogBuilderControls(elementId) {
-        let toolbar = document.getElementById(elementId + '-fog-builder-toolbar');
-        let button = document.createElement('button');
-        button.type = 'button';
-        button.id = toolbar.id + '-button-txt';
-        button.innerHTML = Fog.dictionary["structure.table.button.add.text"];
-        button.addEventListener("click", function() {
-            Fog.structure[elementId].push(new FogFieldText());
-            Fog.updateView(elementId);
-        });
-        toolbar.appendChild(button);
-    }
-
-    showEditControl(elementId, position) {
-        let tbody = document.getElementById(elementId + '-fog-builder-tbody');
-
-        let tr = tbody.insertRow(position + 1);
-        let td = tr.insertCell(-1);
-        let mandatoryChecked = Fog.structure[elementId][position].mandatory ? "checked" : ""; 
-        td.colSpan = 9;
-        td.innerHTML = `<div style="padding: 1rem; display: grid; grid-gap: 0.55rem; grid-template-columns: 1fr 1fr;">
-		<label for="tex_des_${elementId}">${Fog.dictionary['item.description']}</label>
-        <input  id="tex_des_${elementId}" type="text" value="${Fog.structure[elementId][position].description}"/>
-        <label for="tex_cat_${elementId}">${Fog.dictionary['item.customattribute']}</label>
-        <input  id="tex_cat_${elementId}" type="text" value="${Fog.structure[elementId][position].customattribute}"/>
-        <span style="grid-column-start: 1; grid-column-end: 3;">
-        <input  id="tex_man_${elementId}" type="checkbox" ${mandatoryChecked}/>
-        <label for="tex_man_${elementId}">${Fog.dictionary['item.mandatory']}</label>
-        </span>
-        </div>`;
-        
-        console.log(td.firstChild);
-        let buttonSave = document.createElement('button');
-        buttonSave.type = 'button';
-        buttonSave.innerHTML = Fog.dictionary['item.action.save'];
-        buttonSave.addEventListener("click", function() {
-            Fog.structure[elementId][position].description = document.getElementById(`tex_des_${elementId}`).value;
-            Fog.structure[elementId][position].customattribute = document.getElementById(`tex_cat_${elementId}`).value;
-            Fog.structure[elementId][position].mandatory = document.getElementById(`tex_man_${elementId}`).checked;
-            tbody.deleteRow(position + 1);
-            Fog.updateView(elementId);
-        });
-        td.firstChild.appendChild(buttonSave);
-
-        let buttonCancel = document.createElement('button');
-        buttonCancel.type = 'button';
-        buttonCancel.innerHTML = Fog.dictionary['item.action.cancel'];
-        buttonCancel.addEventListener("click", function() {
-            tbody.deleteRow(position + 1);
-            tbody.rows[position].cells[7].firstChild.style.setProperty("display", "block", "important");
-        });
-        td.firstChild.appendChild(buttonCancel);
-
-        tbody.rows[position].cells[7].firstChild.style.setProperty("display", "none", "important");
-    }
 }

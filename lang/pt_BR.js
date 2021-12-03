@@ -19,8 +19,7 @@ function getFogDictionary() {
         "dynamicform.validation.error.file.exceeded.size":"O arquivo enviado no campo <field> é maior do que o permitido",
         "dynamicform.validation.error.file.wrong.type":"O arquivo enviado no campo <field> é de um tipo não permitido",
         "dynamicform.validation.error.file.upload.error":"Erro ao fazer upload do arquivo na campo <field>",
-        "item.action.cancel": "Cancelar",
-        "item.action.save": "Salvar",
+        "item.action.close": "Fechar",
         "item.bigtext": "Texto grande",
         "item.bigtext.spec.maxwords": "Máximo de palavras",
         "item.bigtext.spec.minwords": "Mínimo de palavras",
@@ -56,7 +55,6 @@ function getFogDictionary() {
         "structure.table.header.position": "Posição",
         "structure.table.header.type": "Tipo",
         "structure.table.header.customattribute": "Atributo Pers.",
-        "structure.table.message.add": "Insira a descrição do novo item",
         "structure.table.message.delete": "Tem certeza que deseja apagar o item na posição <position>?"
     };
     

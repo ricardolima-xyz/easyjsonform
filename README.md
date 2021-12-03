@@ -2,12 +2,12 @@
 
 ## When you need a _form_, not a `<form>`.
 
-**You, as a developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where users, by nature, need to create forms. Examples of such applications are:**
+**You, developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where users, by nature, need to create forms. Examples of such applications are:**
 
 - Survey systems
-- Assignment (homework) submission systems
+- Homework submission systems
 
-It would be very counterproductive if the programmer has to hardcode a form everytime a new one is needed. **fog.js makes it happen.**
+It would be absurd if you had to code a form everytime a new one is needed. **That's where fog.js comes into action.**
 
 ## Phase 1: The form structure builder
 
