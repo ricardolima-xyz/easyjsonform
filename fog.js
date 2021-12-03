@@ -68,51 +68,32 @@ class FogFieldText extends FogField {
         return editControl;
     }
 
-    formFieldCreate() {
-        // TODO under construction...
+    formFieldCreate(id, position) {
         let formField = document.createElement('div');
         let lblFormField = document.createElement('label');
-        lblFormField.htmlFor = 'fog-builder-field-customattribute';
+        lblFormField.htmlFor = `${id}[${position}]`;
         lblFormField.textContent = Fog.dictionary['item.customattribute'];
         let iptFormField = document.createElement('input');
-        iptFormField.id = 'fog-builder-field-customattribute';
+        iptFormField.id = `${id}[${position}]`;
+        iptFormField.name = `${id}[${position}]`;
         iptFormField.type = 'text';
         iptFormField.value = this.value;
         formField.appendChild(lblFormField);
         formField.appendChild(iptFormField);
         return formField;
-/* 
-
-        $result = "
-        <label for=\"{$htmlName}[{$index}]\">{$this->description}";
-        if ($this->mandatory) $result .= "<small>".DynamicFormHelper::_('control.restriction.start').DynamicFormHelper::_('control.restriction.mandatory').DynamicFormHelper::_('control.restriction.end')."</small>";
-        $result .= "</label>
-        <input type=\"text\" name=\"{$htmlName}[{$index}]\" id=\"{$htmlName}[{$index}]\"";
-        $result .= "value=\"".htmlentities($this->content, ENT_QUOTES, 'utf-8')."\"";
-        $result .= ($active) ? "" : " disabled=\"disabled\"";
-        $result .= " />";
-        return $result; */
     }
 }
 
 class Fog {
-
     constructor(id, structure = null) {
         if (id) this.id = id;
         else throw new Error('Id is mandatory');
         
-        if (structure) this.structure = this.loadStructure(structure);
-        else this.structure = [];
-    }
-
-    // TODO: READ SAVED VALUES IN structure
-    loadStructure(structure) {
-        let fogStructure = [];
-        structure.forEach(element => {
+        this.structure = [];
+        if (structure) structure.forEach(element => {
             let classs = Fog.registeredClasses[element.type];
-            if(classs) fogStructure.push(new classs(element));
+            if (classs) this.structure.push(new classs(element));
         });
-        return fogStructure;
     }
 
     /**
@@ -154,7 +135,6 @@ class Fog {
         formBuilderTable.appendChild(formBuilderTBody);
         this.builder.appendChild(formBuilderTable);
         this.builderUpdate();
-
         return this.builder;
     }
 
@@ -253,6 +233,14 @@ class Fog {
             btnDelete.onclick = () => this.builderDeleteItem(i);
             tr.insertCell(-1).appendChild(btnDelete);
         });
+    }
+
+    formCreate(divInsteadOfForm = false) {
+        let form = document.createElement(divInsteadOfForm?'div':'form');
+        this.structure.forEach((element, index) => {
+            form.appendChild(element.formFieldCreate(this.id, index));
+        });
+        return form;
     }
 
     // Resources
