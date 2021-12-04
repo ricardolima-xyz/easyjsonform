@@ -7,27 +7,25 @@
     <title>fog.js test</title>
 </head>
 <body>
-
-
     <script src="../fog.js"></script>
     <script>
         let createHeader = (x) => { let r = document.createElement('h2'); r.textContent = x; return r; };
         let sampleStructure = 
         [
-            {"type":"text","description":"This is a text field","customattribute":"Custom attribute for text","mandatory":true,"spec":null},
-            {"type":"bigtext","description":"This is a big text field","customattribute":"","mandatory":true,"spec":{"min_words":2,"max_words":100}},
-            {"type":"groupedtext","description":"This is a grouped text field","customattribute":"","mandatory":true,"spec":{"items":["a","b","c"]}},
+            {"type":"text","description":"This is a text field","customattribute":"Custom attribute for text","mandatory":true,"spec":null,"value":"Test value for text"},
+            {"type":"textarea","description":"This is a text area field","customattribute":"Custom attribute for text area","mandatory":true,"spec":{"min_words":2,"max_words":100},"value":"Test value for text area"},
+            {"type":"groupedtext","description":"This is a grouped text field","customattribute":"Custom attribute for custom text","mandatory":true,"spec":{"items":["a","b","c"]},"value":['å','∫','ç']},
             {"type":"choice","description":"This is a choice field","customattribute":"","mandatory":true,"spec":null},
-            {"type":"singlechoice","description":"This is a single choice field","customattribute":"","mandatory":true,"spec":{"items":["m","n","o"]}},
-            {"type":"multiplechoice","description":"This is a multiple choice field","customattribute":"","mandatory":true,"spec":{"items":["x","y","z"]}},
+            {"type":"singlechoice","description":"This is a single choice field","customattribute":"Custom attribute for single choice","mandatory":true,"spec":{"items":["m","n","o"]},"value":"1"},
+            {"type":"multiplechoice","description":"This is a multiple choice field","customattribute":"Custom attribute for multiple choice","mandatory":true,"spec":{"items":["x","y","z"]},"value":["0","1","0"]},
             {"type":"file","description":"This is a file field","customattribute":"","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42}}
         ];
         let sampleFog = new Fog('sample', sampleStructure);
         document.body.appendChild(createHeader('Fog builder'));
-        document.body.appendChild(sampleFog.builderCreate());
+        document.body.appendChild(sampleFog.builderGet());
 
         document.body.appendChild(createHeader('Fog form'));
-        document.body.appendChild(sampleFog.formCreate());
+        document.body.appendChild(sampleFog.formGet());
 
     </script>
     
