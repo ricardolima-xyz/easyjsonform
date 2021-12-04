@@ -190,9 +190,9 @@ class FogFieldMultipleChoice extends FogField {
 class FogFieldSingleChoice extends FogField {
     constructor(json = null) {
         super(json);
-        if (!json) this.spec = {
-            items:[]
-        };
+        if (!json) {
+            this.spec = {items:[]};
+        }
         this.type = 'singlechoice';
     }
 
@@ -276,12 +276,44 @@ class FogFieldText extends FogField {
 class FogFieldTextArea extends FogField {
     constructor(json = null) {
         super(json);
+        if (!json) {
+            this.spec = {
+                length: {
+                    measure: 'no', // Can also be 'bycharacter' or 'byword'
+                    min: 0, // nonnegative integer values
+                    max: 0, // nonnegative integer values
+                },
+            };
+        }
         this.type = 'textarea';
     }
 
     builderEditorCreate(builderUpdateCallback) {
         let editControl = super.builderEditorCreate(builderUpdateCallback);
-        // No extra fields
+        // Length measure field
+        let lblLengthMeasure = document.createElement('label');
+        lblLengthMeasure.htmlFor = 'fog-builder-length-measure';
+        lblLengthMeasure.textContent = Fog.dictionary['item.textarea.spec.length.measure'];
+        let optLengthMeasureByCharacter = document.createElement('option');
+        optLengthMeasureByCharacter.value = 'bycharacter';
+        optLengthMeasureByCharacter.textContent = Fog.dictionary['item.textarea.spec.length.measure.bycharacter'];
+        let optLengthMeasureByWord = document.createElement('option');
+        optLengthMeasureByWord.value = 'byword';
+        optLengthMeasureByWord.textContent = Fog.dictionary['item.textarea.spec.length.measure.byword'];
+        let optLengthMeasureNo = document.createElement('option');
+        optLengthMeasureNo.value = 'no';
+        optLengthMeasureNo.textContent = Fog.dictionary['item.textarea.spec.length.measure.no'];
+        let selLengthMeasure = document.createElement('select');
+        selLengthMeasure.id = 'fog-builder-length-measure';
+        selLengthMeasure.appendChild(optLengthMeasureByCharacter);
+        selLengthMeasure.appendChild(optLengthMeasureByWord);
+        selLengthMeasure.appendChild(optLengthMeasureNo);
+        selLengthMeasure.value = this.spec.length.measure;
+        selLengthMeasure.onchange = () => {this.spec.length.measure = selLengthMeasure.value; builderUpdateCallback();};
+        editControl.appendChild(lblLengthMeasure);
+        editControl.appendChild(selLengthMeasure);
+        // Length min field
+        // Length max field
         return editControl;
     }
 
@@ -523,10 +555,10 @@ class Fog {
         "dynamicform.validation.error.file.upload.error":"Error on uploading the file on field <field>",	 */
         "item.action.close": "Close",
         "item.textarea": "Text area",
-        "item.textarea.spec.length.restrictmethod": "Restrict length",
-        "item.textarea.spec.length.restrictmethod.by.character": "By character",
-        "item.textarea.spec.length.restrictmethod.by.word": "By word",
-        "item.textarea.spec.length.restrictmethod.no": "No",
+        "item.textarea.spec.length.measure": "Restrict length",
+        "item.textarea.spec.length.measure.bycharacter": "By character",
+        "item.textarea.spec.length.measure.byword": "By word",
+        "item.textarea.spec.length.measure.no": "No",
         "item.textarea.spec.length.max": "Maximum length",
         "item.textarea.spec.length.min": "Minimum length",
         "item.choice": "Choice",
