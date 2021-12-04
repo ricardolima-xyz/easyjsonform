@@ -5,8 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fog.js test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Meow+Script&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
+    <main class="container">
+        <h1>fog.js :: <span style="font-family: 'Meow Script', cursive; font-size:3.5rem;">forms</span>, not &lt;form&gt;</h1>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="../fog.js"></script>
     <script>
         let createHeader = (x) => { let r = document.createElement('h2'); r.textContent = x; return r; };
@@ -17,17 +25,16 @@
             {"type":"textarea","description":"This is a word restricted text area field","customattribute":"Custom attribute word restricted for text area","mandatory":true,"spec":{"length":{"measure":"byword","min":2,"max":100}},"value":"Test value for word restricted text area"},
             {"type":"textarea","description":"This is an unrestricted text area field","customattribute":"Custom attribute for unrestricted text area","mandatory":true,"spec":{"length":{"measure":"no","min":2,"max":100}},"value":"Test value for unrestricted text area"},
             {"type":"groupedtext","description":"This is a grouped text field","customattribute":"Custom attribute for custom text","mandatory":true,"spec":{"items":["a","b","c"]},"value":['å','∫','ç']},
-            {"type":"choice","description":"This is a choice field","customattribute":"","mandatory":true,"spec":null},
+            {"type":"choice","description":"This is a choice field","customattribute":"Custom attribute for choice","mandatory":true,"spec":null,"value":"1"},
             {"type":"singlechoice","description":"This is a single choice field","customattribute":"Custom attribute for single choice","mandatory":true,"spec":{"items":["m","n","o"]},"value":"1"},
             {"type":"multiplechoice","description":"This is a multiple choice field","customattribute":"Custom attribute for multiple choice","mandatory":true,"spec":{"items":["x","y","z"]},"value":["0","1","0"]},
-            {"type":"file","description":"This is a file field","customattribute":"","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42}}
+            {"type":"file","description":"This is a file field","customattribute":"","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null}
         ];
         let sampleFog = new Fog('sample', sampleStructure);
-        document.body.appendChild(createHeader('Fog builder'));
-        document.body.appendChild(sampleFog.builderGet());
-
-        document.body.appendChild(createHeader('Fog form'));
-        document.body.appendChild(sampleFog.formGet());
+        document.querySelector('main').appendChild(createHeader('Fog builder'));
+        document.querySelector('main').appendChild(sampleFog.builderGet());
+        document.querySelector('main').appendChild(createHeader('Fog form'));
+        document.querySelector('main').appendChild(sampleFog.formGet());
 
     </script>
     
