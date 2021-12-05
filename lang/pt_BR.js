@@ -1,4 +1,4 @@
-var fogpt_BR = {
+var fog_pt_BR = {
         "item.file.help.filetypes": "tipos de arquivo: {{file-types}}",
         "item.file.help.filetypes.all": "todos ",
         "item.file.help.maxsize": "tamanho máximo: {{size}} MB",
