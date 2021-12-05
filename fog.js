@@ -238,25 +238,31 @@ class FogFieldGroupedText extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-groupedtext-item');
-        let lblFormField = document.createElement('label');    
+        formField.classList.add('fog-field-groupedtext');
+        fog.applyStyle('fieldGroupedtext', formField);
+        let lblFormField = document.createElement('label');
+        fog.applyStyle('fieldGroupedtextLabel', lblFormField);
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let formGroup = document.createElement('span');
+        fog.applyStyle('fieldGroupedtextGroup', formGroup);
         this.spec.items.forEach((element, index) => {
-            let check = document.createElement('span');
+            let item = document.createElement('span');
+            fog.applyStyle('fieldGroupedtextItem', item);
             let lblCheck = document.createElement('label');
+            fog.applyStyle('fieldGroupedtextItemLabel', lblCheck);
             lblCheck.htmlFor = `${fog.id}[${position}][${index}]`;
             lblCheck.textContent = element;
             let iptCheck = document.createElement('input');
+            fog.applyStyle('fieldGroupedtextItemInput', iptCheck);
             iptCheck.type = 'text';
             iptCheck.disabled = fog.options.disabled || false;
             iptCheck.id = `${fog.id}[${position}][${index}]`;
             iptCheck.name = `${fog.id}[${position}][${index}]`;
             iptCheck.value = this.value[index];
             iptCheck.onchange = () => {this.value[index] = iptCheck.value};
-            check.appendChild(lblCheck);
-            check.appendChild(iptCheck);
-            formGroup.appendChild(check);
+            item.appendChild(lblCheck);
+            item.appendChild(iptCheck);
+            formGroup.appendChild(item);
         });
         formField.appendChild(lblFormField);
         formField.appendChild(formGroup);
@@ -296,17 +302,22 @@ class FogFieldMultipleChoice extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-multiplechoice-item');
-        let lblFormField = document.createElement('label');    
+        formField.classList.add('fog-field-multiplechoice');
+        fog.applyStyle('fieldMultiplechoice', formField);
+        let lblFormField = document.createElement('label');
+        fog.applyStyle('fieldMultiplechoiceLabel', lblFormField);    
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let formGroup = document.createElement('span');
+        fog.applyStyle('fieldMultiplechoiceGroup', formGroup);
         this.spec.items.forEach((element, index) => {
-            let check = document.createElement('span');
+            let item = document.createElement('span');
+            fog.applyStyle('fieldMultiplechoiceItem', item);
             let iptHidden = document.createElement('input');
             iptHidden.type = 'hidden';
             iptHidden.value = '0';
             iptHidden.name = `${fog.id}[${position}][${index}]`;
             let iptCheck = document.createElement('input');
+            fog.applyStyle('fieldMultiplechoiceItemInput', iptCheck);
             iptCheck.type = 'checkbox';
             iptCheck.disabled = fog.options.disabled || false;
             iptCheck.id = `${fog.id}[${position}][${index}]`;
@@ -315,12 +326,13 @@ class FogFieldMultipleChoice extends FogField {
             iptCheck.checked = parseInt(this.value[index]);
             iptCheck.onchange = () => {this.value[index] = iptCheck.checked ? "1" : "0"};
             let lblCheck = document.createElement('label');
+            fog.applyStyle('fieldMultiplechoiceItemLabel', lblCheck);
             lblCheck.htmlFor = `${fog.id}[${position}][${index}]`;
             lblCheck.textContent = element;
-            check.appendChild(iptHidden);
-            check.appendChild(iptCheck);
-            check.appendChild(lblCheck);
-            formGroup.appendChild(check);
+            item.appendChild(iptHidden);
+            item.appendChild(iptCheck);
+            item.appendChild(lblCheck);
+            formGroup.appendChild(item);
         });
         formField.appendChild(lblFormField);
         formField.appendChild(formGroup);
@@ -361,11 +373,14 @@ class FogFieldSingleChoice extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-singlechoice-item');
+        formField.classList.add('fog-field-singlechoice');
+        fog.applyStyle('fieldSinglechoice', formField);
         let lblFormField = document.createElement('label');
+        fog.applyStyle('fieldSinglechoiceLabel', lblFormField);
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let iptFormField = document.createElement('select');
+        fog.applyStyle('fieldSinglechoiceSelect', iptFormField);
         iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
@@ -401,11 +416,14 @@ class FogFieldText extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-text-item');
+        formField.classList.add('fog-field-text');
+        fog.applyStyle('fieldText', formField);
         let lblFormField = document.createElement('label');
+        fog.applyStyle('fieldTextLabel', lblFormField);
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let iptFormField = document.createElement('input');
+        fog.applyStyle('fieldTextInput', iptFormField);
         iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
@@ -492,12 +510,16 @@ class FogFieldTextArea extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-textarea-item');
+        formField.classList.add('fog-field-textarea');
+        fog.applyStyle('fieldTextarea', formField);
         let lblFormField = document.createElement('label');
+        fog.applyStyle('fieldTextareaLabel', lblFormField);
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let spnCounter = document.createElement('span');
+        fog.applyStyle('fieldTextareaInfo', spnCounter);
         let iptFormField = document.createElement('textarea');
+        fog.applyStyle('fieldTextareaInput', iptFormField);
         iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
@@ -580,84 +602,44 @@ class Fog {
             this.applyStyle('builder', this.builder);
 
             // Creating toolbar
-            let formBuilderToolbar = document.createElement('div');
-            formBuilderToolbar.classList.add('fog-builder-toolbar');
-            this.applyStyle('builderToolbar', formBuilderToolbar);
-            this.builder.appendChild(formBuilderToolbar);
+            this.builderToolbar = document.createElement('div');
+            this.builderToolbar.classList.add('fog-builder-toolbar');
+            this.applyStyle('builderToolbar', this.builderToolbar);
 
             // Inserting add buttons to the toolbar 
             for (const [type, classs] of Object.entries(Fog.registeredClasses)) {
-                let toolbar = formBuilderToolbar;
                 let button = document.createElement('button');
                 this.applyStyle('builderToolbarButton', button);
                 button.disabled = this.options.disabled || false;
                 button.type = 'button';
-                button.innerHTML = Fog.dictionary[`structure.table.button.add.${type}`];
-                button.onclick = () => {this.structure.push(new classs()); this.builderUpdate();};
-                toolbar.appendChild(button);
+                button.innerHTML = Fog.dictionary[`builder.button.add.${type}`];
+                button.onclick = () => {
+                    this.structure.push(new classs());
+                    this.builderUpdate();
+                    if (this.options.onStructureChange) this.options.onStructureChange();
+                };
+                this.builderToolbar.appendChild(button);
             }
 
             // Creating table
-            let formBuilderTable = document.createElement('table');
-            let formBuilderTHead = document.createElement('thead');
-            let formBuilderTBody = document.createElement('tbody');
-            formBuilderTable.classList.add('fog-builder-table');
-            this.applyStyle('builderTable', formBuilderTable);
-            formBuilderTHead.insertRow(-1).innerHTML = `
-            <th>${Fog.dictionary['structure.table.header.position']}</th>
-            <th>${Fog.dictionary['structure.table.header.type']}</th>
-            <th>${Fog.dictionary['structure.table.header.description']}</th>
-            <th>${Fog.dictionary['structure.table.header.customattribute']}</th>
-            <th>${Fog.dictionary['structure.table.header.mandatory']}</th>
-            <th colspan="4">${Fog.dictionary['structure.table.header.options']}</th>`;
-            formBuilderTable.appendChild(formBuilderTHead);
-            formBuilderTable.appendChild(formBuilderTBody);
-            this.builder.appendChild(formBuilderTable);
+            let builderTable = document.createElement('table');
+            let builderTBody = document.createElement('tbody');
+            builderTable.classList.add('fog-builder-table');
+            this.applyStyle('builderTable', builderTable);
+            builderTable.appendChild(builderTBody);
+            this.builder.appendChild(builderTable);
             this.builderUpdate();
         }
         return this.builder;
     }
 
     builderDeleteItem(position) {
-        if(confirm(Fog.dictionary['structure.table.message.delete'].replace('<position>', position+1)))
+        if(confirm(Fog.dictionary['builder.message.delete'].replace('<position>', position+1)))
         {
             this.structure.splice(position, 1);
             this.builderUpdate();
+            if (this.options.onStructureChange) this.options.onStructureChange();
         }
-    }
-
-    builderEditItem(position) {
-        if (this.closePreviousEditor) this.closePreviousEditor();
-        let tbody = this.builder.children[1].children[1];
-        let tr = tbody.insertRow(position + 1);
-        let td = tr.insertCell(-1);
-        td.colSpan = 9;
-        let editor = this.structure[position].builderEditorCreate(() => {
-            let currentRow = this.builder.children[1].children[1].children[position];
-            currentRow.children[2].textContent = this.structure[position].description;
-            currentRow.children[3].textContent = this.structure[position].customattribute;
-            currentRow.children[4].innerHTML = this.structure[position].mandatory ? 
-                '<div style=\'text-align: center\'>&#8226;</div>': '';
-        });
-        let btnClose = document.createElement('button');
-        btnClose.textContent = Fog.dictionary['item.action.close'];
-        editor.appendChild(document.createElement('span')); // Empty space on grid
-        editor.appendChild(btnClose);
-        td.appendChild(editor);
-        tbody.rows[position].cells[5].firstChild.style.visibility = 'hidden';
-        tbody.rows[position].cells[6].firstChild.style.visibility = 'hidden';
-        tbody.rows[position].cells[7].firstChild.style.visibility = 'hidden';
-        tbody.rows[position].cells[8].firstChild.style.visibility = 'hidden';
-        btnClose.onclick = () => {
-            this.closePreviousEditor = null;
-            tbody.deleteRow(position + 1);
-            tbody.rows[position].cells[5].firstChild.style.visibility = 'visible';
-            tbody.rows[position].cells[6].firstChild.style.visibility = 'visible';
-            tbody.rows[position].cells[7].firstChild.style.visibility = 'visible';
-            tbody.rows[position].cells[8].firstChild.style.visibility = 'visible';
-            this.builderUpdate();
-        };
-        this.closePreviousEditor = btnClose.onclick;
     }
 
     builderMoveItem(position, offset) {
@@ -667,18 +649,53 @@ class Fog {
         this.structure[position+offset] = currentItem;
         this.structure[position] = movedItem;
         this.builderUpdate();
+        if (this.options.onStructureChange) this.options.onStructureChange();
     }
 
     builderUpdate() {
-        let tbody = this.builder.children[1].children[1];
+        let tbody = this.builder.children[0].children[0];
         while (tbody.rows.length > 0) tbody.deleteRow(-1);
         this.structure.forEach((element, i) => {
             let tr = tbody.insertRow(-1);
-            tr.insertCell(-1).textContent = i+1;
-            tr.insertCell(-1).textContent = Fog.dictionary['item.' + element.type];
-            tr.insertCell(-1).textContent = element.description;
-            tr.insertCell(-1).textContent = element.customattribute;
-            tr.insertCell(-1).innerHTML = element.mandatory ? '<div style=\'text-align: center\'>&#8226;</div>': '';
+
+            let mainTd = tr.insertCell(-1);
+            mainTd.appendChild(element.formFieldCreate(this, i));
+
+            let btnEdit = document.createElement('button');
+            btnEdit.disabled = this.options.disabled || false;
+            btnEdit.type = 'button';
+            btnEdit.style.backgroundColor = 'Transparent';
+            btnEdit.style.border = 'none';
+            btnEdit.style.outline = 'none';
+            btnEdit.innerHTML = Fog.editButton;
+            
+            let btnEditFinish = document.createElement('button');
+            btnEditFinish.disabled = this.options.disabled || false;
+            btnEditFinish.type = 'button';
+            btnEditFinish.style.backgroundColor = 'Transparent';
+            btnEditFinish.style.border = 'none';
+            btnEditFinish.style.outline = 'none';
+            btnEditFinish.style.display = 'none';
+            btnEditFinish.innerHTML = Fog.okButton;
+
+            btnEdit.onclick = () => {
+                let editor = this.structure[i].builderEditorCreate(() => {
+                    mainTd.replaceChild(this.structure[i].formFieldCreate(this, i), mainTd.children[0]);
+                    if (this.options.onStructureChange) this.options.onStructureChange();
+                });
+                mainTd.appendChild(editor);
+                btnEdit.style.display = 'none';
+                btnEditFinish.style.display = 'inline-block';
+            };
+            btnEditFinish.onclick = () => {
+                mainTd.removeChild(mainTd.lastChild);
+                btnEdit.style.display = 'inline-block';
+                btnEditFinish.style.display = 'none';
+            }            
+
+            let editTd = tr.insertCell(-1);
+            editTd.appendChild(btnEdit);
+            editTd.appendChild(btnEditFinish);
 
             let btnMoveUp = document.createElement('button');
             btnMoveUp.disabled = this.options.disabled || false;
@@ -699,16 +716,6 @@ class Fog {
             btnMoveDown.innerHTML = Fog.downButton;
             btnMoveDown.onclick = () => this.builderMoveItem(i, +1);
             tr.insertCell(-1).appendChild(btnMoveDown);
-
-            let btnEdit = document.createElement('button');
-            btnEdit.disabled = this.options.disabled || false;
-            btnEdit.type = 'button';
-            btnEdit.style.backgroundColor = 'Transparent';
-            btnEdit.style.border = 'none';
-            btnEdit.style.outline = 'none';
-            btnEdit.innerHTML = Fog.editButton;
-            btnEdit.onclick = () => this.builderEditItem(i);
-            tr.insertCell(-1).appendChild(btnEdit);
             
             let btnDelete = document.createElement('button');
             btnDelete.disabled = this.options.disabled || false;
@@ -720,6 +727,9 @@ class Fog {
             btnDelete.onclick = () => this.builderDeleteItem(i);
             tr.insertCell(-1).appendChild(btnDelete);
         });
+        let lastRow = tbody.insertRow(-1).insertCell(-1);
+        lastRow.colSpan = 5;
+        lastRow.appendChild(this.builderToolbar);
     }
 
     formGet() {
@@ -755,41 +765,6 @@ class Fog {
     }
 
     // Resources
-    static bootstrapStyler(fog) {
-        if (fog.form) {            
-            fog.form.querySelectorAll('.fog-file-item').forEach((x => x.classList.add('my-3')));
-            fog.form.querySelectorAll('.fog-file-item > label').forEach((x => x.classList.add('form-label')));
-            // TODO Form control styler
-            
-            fog.form.querySelectorAll('.fog-groupedtext-item').forEach((x => x.classList.add('my-3')));
-            fog.form.querySelectorAll('.fog-groupedtext-item > label').forEach((x => x.classList.add('form-label')));
-            fog.form.querySelectorAll('.fog-groupedtext-item > span').forEach((x => x.classList.add('d-flex','flex-nowrap,','justify-content-between','align-items-stretch')));
-            fog.form.querySelectorAll('.fog-groupedtext-item > span > span').forEach((x => x.classList.add('input-group','d-inline-flex')));
-            fog.form.querySelectorAll('.fog-groupedtext-item > span > span > label').forEach((x => x.classList.add('input-group-text')));
-            fog.form.querySelectorAll('.fog-groupedtext-item > span > span > input').forEach((x => x.classList.add('form-control')));
-            
-            fog.form.querySelectorAll('.fog-multiplechoice-item').forEach((x => x.classList.add('my-3')));
-            fog.form.querySelectorAll('.fog-multiplechoice-item > label').forEach((x => x.classList.add('form-label')));
-            fog.form.querySelectorAll('.fog-multiplechoice-item > span').forEach((x => x.classList.add('d-flex','justify-content-start','align-items-start')));
-            fog.form.querySelectorAll('.fog-multiplechoice-item > span > span').forEach((x => x.classList.add('form-check')));
-            fog.form.querySelectorAll('.fog-multiplechoice-item > span > span > label').forEach((x => x.classList.add('form-check-label')));
-            fog.form.querySelectorAll('.fog-multiplechoice-item > span > span > input').forEach((x => x.classList.add('form-check-input')));
-            
-            fog.form.querySelectorAll('.fog-singlechoice-item').forEach((x => x.classList.add('my-3')));
-            fog.form.querySelectorAll('.fog-singlechoice-item > label').forEach((x => x.classList.add('form-label')));
-            fog.form.querySelectorAll('.fog-singlechoice-item > select').forEach((x => x.classList.add('form-select')));
-
-            fog.form.querySelectorAll('.fog-textarea-item').forEach((x => x.classList.add('my-3')));
-            fog.form.querySelectorAll('.fog-textarea-item > label').forEach((x => x.classList.add('form-label')));
-            fog.form.querySelectorAll('.fog-textarea-item > span').forEach((x => x.classList.add('form-text','float-end')));
-            fog.form.querySelectorAll('.fog-textarea-item > textarea').forEach((x => x.classList.add('form-control')));
-
-            fog.form.querySelectorAll('.fog-text-item').forEach((x => x.classList.add('my-3')));
-            fog.form.querySelectorAll('.fog-text-item > label').forEach((x => x.classList.add('form-label')));
-            fog.form.querySelectorAll('.fog-text-item > input').forEach((x => x.classList.add('form-control')));
-        }
-    }
-
     static registeredClasses = {
         'choice': FogFieldChoice,
         'file': FogFieldFile,
@@ -815,19 +790,19 @@ class Fog {
     static editButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>';
     static deleteButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16"><path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/></svg>';
     static downButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg>';
+    static okButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg>';
     static upButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
-        "control.restriction.filetypes": "File types: ",
-        "control.restriction.filetypes.all": "all ",
-        "control.restriction.maxsize": "Maximum size: ",
-        "control.restriction.maxsize.megabytes": " MB",
-        "control.singlechoice.null": "&gt;&gt; Select", //TODO!
+        "item.file.help.filetypes": "File types: ", //TODO!
+        "item.file.help.filetypes.all": "all ", //TODO!
+        "item.file.help.maxsize": "Maximum size: ", //TODO!
+        "item.file.help.maxsize.megabytes": " MB", //TODO!
+        "item.singlechoice.value.null": "&gt;&gt; Select", //TODO!
         "form.field.helper.text":" <small>({{helper-text}})</small>",
         "form.field.helper.text.mandatory": "mandatory",
         "form.field.helper.text.separator": ", ",
         "form.field.helper.text.length.by.word": "min. words: {{min}}, max. words: {{max}}",
         "form.field.helper.text.length.by.character": "min. characters: {{min}}, max. characters: {{max}}",
-        "item.action.close": "Close",
         "item.textarea": "Text area",
         "item.textarea.spec.length.measure": "Restrict length",
         "item.textarea.spec.length.measure.bycharacter": "By character",
@@ -856,19 +831,13 @@ class Fog {
         "item.singlechoice.spec.items.help": "(One per line)",
         "item.text": "Text",
         "item.customattribute": "Custom attribute",
-        "structure.table.button.add.textarea": "+ Text area",
-        "structure.table.button.add.choice": "+ Choice",
-        "structure.table.button.add.file": "+ File",
-        "structure.table.button.add.groupedtext": "+ Grouped text",
-        "structure.table.button.add.multiplechoice": "+ Multiple choice",
-        "structure.table.button.add.singlechoice": "+ Single choice",
-        "structure.table.button.add.text": "+ Text",
-        "structure.table.header.description": "Description",
-        "structure.table.header.mandatory": "Mandatory",
-        "structure.table.header.options": "Options",
-        "structure.table.header.position": "Position",
-        "structure.table.header.type": "Type",
-        "structure.table.header.customattribute": "Custom attr.",
-        "structure.table.message.delete": "Are you sure you want to delete item at position <position>?"
+        "builder.button.add.textarea": "+ Text area",
+        "builder.button.add.choice": "+ Choice",
+        "builder.button.add.file": "+ File",
+        "builder.button.add.groupedtext": "+ Grouped text",
+        "builder.button.add.multiplechoice": "+ Multiple choice",
+        "builder.button.add.singlechoice": "+ Single choice",
+        "builder.button.add.text": "+ Text",
+        "builder.message.delete": "Are you sure you want to delete item at position <position>?"
     };
 }

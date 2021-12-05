@@ -9,22 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Meow+Script&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <style>
-        .sample-class {
-            color: yellow;
-            background-color: red;
-        }
-        .fog-field-files > span > button {
-            display: block;
-            color: greenyellow;
-            background-color: blue;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        </style>
 </head>
 <body>
-    <main class="container">
-        <h1>fog.js  <span style="font-family: 'Meow Script', cursive; font-size:3.5rem;">forms</span>, not &lt;form&gt;</h1>
+    <main class="container my-4">
+        <h1 class="text-center display-1">
+            <span class="badge bg-primary">fog.js</span></h1>
+        <h2 class="text-center">
+            <span class="text-muted">Forms on the go. When you need a <span style="font-family: 'Meow Script', cursive; font-size:3.5rem; font-weight: '800';">form</span>, not a &lt;form&gt;</span>
+        </h2>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="../fog.js"></script>
@@ -43,6 +35,7 @@
             {"type":"file","description":"This is a file field","customattribute":"Custom attribute for file","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null},
             {"type":"file","description":"This is another file field","customattribute":"Custom attribute for another file","mandatory":true,"spec":{"file_types":["image/bmp","image/gif"],"max_size":42},"value":'somefile'},
         ];
+        let sampleFog;
         // Listing all possible areas that can be styled by applying css classes (using classList) 
         // or using css properties directy (using style). They are all shown just for reference. 
         // In a real-world application, empty entries don't need to be declared.
@@ -90,40 +83,153 @@
             },
             fieldFile: {
                 // css selector: .fog-field-file
-                classList: [],
+                classList: ['my-3'],
                 style: {},
             },
             fieldFileLabel: {
                 // css selector: .fog-field-file > label
-                classList: [],
+                classList: ['form-label'],
                 style: {},
             },
             fieldFileInput: {
                 // css selector: .fog-field-file > input[type=file]
-                classList: [],
+                classList: ['form-control'],
                 style: {},
             },
             fieldFileInfo: {
                 // css selector: .fog-field-file > span
-                classList: [],
+                classList: ['d-flex', 'flex-nowrap', 'btn-group'],
                 style: {},
             },
             fieldFileLink: {
                 // css selector: .fog-field-file > span > a
-                classList: [],
+                classList: ['btn', 'btn-outline-primary', 'flex-grow-1'],
                 style: {},
             },
             fieldFileClear: {
                 // css selector: .fog-field-file > span > button
-                classList: [],
+                classList: ['btn', 'btn-outline-danger', 'flex-grow-0'],
                 style: {},
             },
-
+            fieldGroupedtext: {
+                // css selector: .fog-field-groupedtext
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldGroupedtextLabel: {
+                // css selector: .fog-field-groupedtext > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldGroupedtextGroup: {
+                // css selector: .fog-field-groupedtext > span
+                classList: ['d-flex','flex-nowrap','justify-content-between','align-items-stretch'],
+                style: {},
+            },
+            fieldGroupedtextItem: {
+                // css selector: .fog-field-groupedtext > span > span
+                classList: ['input-group','d-inline-flex'],
+                style: {},
+            },
+            fieldGroupedtextItemLabel: {
+                // css selector: .fog-field-groupedtext > span > span > label
+                classList: ['input-group-text'],
+                style: {},
+            },
+            fieldGroupedtextItemInput: {
+                // css selector: .fog-field-groupedtext > span > span > input[type=text]
+                classList: ['form-control'],
+                style: {},
+            },
+            fieldMultiplechoice: {
+                // css selector: .fog-field-multiplechoice
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldMultiplechoiceLabel: {
+                // css selector: .fog-field-multiplechoice > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldMultiplechoiceGroup: {
+                // css selector: .fog-field-multiplechoice > span
+                classList: ['d-flex','justify-content-start','align-items-start'],
+                style: {},
+            },
+            fieldMultiplechoiceItem: {
+                // css selector: .fog-field-multiplechoice > span > span
+                classList: ['form-check', 'flex-grow-1'],
+                style: {},
+            },
+            fieldMultiplechoiceItemLabel: {
+                // css selector: .fog-field-multiplechoice > span > span > label
+                classList: ['form-check-label'],
+                style: {},
+            },
+            fieldMultiplechoiceItemInput: {
+                // css selector: .fog-field-multiplechoice > span > span > input[type=checkbox]
+                classList: ['form-check-input'],
+                style: {},
+            },
+            fieldSinglechoice: {
+                // css selector: .fog-field-singlechoice
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldSinglechoiceLabel: {
+                // css selector: .fog-field-singlechoice > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldSinglechoiceSelect: {
+                // css selector: .fog-field-singlechoice > select
+                classList: ['form-select'],
+                style: {},
+            },
+            fieldText: {
+                // css selector: .fog-field-text
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldTextLabel: {
+                // css selector: .fog-field-text > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldTextInput: {
+                // css selector: .fog-field-text > input[type=text]
+                classList: ['form-control'],
+                style: {},
+            },
+            fieldTextarea: {
+                // css selector: .fog-field-textarea
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldTextareaLabel: {
+                // css selector: .fog-field-textarea > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldTextareaInfo: {
+                // css selector: .fog-field-textarea > span
+                classList: ['form-text','float-end'],
+                style: {},
+            },
+            fieldTextareaInput: {
+                // css selector: .fog-field-textarea > textarea
+                classList: ['form-control'],
+                style: {},
+            },
         };
         let sampleFogOptions = {
-            disabled: false, // When true, all controls are read only
+            // 'disabled' makes form and structure read-only when set true. Default is false.
+            disabled: false,
+            // 'onStructureChange' can receive a callback function which is invoked whenever there
+            // is a change on the structure of the form caused by the builder
+            onStructureChange: () => sampleFog.formUpdate(),
         };
-        let sampleFog = new Fog('sample', sampleFogStructure, sampleFogStyle, sampleFogOptions);
+        sampleFog = new Fog('sample', sampleFogStructure, sampleFogStyle, sampleFogOptions);
         document.querySelector('main').appendChild(createHeader('Fog builder'));
         document.querySelector('main').appendChild(sampleFog.builderGet());
         document.querySelector('main').appendChild(createHeader('Fog form'));

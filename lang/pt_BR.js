@@ -1,16 +1,15 @@
 function getFogDictionary() {
     return {
-        "control.restriction.filetypes": "Tipos de arquivos: ",
-        "control.restriction.filetypes.all": "todos ",
-        "control.restriction.maxsize": "Tamanho máximo: ",
-        "control.restriction.maxsize.megabytes": " MB",
-        "control.singlechoice.null": "&gt;&gt; Selecione", // TODO!
+        "item.file.help.filetypes": "Tipos de arquivos: ", //TODO!
+        "item.file.help.filetypes.all": "todos ", //TODO!
+        "item.file.help.maxsize": "Tamanho máximo: ", //TODO!
+        "item.file.help.maxsize.megabytes": " MB", //TODO!
+        "item.singlechoice.value.null": "&gt;&gt; Selecione", // TODO!
         "form.field.helper.text":" <small>({{helper-text}})</small>",
         "form.field.helper.text.mandatory": "obrigatório",
         "form.field.helper.text.separator": ", ",
         "form.field.helper.text.length.by.word": "min. palavras: {{min}}, máx. palavras: {{max}}",
         "form.field.helper.text.length.by.character": "min. caracteres: {{min}}, máx. caracteres: {{max}}",
-        "item.action.close": "Fechar",
         "item.textarea": "Área de Texto",
         "item.textarea.spec.length.measure": "Restringir tamanho",
         "item.textarea.spec.length.measure.bycharacter": "Por caractere",
@@ -39,20 +38,14 @@ function getFogDictionary() {
         "item.singlechoice.spec.items.help": "(Um por linha)",
         "item.text": "Texto",
         "item.customattribute": "Atributo personalizado",
-        "structure.table.button.add.textarea": "+ Área de texto",
-        "structure.table.button.add.choice": "+ Escolha",
-        "structure.table.button.add.file": "+ Arquivo",
-        "structure.table.button.add.groupedtext": "+ Grupo de textos",
-        "structure.table.button.add.multiplechoice": "+ Escolha múltipla",
-        "structure.table.button.add.singlechoice": "+ Escolha simples",
-        "structure.table.button.add.text": "+ Texto",
-        "structure.table.header.description": "Descrição",
-        "structure.table.header.mandatory": "Obrigatório",
-        "structure.table.header.options": "Opções",
-        "structure.table.header.position": "Posição",
-        "structure.table.header.type": "Tipo",
-        "structure.table.header.customattribute": "Atributo Pers.",
-        "structure.table.message.delete": "Tem certeza que deseja apagar o item na posição <position>?"
+        "builder.button.add.textarea": "+ Área de texto",
+        "builder.button.add.choice": "+ Escolha",
+        "builder.button.add.file": "+ Arquivo",
+        "builder.button.add.groupedtext": "+ Grupo de textos",
+        "builder.button.add.multiplechoice": "+ Escolha múltipla",
+        "builder.button.add.singlechoice": "+ Escolha simples",
+        "builder.button.add.text": "+ Texto",
+        "builder.message.delete": "Tem certeza que deseja apagar o item na posição <position>?"
     };
     
 }
