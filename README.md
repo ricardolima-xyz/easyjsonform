@@ -1,6 +1,4 @@
-# fog.js - Form on the go!
-
-## When you need a _form_, not a `<form>`.
+# fog.js :: _Forms_, not `<form>`.
 
 **You, developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where users, by nature, need to create forms. Examples of such applications are:**
 

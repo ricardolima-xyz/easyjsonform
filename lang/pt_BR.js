@@ -1,6 +1,5 @@
 function getFogDictionary() {
     return {
-        "control.action.change": "Alterar",
         "control.restriction.filetypes": "Tipos de arquivos: ",
         "control.restriction.filetypes.all": "todos ",
         "control.restriction.maxsize": "Tamanho máximo: ",

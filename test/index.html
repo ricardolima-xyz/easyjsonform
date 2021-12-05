@@ -9,16 +9,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Meow+Script&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .sample-class {
+            color: yellow;
+            background-color: red;
+        }
+        .fog-field-files > span > button {
+            display: block;
+            color: greenyellow;
+            background-color: blue;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        </style>
 </head>
 <body>
     <main class="container">
-        <h1>fog.js :: <span style="font-family: 'Meow Script', cursive; font-size:3.5rem;">forms</span>, not &lt;form&gt;</h1>
+        <h1>fog.js  <span style="font-family: 'Meow Script', cursive; font-size:3.5rem;">forms</span>, not &lt;form&gt;</h1>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="../fog.js"></script>
     <script>
         let createHeader = (x) => { let r = document.createElement('h2'); r.textContent = x; return r; };
-        let sampleStructure = 
+        let sampleFogStructure = 
         [
             {"type":"text","description":"This is a text field","customattribute":"Custom attribute for text","mandatory":true,"spec":null,"value":"Test value for text"},
             {"type":"textarea","description":"This is a character restricted text area field","customattribute":"Custom attribute for character restricted text area","mandatory":true,"spec":{"length":{"measure":"bycharacter","min":2,"max":100}},"value":"Test value for character restricted text area"},
@@ -28,9 +40,90 @@
             {"type":"choice","description":"This is a choice field","customattribute":"Custom attribute for choice","mandatory":true,"spec":null,"value":"1"},
             {"type":"singlechoice","description":"This is a single choice field","customattribute":"Custom attribute for single choice","mandatory":true,"spec":{"items":["m","n","o"]},"value":"1"},
             {"type":"multiplechoice","description":"This is a multiple choice field","customattribute":"Custom attribute for multiple choice","mandatory":true,"spec":{"items":["x","y","z"]},"value":["0","1","0"]},
-            {"type":"file","description":"This is a file field","customattribute":"","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null}
+            {"type":"file","description":"This is a file field","customattribute":"Custom attribute for file","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null},
+            {"type":"file","description":"This is another file field","customattribute":"Custom attribute for another file","mandatory":true,"spec":{"file_types":["image/bmp","image/gif"],"max_size":42},"value":'somefile'},
         ];
-        let sampleFog = new Fog('sample', sampleStructure);
+        // Listing all possible areas that can be styled by applying css classes (using classList) 
+        // or using css properties directy (using style). They are all shown just for reference. 
+        // In a real-world application, empty entries don't need to be declared.
+        let sampleFogStyle = {
+            builder: { 
+                // css selector: .fog-builder
+                classList: [],
+                style: {},
+            },
+            builderToolbar: { 
+                // css selector: .fog-builder-toolbar
+                classList: [],
+                style: {},
+            },
+            builderToolbarButton: { 
+                // css selector: .fog-builder-toolbar > button
+                classList: ['btn', 'btn-outline-primary', 'btn-sm'],
+                style: {},
+            },
+            builderTable: { 
+                // css selector: .fog-builder-table
+                classList: ['table'],
+                style: {},
+            },
+            form: { 
+                // css selector for all forms: .fog-form
+                // css selector for a specific form: #YOUR_FORM_ID
+                classList: [],
+                style: {},
+            },
+            fieldChoice: {
+                // css selector: .fog-field-choice
+                classList: ['my-3', 'form-check'],
+                style: {},
+            },
+            fieldChoiceLabel: {
+                // css selector: .fog-field-choice > label
+                classList: ['form-check-label'],
+                style: {},
+            },
+            fieldChoiceCheckbox: {
+                // css selector: .fog-field-choice > input[type=checkbox]
+                classList: ['form-check-input'],
+                style: {},
+            },
+            fieldFile: {
+                // css selector: .fog-field-file
+                classList: [],
+                style: {},
+            },
+            fieldFileLabel: {
+                // css selector: .fog-field-file > label
+                classList: [],
+                style: {},
+            },
+            fieldFileInput: {
+                // css selector: .fog-field-file > input[type=file]
+                classList: [],
+                style: {},
+            },
+            fieldFileInfo: {
+                // css selector: .fog-field-file > span
+                classList: [],
+                style: {},
+            },
+            fieldFileLink: {
+                // css selector: .fog-field-file > span > a
+                classList: [],
+                style: {},
+            },
+            fieldFileClear: {
+                // css selector: .fog-field-file > span > button
+                classList: [],
+                style: {},
+            },
+
+        };
+        let sampleFogOptions = {
+            disabled: false, // When true, all controls are read only
+        };
+        let sampleFog = new Fog('sample', sampleFogStructure, sampleFogStyle, sampleFogOptions);
         document.querySelector('main').appendChild(createHeader('Fog builder'));
         document.querySelector('main').appendChild(sampleFog.builderGet());
         document.querySelector('main').appendChild(createHeader('Fog form'));

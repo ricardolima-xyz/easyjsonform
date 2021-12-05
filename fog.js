@@ -90,7 +90,10 @@ class FogFieldChoice extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
+        formField.classList.add('fog-field-choice');
+        fog.applyStyle('fieldChoice', formField);
         let lblFormField = document.createElement('label');    
+        fog.applyStyle('fieldChoiceLabel', lblFormField);
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         let iptHidden = document.createElement('input');
@@ -98,8 +101,9 @@ class FogFieldChoice extends FogField {
         iptHidden.value = '0';
         iptHidden.name = `${fog.id}[${position}]`;
         let iptCheck = document.createElement('input');
+        fog.applyStyle('fieldChoiceCheckbox', iptCheck);
         iptCheck.type = 'checkbox';
-        iptCheck.disabled = fog.disabled;
+        iptCheck.disabled = fog.options.disabled || false;
         iptCheck.id = `${fog.id}[${position}]`;
         iptCheck.name = `${fog.id}[${position}]`;
         iptCheck.value = '1';
@@ -169,16 +173,40 @@ class FogFieldFile extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
-        let lblFormField = document.createElement('label');    
+        formField.classList.add('fog-field-file');
+        fog.applyStyle('fieldFile', formField);
+        let lblFormField = document.createElement('label');
+        fog.applyStyle('fieldFileLabel', lblFormField);   
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         lblFormField.htmlFor = `${fog.id}[${position}]`;
-        // TODO
         formField.appendChild(lblFormField);
+
+        if (this.value === null) {
+            let iptFile = document.createElement('input');
+            iptFile.type = 'file'; // TODO IMPLEMENT ONCHANGE BEHAVIOUR
+            fog.applyStyle('fieldFileInput', iptFile);
+            iptFile.id = `${fog.id}[${position}]`;
+            iptFile.name = `${fog.id}[${position}]`;
+            formField.appendChild(iptFile);
+        } else {
+            let spnFile = document.createElement('span');
+            fog.applyStyle('fieldFileInfo', spnFile);
+            let lnkFile = document.createElement('a'); 
+            fog.applyStyle('fieldFileLink', lnkFile);
+            lnkFile.textContent = this.value; // TODO IMPLEMENT PROPER DISPLAY
+            lnkFile.href = 'https://google.com';  // TODO IMPLEMENT PROPER LINK
+            let btnClear = document.createElement('button');  // TODO IMPLEMENT CLEAR BEHAVIOUR
+            fog.applyStyle('fieldFileClear', btnClear);
+            btnClear.innerHTML = Fog.deleteButton;
+            spnFile.appendChild(lnkFile);
+            spnFile.appendChild(btnClear);
+            formField.appendChild(spnFile);
+        }        
         return formField;
     }
 
     getFormattedValue() {
-            return value || '';
+        return value || '';
     }
 }
 
@@ -210,6 +238,7 @@ class FogFieldGroupedText extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
+        formField.classList.add('fog-groupedtext-item');
         let lblFormField = document.createElement('label');    
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let formGroup = document.createElement('span');
@@ -220,7 +249,7 @@ class FogFieldGroupedText extends FogField {
             lblCheck.textContent = element;
             let iptCheck = document.createElement('input');
             iptCheck.type = 'text';
-            iptCheck.disabled = fog.disabled;
+            iptCheck.disabled = fog.options.disabled || false;
             iptCheck.id = `${fog.id}[${position}][${index}]`;
             iptCheck.name = `${fog.id}[${position}][${index}]`;
             iptCheck.value = this.value[index];
@@ -267,6 +296,7 @@ class FogFieldMultipleChoice extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
+        formField.classList.add('fog-multiplechoice-item');
         let lblFormField = document.createElement('label');    
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let formGroup = document.createElement('span');
@@ -278,7 +308,7 @@ class FogFieldMultipleChoice extends FogField {
             iptHidden.name = `${fog.id}[${position}][${index}]`;
             let iptCheck = document.createElement('input');
             iptCheck.type = 'checkbox';
-            iptCheck.disabled = fog.disabled;
+            iptCheck.disabled = fog.options.disabled || false;
             iptCheck.id = `${fog.id}[${position}][${index}]`;
             iptCheck.name = `${fog.id}[${position}][${index}]`;
             iptCheck.value = '1';
@@ -331,11 +361,12 @@ class FogFieldSingleChoice extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
+        formField.classList.add('fog-singlechoice-item');
         let lblFormField = document.createElement('label');
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let iptFormField = document.createElement('select');
-        iptFormField.disabled = fog.disabled;
+        iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
         this.spec.items.forEach((element, index) => {
@@ -370,11 +401,12 @@ class FogFieldText extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
+        formField.classList.add('fog-text-item');
         let lblFormField = document.createElement('label');
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let iptFormField = document.createElement('input');
-        iptFormField.disabled = fog.disabled;
+        iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
         iptFormField.type = 'text';
@@ -460,12 +492,13 @@ class FogFieldTextArea extends FogField {
 
     formFieldCreate(fog, position) {
         let formField = document.createElement('div');
+        formField.classList.add('fog-textarea-item');
         let lblFormField = document.createElement('label');
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let spnCounter = document.createElement('span');
         let iptFormField = document.createElement('textarea');
-        iptFormField.disabled = fog.disabled;
+        iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
         iptFormField.value = this.value;
@@ -518,11 +551,22 @@ class FogFieldTextArea extends FogField {
 }
 
 class Fog {
-    constructor(id, structure = null, disabled = false) {
+    constructor(id, structure = null, style = null, options = null) {
         if (id) this.id = id;
         else throw new Error('Id is mandatory');
         this.structureImport(structure || []);
-        this.disabled = disabled;
+        this.style = style || {};
+        this.options = options || {};
+    }
+
+    applyStyle(styleKey, element) {
+        if (this.style[styleKey]) {
+            if (this.style[styleKey].classList)
+                this.style[styleKey].classList.forEach(x =>element.classList.add(x));
+            if (this.style[styleKey].style)
+                for (const [key, value] of Object.entries(this.style[styleKey].style))
+                    element.style[`${key}`] = value;
+        }
     }
 
     /**
@@ -532,17 +576,21 @@ class Fog {
         if (!this.builder) {
             // Creating builder element
             this.builder = document.createElement('div');
-            this.builder.id = this.id + '-fog-builder';       
+            this.builder.classList.add('fog-builder');
+            this.applyStyle('builder', this.builder);
 
             // Creating toolbar
             let formBuilderToolbar = document.createElement('div');
+            formBuilderToolbar.classList.add('fog-builder-toolbar');
+            this.applyStyle('builderToolbar', formBuilderToolbar);
             this.builder.appendChild(formBuilderToolbar);
 
             // Inserting add buttons to the toolbar 
             for (const [type, classs] of Object.entries(Fog.registeredClasses)) {
                 let toolbar = formBuilderToolbar;
                 let button = document.createElement('button');
-                button.disabled = this.disabled;
+                this.applyStyle('builderToolbarButton', button);
+                button.disabled = this.options.disabled || false;
                 button.type = 'button';
                 button.innerHTML = Fog.dictionary[`structure.table.button.add.${type}`];
                 button.onclick = () => {this.structure.push(new classs()); this.builderUpdate();};
@@ -553,6 +601,8 @@ class Fog {
             let formBuilderTable = document.createElement('table');
             let formBuilderTHead = document.createElement('thead');
             let formBuilderTBody = document.createElement('tbody');
+            formBuilderTable.classList.add('fog-builder-table');
+            this.applyStyle('builderTable', formBuilderTable);
             formBuilderTHead.insertRow(-1).innerHTML = `
             <th>${Fog.dictionary['structure.table.header.position']}</th>
             <th>${Fog.dictionary['structure.table.header.type']}</th>
@@ -631,7 +681,7 @@ class Fog {
             tr.insertCell(-1).innerHTML = element.mandatory ? '<div style=\'text-align: center\'>&#8226;</div>': '';
 
             let btnMoveUp = document.createElement('button');
-            btnMoveUp.disabled = this.disabled;
+            btnMoveUp.disabled = this.options.disabled || false;
             btnMoveUp.type = 'button';
             btnMoveUp.style.backgroundColor = 'Transparent';
             btnMoveUp.style.border = 'none';
@@ -641,7 +691,7 @@ class Fog {
             tr.insertCell(-1).appendChild(btnMoveUp);
 
             let btnMoveDown = document.createElement('button');
-            btnMoveDown.disabled = this.disabled;
+            btnMoveDown.disabled = this.options.disabled || false;
             btnMoveDown.type = 'button';
             btnMoveDown.style.backgroundColor = 'Transparent';
             btnMoveDown.style.border = 'none';
@@ -651,7 +701,7 @@ class Fog {
             tr.insertCell(-1).appendChild(btnMoveDown);
 
             let btnEdit = document.createElement('button');
-            btnEdit.disabled = this.disabled;
+            btnEdit.disabled = this.options.disabled || false;
             btnEdit.type = 'button';
             btnEdit.style.backgroundColor = 'Transparent';
             btnEdit.style.border = 'none';
@@ -661,7 +711,7 @@ class Fog {
             tr.insertCell(-1).appendChild(btnEdit);
             
             let btnDelete = document.createElement('button');
-            btnDelete.disabled = this.disabled;
+            btnDelete.disabled = this.options.disabled || false;
             btnDelete.type = 'button';
             btnDelete.style.backgroundColor = 'Transparent';
             btnDelete.style.border = 'none';
@@ -675,7 +725,9 @@ class Fog {
     formGet() {
         if (!this.form) {
             this.form = document.createElement('form');
-            this.form.id = this.id + '-fog-form';     
+            this.form.id = this.id;
+            this.form.classList.add('fog-form');
+            this.applyStyle('form', this.form);
             this.formUpdate();
         }
         return this.form;
@@ -703,6 +755,41 @@ class Fog {
     }
 
     // Resources
+    static bootstrapStyler(fog) {
+        if (fog.form) {            
+            fog.form.querySelectorAll('.fog-file-item').forEach((x => x.classList.add('my-3')));
+            fog.form.querySelectorAll('.fog-file-item > label').forEach((x => x.classList.add('form-label')));
+            // TODO Form control styler
+            
+            fog.form.querySelectorAll('.fog-groupedtext-item').forEach((x => x.classList.add('my-3')));
+            fog.form.querySelectorAll('.fog-groupedtext-item > label').forEach((x => x.classList.add('form-label')));
+            fog.form.querySelectorAll('.fog-groupedtext-item > span').forEach((x => x.classList.add('d-flex','flex-nowrap,','justify-content-between','align-items-stretch')));
+            fog.form.querySelectorAll('.fog-groupedtext-item > span > span').forEach((x => x.classList.add('input-group','d-inline-flex')));
+            fog.form.querySelectorAll('.fog-groupedtext-item > span > span > label').forEach((x => x.classList.add('input-group-text')));
+            fog.form.querySelectorAll('.fog-groupedtext-item > span > span > input').forEach((x => x.classList.add('form-control')));
+            
+            fog.form.querySelectorAll('.fog-multiplechoice-item').forEach((x => x.classList.add('my-3')));
+            fog.form.querySelectorAll('.fog-multiplechoice-item > label').forEach((x => x.classList.add('form-label')));
+            fog.form.querySelectorAll('.fog-multiplechoice-item > span').forEach((x => x.classList.add('d-flex','justify-content-start','align-items-start')));
+            fog.form.querySelectorAll('.fog-multiplechoice-item > span > span').forEach((x => x.classList.add('form-check')));
+            fog.form.querySelectorAll('.fog-multiplechoice-item > span > span > label').forEach((x => x.classList.add('form-check-label')));
+            fog.form.querySelectorAll('.fog-multiplechoice-item > span > span > input').forEach((x => x.classList.add('form-check-input')));
+            
+            fog.form.querySelectorAll('.fog-singlechoice-item').forEach((x => x.classList.add('my-3')));
+            fog.form.querySelectorAll('.fog-singlechoice-item > label').forEach((x => x.classList.add('form-label')));
+            fog.form.querySelectorAll('.fog-singlechoice-item > select').forEach((x => x.classList.add('form-select')));
+
+            fog.form.querySelectorAll('.fog-textarea-item').forEach((x => x.classList.add('my-3')));
+            fog.form.querySelectorAll('.fog-textarea-item > label').forEach((x => x.classList.add('form-label')));
+            fog.form.querySelectorAll('.fog-textarea-item > span').forEach((x => x.classList.add('form-text','float-end')));
+            fog.form.querySelectorAll('.fog-textarea-item > textarea').forEach((x => x.classList.add('form-control')));
+
+            fog.form.querySelectorAll('.fog-text-item').forEach((x => x.classList.add('my-3')));
+            fog.form.querySelectorAll('.fog-text-item > label').forEach((x => x.classList.add('form-label')));
+            fog.form.querySelectorAll('.fog-text-item > input').forEach((x => x.classList.add('form-control')));
+        }
+    }
+
     static registeredClasses = {
         'choice': FogFieldChoice,
         'file': FogFieldFile,
@@ -714,6 +801,7 @@ class Fog {
     };
     static supportedFileTypes = {
         'application/pdf' : {extensions:['pdf']},
+        'image/gif' : {extensions:['gif']},
         'image/png' : {extensions:['png']},
         'image/jpeg': {extensions:['jpeg','jpg','jpe']},
         'image/bmp': {extensions:['bmp']},
@@ -729,7 +817,6 @@ class Fog {
     static downButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg>';
     static upButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
-        "control.action.change": "Change",
         "control.restriction.filetypes": "File types: ",
         "control.restriction.filetypes.all": "all ",
         "control.restriction.maxsize": "Maximum size: ",
