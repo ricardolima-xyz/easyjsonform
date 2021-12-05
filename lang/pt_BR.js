@@ -1,9 +1,8 @@
 function getFogDictionary() {
     return {
-        "item.file.help.filetypes": "Tipos de arquivos: ", //TODO!
-        "item.file.help.filetypes.all": "todos ", //TODO!
-        "item.file.help.maxsize": "Tamanho máximo: ", //TODO!
-        "item.file.help.maxsize.megabytes": " MB", //TODO!
+        "item.file.help.filetypes": "tipos de arquivo: {{file-types}}",
+        "item.file.help.filetypes.all": "todos ",
+        "item.file.help.maxsize": "tamanho máximo: {{size}} MB",
         "item.singlechoice.value.null": "&gt;&gt; Selecione", // TODO!
         "form.field.helper.text":" <small>({{helper-text}})</small>",
         "form.field.helper.text.mandatory": "obrigatório",

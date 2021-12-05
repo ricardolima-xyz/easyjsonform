@@ -23,7 +23,9 @@ class FogField {
         editControl.style.padding = '1rem';
         editControl.style.display = 'grid';
         editControl.style.gridGap = '0.55rem';
-        editControl.style.gridTemplateColumns = '1fr 1fr';
+        editControl.style.gridTemplateColumns = 'min-content auto';
+        editControl.style.whiteSpace = 'nowrap';
+        editControl.style.alignItems = 'center';
         // Description field
         let lblDescription = document.createElement('label');
         lblDescription.htmlFor = 'fog-builder-field-description';
@@ -55,12 +57,8 @@ class FogField {
         iptMandatory.type = 'checkbox';
         iptMandatory.checked = this.mandatory;
         iptMandatory.onchange = () => {this.mandatory = iptMandatory.checked; builderUpdateCallback();};
-        let spnMandatory = document.createElement('span');
-        spnMandatory.style.gridColumnStart = '1';
-        spnMandatory.style.gridColumnEnd = '3';
-        spnMandatory.appendChild(iptMandatory);
-        spnMandatory.appendChild(lblMandatory);
-        editControl.appendChild(spnMandatory);
+        editControl.appendChild(lblMandatory);
+        editControl.appendChild(iptMandatory);
         return editControl;
     }
 
@@ -124,7 +122,10 @@ class FogFieldFile extends FogField {
     constructor(json = null) {
         super(json);
         if (!json) {
-            this.spec = {file_types:[], max_size:0};
+            this.spec = {
+                file_types:[], // array containing mimetypes
+                max_size:0 // nonnegative float values
+            };
         }
         this.type = 'file';
     }
@@ -156,7 +157,8 @@ class FogFieldFile extends FogField {
             cbxFileType.checked = this.spec.file_types.indexOf(fileType) > -1;
             cbxFileType.onchange = () => {
                 if (cbxFileType.checked) this.spec.file_types.push(fileType);
-                else this.spec.file_types.splice(this.spec.file_types.indexOf(fileType),1);  
+                else this.spec.file_types.splice(this.spec.file_types.indexOf(fileType),1);
+                builderUpdateCallback();
             };
             let lblFileType = document.createElement('label');
             lblFileType.htmlFor = `fog-builder-filetype-${fileType}`;
@@ -164,7 +166,6 @@ class FogFieldFile extends FogField {
             divFileType.appendChild(cbxFileType);
             divFileType.appendChild(lblFileType);
             divFileTypes.appendChild(divFileType);
-            console.log(`${fileType}: ${properties.extensions[0]}`);
         }
         editControl.appendChild(lblFileTypes);
         editControl.appendChild(divFileTypes);
@@ -180,7 +181,6 @@ class FogFieldFile extends FogField {
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         formField.appendChild(lblFormField);
-
         if (this.value === null) {
             let iptFile = document.createElement('input');
             iptFile.type = 'file'; // TODO IMPLEMENT ONCHANGE BEHAVIOUR
@@ -203,6 +203,27 @@ class FogFieldFile extends FogField {
             formField.appendChild(spnFile);
         }        
         return formField;
+    }
+
+    generateHelperText() {
+        let restrictions = [];
+        if (this.mandatory) restrictions.push(Fog.dictionary['form.field.helper.text.mandatory']);
+        if (this.spec.max_size > 0)
+            restrictions.push(Fog.dictionary['item.file.help.maxsize'].replace('{{size}}', this.spec.max_size));
+        if (this.spec.file_types.length > 0)
+            restrictions.push(Fog.dictionary['item.file.help.filetypes'].replace('{{file-types}}', 
+                this.spec.file_types
+                    .map((x) => Fog.supportedFileTypes[x].extensions[0])
+                    .join(Fog.dictionary['form.field.helper.text.separator'])
+                )
+            );
+        else
+            restrictions.push(Fog.dictionary['item.file.help.filetypes'].replace('{{file-types}}', Fog.dictionary['item.file.help.filetypes.all']));
+    
+        return (restrictions.length == 0) ? 
+            '' :
+            Fog.dictionary['form.field.helper.text'].replace('{{helper-text}}',
+            restrictions.join(Fog.dictionary['form.field.helper.text.separator']));
     }
 
     getFormattedValue() {
@@ -405,6 +426,9 @@ class FogFieldSingleChoice extends FogField {
 class FogFieldText extends FogField {
     constructor(json = null) {
         super(json);
+        if (!json) {
+            this.value = '';
+        }
         this.type = 'text';
     }
 
@@ -444,6 +468,7 @@ class FogFieldTextArea extends FogField {
     constructor(json = null) {
         super(json);
         if (!json) {
+            this.value = '';
             this.spec = {
                 length: {
                     measure: 'no', // Can also be 'bycharacter' or 'byword'
@@ -793,10 +818,9 @@ class Fog {
     static okButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg>';
     static upButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
-        "item.file.help.filetypes": "File types: ", //TODO!
-        "item.file.help.filetypes.all": "all ", //TODO!
-        "item.file.help.maxsize": "Maximum size: ", //TODO!
-        "item.file.help.maxsize.megabytes": " MB", //TODO!
+        "item.file.help.filetypes": "file types: {{file-types}}",
+        "item.file.help.filetypes.all": "all ",
+        "item.file.help.maxsize": "maximum size: {{size}} MB",
         "item.singlechoice.value.null": "&gt;&gt; Select", //TODO!
         "form.field.helper.text":" <small>({{helper-text}})</small>",
         "form.field.helper.text.mandatory": "mandatory",
