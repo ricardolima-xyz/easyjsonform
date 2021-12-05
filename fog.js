@@ -659,7 +659,7 @@ class Fog {
     }
 
     builderDeleteItem(position) {
-        if(confirm(Fog.dictionary['builder.message.delete'].replace('<position>', position+1)))
+        if(confirm(Fog.dictionary['builder.message.delete'].replace('{{position}}', position+1)))
         {
             this.structure.splice(position, 1);
             this.builderUpdate();
@@ -862,6 +862,6 @@ class Fog {
         "builder.button.add.multiplechoice": "+ Multiple choice",
         "builder.button.add.singlechoice": "+ Single choice",
         "builder.button.add.text": "+ Text",
-        "builder.message.delete": "Are you sure you want to delete item at position <position>?"
+        "builder.message.delete": "Are you sure you want to delete item at position {{position}}?"
     };
 }

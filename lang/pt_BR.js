@@ -1,5 +1,4 @@
-function getFogDictionary() {
-    return {
+var fogpt_BR = {
         "item.file.help.filetypes": "tipos de arquivo: {{file-types}}",
         "item.file.help.filetypes.all": "todos ",
         "item.file.help.maxsize": "tamanho máximo: {{size}} MB",
@@ -44,7 +43,5 @@ function getFogDictionary() {
         "builder.button.add.multiplechoice": "+ Escolha múltipla",
         "builder.button.add.singlechoice": "+ Escolha simples",
         "builder.button.add.text": "+ Texto",
-        "builder.message.delete": "Tem certeza que deseja apagar o item na posição <position>?"
+        "builder.message.delete": "Tem certeza que deseja apagar o item na posição {{position}}?"
     };
-    
-}
