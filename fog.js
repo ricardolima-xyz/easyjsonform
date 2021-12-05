@@ -19,56 +19,53 @@ class FogField {
 
     builderEditorCreate(builderUpdateCallback) {
         // Creating edit control
-        let editControl = document.createElement('div');
-        editControl.style.padding = '1rem';
-        editControl.style.display = 'grid';
-        editControl.style.gridGap = '0.55rem';
-        editControl.style.gridTemplateColumns = 'min-content auto';
-        editControl.style.whiteSpace = 'nowrap';
-        editControl.style.alignItems = 'center';
+        let editor = document.createElement('div');
+        editor.style.alignItems = 'center';
+        editor.style.display = 'grid';
+        editor.style.gridGap = '0.55rem';
+        editor.style.gridTemplateColumns = 'min-content auto';
+        editor.style.padding = '1rem';
+        editor.style.whiteSpace = 'nowrap';
         // Description field
         let lblDescription = document.createElement('label');
-        lblDescription.htmlFor = 'fog-builder-field-description';
+        lblDescription.htmlFor = Fog.newElementId();
         lblDescription.textContent = Fog.dictionary['item.description'];
         let iptDescription = document.createElement('input');
-        iptDescription.id = 'fog-builder-field-description';
+        iptDescription.id = Fog.getElementId();
         iptDescription.type = 'text';
         iptDescription.value = this.description;
         iptDescription.onchange = () => {this.description = iptDescription.value; builderUpdateCallback();};
-        editControl.appendChild(lblDescription);
-        editControl.appendChild(iptDescription);
+        editor.appendChild(lblDescription);
+        editor.appendChild(iptDescription);
         // Custom attribute field
         let lblCustomAttribute = document.createElement('label');
-        lblCustomAttribute.htmlFor = 'fog-builder-field-customattribute';
+        lblCustomAttribute.htmlFor = Fog.newElementId();
         lblCustomAttribute.textContent = Fog.dictionary['item.customattribute'];
         let iptCustomAttribute = document.createElement('input');
-        iptCustomAttribute.id = 'fog-builder-field-customattribute';
+        iptCustomAttribute.id = Fog.getElementId();
         iptCustomAttribute.type = 'text';
         iptCustomAttribute.value = this.customattribute;
         iptCustomAttribute.onchange = () => {this.customattribute = iptCustomAttribute.value; builderUpdateCallback();};
-        editControl.appendChild(lblCustomAttribute);
-        editControl.appendChild(iptCustomAttribute);
+        editor.appendChild(lblCustomAttribute);
+        editor.appendChild(iptCustomAttribute);
         // Mandatory field
         let lblMandatory = document.createElement('label');
-        lblMandatory.htmlFor = 'fog-builder-field-mandatory';
+        lblMandatory.htmlFor = Fog.newElementId();
         lblMandatory.textContent = Fog.dictionary['item.mandatory'];
         let iptMandatory = document.createElement('input');
-        iptMandatory.id = 'fog-builder-field-mandatory';
+        iptMandatory.id = Fog.getElementId();
         iptMandatory.type = 'checkbox';
         iptMandatory.checked = this.mandatory;
         iptMandatory.onchange = () => {this.mandatory = iptMandatory.checked; builderUpdateCallback();};
-        editControl.appendChild(lblMandatory);
-        editControl.appendChild(iptMandatory);
-        return editControl;
+        editor.appendChild(lblMandatory);
+        editor.appendChild(iptMandatory);
+        return editor;
     }
 
     generateHelperText() {
-        let restrictions = [];
-        if (this.mandatory) restrictions.push(Fog.dictionary['form.field.helper.text.mandatory']);
-        return (restrictions.length == 0) ? 
-            '' :
-            Fog.dictionary['form.field.helper.text'].replace('{{helper-text}}',
-            restrictions.join(Fog.dictionary['form.field.helper.text.separator']));
+        return !this.mandatory ? '' :
+            Fog.dictionary['form.field.helper.text']
+                .replace('{{helper-text}}', Fog.dictionary['form.field.helper.text.mandatory']);
     }
 }
 
@@ -79,11 +76,6 @@ class FogFieldChoice extends FogField {
             this.value = '0';
         }
         this.type = 'choice';
-    }
-
-    builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
-        return editControl;
     }
 
     formFieldCreate(fog, position) {
@@ -114,7 +106,7 @@ class FogFieldChoice extends FogField {
     }
 
     getFormattedValue() {
-            return parseInt(this.value) ? Fog.dictionary['item.choice.yes'] : Fog.dictionary['item.choice.no'];
+        return parseInt(this.value) ? Fog.dictionary['item.choice.yes'] : Fog.dictionary['item.choice.no'];
     }
 }
 
@@ -131,20 +123,20 @@ class FogFieldFile extends FogField {
     }
 
     builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
+        let editor = super.builderEditorCreate(builderUpdateCallback);
         // Max file size field
         let lblMaxSize = document.createElement('label');
-        lblMaxSize.htmlFor = 'fog-builder-file-max-size';
+        lblMaxSize.htmlFor = Fog.newElementId();
         lblMaxSize.textContent = Fog.dictionary['item.file.spec.maxsize'];
         let iptMaxSize = document.createElement('input');
         iptMaxSize.type = 'number';
         iptMaxSize.min = 0;
         iptMaxSize.step = 0.1;
-        iptMaxSize.id = 'fog-builder-file-max-size';
+        iptMaxSize.id = Fog.getElementId();
         iptMaxSize.value = this.spec.max_size;
         iptMaxSize.onchange = () => {this.spec.max_size = iptMaxSize.value; builderUpdateCallback();};
-        editControl.appendChild(lblMaxSize);
-        editControl.appendChild(iptMaxSize);
+        editor.appendChild(lblMaxSize);
+        editor.appendChild(iptMaxSize);
         // File types field
         let lblFileTypes = document.createElement('label');
         lblFileTypes.textContent = Fog.dictionary['item.file.spec.filetypes'];
@@ -152,7 +144,7 @@ class FogFieldFile extends FogField {
         for (const [fileType, properties] of Object.entries(Fog.supportedFileTypes)) {
             let divFileType = document.createElement('div');
             let cbxFileType = document.createElement('input');
-            cbxFileType.id = `fog-builder-filetype-${fileType}`;
+            cbxFileType.id = Fog.newElementId();
             cbxFileType.type = 'checkbox';
             cbxFileType.checked = this.spec.file_types.indexOf(fileType) > -1;
             cbxFileType.onchange = () => {
@@ -161,15 +153,15 @@ class FogFieldFile extends FogField {
                 builderUpdateCallback();
             };
             let lblFileType = document.createElement('label');
-            lblFileType.htmlFor = `fog-builder-filetype-${fileType}`;
+            lblFileType.htmlFor = Fog.getElementId();
             lblFileType.textContent = properties.extensions[0];
             divFileType.appendChild(cbxFileType);
             divFileType.appendChild(lblFileType);
             divFileTypes.appendChild(divFileType);
         }
-        editControl.appendChild(lblFileTypes);
-        editControl.appendChild(divFileTypes);
-        return editControl;
+        editor.appendChild(lblFileTypes);
+        editor.appendChild(divFileTypes);
+        return editor;
     }
 
     formFieldCreate(fog, position) {
@@ -242,19 +234,19 @@ class FogFieldGroupedText extends FogField {
     }
 
     builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
+        let editor = super.builderEditorCreate(builderUpdateCallback);
         // Items field
         let lblItems = document.createElement('label');
-        lblItems.htmlFor = 'fog-builder-field-items';
+        lblItems.htmlFor = Fog.newElementId();;
         lblItems.innerHTML = `${Fog.dictionary['item.groupedtext.spec.items']}
         <br/><small>${Fog.dictionary['item.groupedtext.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
-        txaItems.id = 'fog-builder-field-items';
+        txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
         txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill(''); builderUpdateCallback();};
-        editControl.appendChild(lblItems);
-        editControl.appendChild(txaItems);
-        return editControl;
+        editor.appendChild(lblItems);
+        editor.appendChild(txaItems);
+        return editor;
     }
 
     formFieldCreate(fog, position) {
@@ -306,19 +298,19 @@ class FogFieldMultipleChoice extends FogField {
     }
 
     builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
+        let editor = super.builderEditorCreate(builderUpdateCallback);
         // Items field
         let lblItems = document.createElement('label');
-        lblItems.htmlFor = 'fog-builder-field-items';
+        lblItems.htmlFor = Fog.newElementId();
         lblItems.innerHTML = `${Fog.dictionary['item.multiplechoice.spec.items']}
         <br/><small>${Fog.dictionary['item.multiplechoice.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
-        txaItems.id = 'fog-builder-field-items';
+        txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
         txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill(0); builderUpdateCallback();};
-        editControl.appendChild(lblItems);
-        editControl.appendChild(txaItems);
-        return editControl;
+        editor.appendChild(lblItems);
+        editor.appendChild(txaItems);
+        return editor;
     }
 
     formFieldCreate(fog, position) {
@@ -377,19 +369,19 @@ class FogFieldSingleChoice extends FogField {
     }
 
     builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
+        let editor = super.builderEditorCreate(builderUpdateCallback);
         // Items field
         let lblItems = document.createElement('label');
-        lblItems.htmlFor = 'fog-builder-field-items';
+        lblItems.htmlFor = Fog.newElementId();
         lblItems.innerHTML = `${Fog.dictionary['item.singlechoice.spec.items']}
         <br/><small>${Fog.dictionary['item.singlechoice.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
-        txaItems.id = 'fog-builder-field-items';
+        txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
         txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); builderUpdateCallback();};
-        editControl.appendChild(lblItems);
-        editControl.appendChild(txaItems);
-        return editControl;
+        editor.appendChild(lblItems);
+        editor.appendChild(txaItems);
+        return editor;
     }
 
     formFieldCreate(fog, position) {
@@ -405,6 +397,10 @@ class FogFieldSingleChoice extends FogField {
         iptFormField.disabled = fog.options.disabled || false;
         iptFormField.id = `${fog.id}[${position}]`;
         iptFormField.name = `${fog.id}[${position}]`;
+        let nullOption = document.createElement('option');
+        nullOption.value = 'null';
+        nullOption.textContent = Fog.dictionary['item.singlechoice.value.null'];
+        iptFormField.appendChild(nullOption);
         this.spec.items.forEach((element, index) => {
             let option = document.createElement('option');
             option.value = index;
@@ -412,7 +408,7 @@ class FogFieldSingleChoice extends FogField {
             iptFormField.appendChild(option);
         });
         iptFormField.value = this.value;
-        iptFormField.onchange = () => {this.value = iptFormField.value};
+        iptFormField.onchange = () => {this.value = iptFormField.value == 'null' ? null : iptFormField.value};
         formField.appendChild(lblFormField);
         formField.appendChild(iptFormField);
         return formField;
@@ -430,12 +426,6 @@ class FogFieldText extends FogField {
             this.value = '';
         }
         this.type = 'text';
-    }
-
-    builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
-        // No extra fields
-        return editControl;
     }
 
     formFieldCreate(fog, position) {
@@ -481,10 +471,10 @@ class FogFieldTextArea extends FogField {
     }
 
     builderEditorCreate(builderUpdateCallback) {
-        let editControl = super.builderEditorCreate(builderUpdateCallback);
+        let editor = super.builderEditorCreate(builderUpdateCallback);
         // Length measure field
         let lblLengthMeasure = document.createElement('label');
-        lblLengthMeasure.htmlFor = 'fog-builder-length-measure';
+        lblLengthMeasure.htmlFor = Fog.newElementId();
         lblLengthMeasure.textContent = Fog.dictionary['item.textarea.spec.length.measure'];
         let optLengthMeasureByCharacter = document.createElement('option');
         optLengthMeasureByCharacter.value = 'bycharacter';
@@ -496,41 +486,41 @@ class FogFieldTextArea extends FogField {
         optLengthMeasureNo.value = 'no';
         optLengthMeasureNo.textContent = Fog.dictionary['item.textarea.spec.length.measure.no'];
         let selLengthMeasure = document.createElement('select');
-        selLengthMeasure.id = 'fog-builder-length-measure';
+        selLengthMeasure.id = Fog.getElementId();
         selLengthMeasure.appendChild(optLengthMeasureByCharacter);
         selLengthMeasure.appendChild(optLengthMeasureByWord);
         selLengthMeasure.appendChild(optLengthMeasureNo);
         selLengthMeasure.value = this.spec.length.measure;
         selLengthMeasure.onchange = () => {this.spec.length.measure = selLengthMeasure.value; builderUpdateCallback();};
-        editControl.appendChild(lblLengthMeasure);
-        editControl.appendChild(selLengthMeasure);
+        editor.appendChild(lblLengthMeasure);
+        editor.appendChild(selLengthMeasure);
         // Length min field
         let lblLengthMin = document.createElement('label');
-        lblLengthMin.htmlFor = 'fog-builder-length-min';
+        lblLengthMin.htmlFor = Fog.newElementId();
         lblLengthMin.textContent = Fog.dictionary['item.textarea.spec.length.min'];
         let iptLengthMin = document.createElement('input');
         iptLengthMin.type = 'number';
         iptLengthMin.min = 0;
         iptLengthMin.step = 1;
-        iptLengthMin.id = 'fog-builder-length-min';
+        iptLengthMin.id = Fog.getElementId();
         iptLengthMin.value = this.spec.length.min;
         iptLengthMin.onchange = () => {this.spec.length.min = iptLengthMin.value; builderUpdateCallback();};
-        editControl.appendChild(lblLengthMin);
-        editControl.appendChild(iptLengthMin);
+        editor.appendChild(lblLengthMin);
+        editor.appendChild(iptLengthMin);
         // Length max field
         let lblLengthMax = document.createElement('label');
-        lblLengthMax.htmlFor = 'fog-builder-length-max';
+        lblLengthMax.htmlFor = Fog.newElementId();
         lblLengthMax.textContent = Fog.dictionary['item.textarea.spec.length.max'];
         let iptLengthMax = document.createElement('input');
         iptLengthMax.type = 'number';
         iptLengthMax.min = 0;
         iptLengthMax.step = 1;
-        iptLengthMax.id = 'fog-builder-length-min';
+        iptLengthMax.id = Fog.getElementId();
         iptLengthMax.value = this.spec.length.max;
         iptLengthMax.onchange = () => {this.spec.length.max = iptLengthMax.value; builderUpdateCallback();};
-        editControl.appendChild(lblLengthMax);
-        editControl.appendChild(iptLengthMax);
-        return editControl;
+        editor.appendChild(lblLengthMax);
+        editor.appendChild(iptLengthMax);
+        return editor;
     }
 
     formFieldCreate(fog, position) {
@@ -790,6 +780,9 @@ class Fog {
     }
 
     // Resources
+    static newElementId = () => `fog-${++Fog.elementId}`;
+    static getElementId = () => `fog-${Fog.elementId}`;
+    static elementId = 0;
     static registeredClasses = {
         'choice': FogFieldChoice,
         'file': FogFieldFile,
@@ -818,29 +811,28 @@ class Fog {
     static okButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg>';
     static upButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
-        "item.file.help.filetypes": "file types: {{file-types}}",
-        "item.file.help.filetypes.all": "all ",
-        "item.file.help.maxsize": "maximum size: {{size}} MB",
-        "item.singlechoice.value.null": "&gt;&gt; Select", //TODO!
-        "form.field.helper.text":" <small>({{helper-text}})</small>",
+        "builder.button.add.choice": "+ Choice",
+        "builder.button.add.file": "+ File",
+        "builder.button.add.groupedtext": "+ Grouped text",
+        "builder.button.add.multiplechoice": "+ Multiple choice",
+        "builder.button.add.singlechoice": "+ Single choice",
+        "builder.button.add.text": "+ Text",
+        "builder.button.add.textarea": "+ Text area",
+        "builder.message.delete": "Are you sure you want to delete item at position {{position}}?",
+        "form.field.helper.text": " <small>({{helper-text}})</small>",
+        "form.field.helper.text.length.by.character": "min. characters: {{min}}, max. characters: {{max}}",
+        "form.field.helper.text.length.by.word": "min. words: {{min}}, max. words: {{max}}",
         "form.field.helper.text.mandatory": "mandatory",
         "form.field.helper.text.separator": ", ",
-        "form.field.helper.text.length.by.word": "min. words: {{min}}, max. words: {{max}}",
-        "form.field.helper.text.length.by.character": "min. characters: {{min}}, max. characters: {{max}}",
-        "item.textarea": "Text area",
-        "item.textarea.spec.length.measure": "Restrict length",
-        "item.textarea.spec.length.measure.bycharacter": "By character",
-        "item.textarea.spec.length.measure.byword": "By word",
-        "item.textarea.spec.length.measure.no": "No",
-        "item.textarea.spec.length.max": "Maximum length",
-        "item.textarea.spec.length.min": "Minimum length",
-        "item.textarea.character.count": "{{chars}} characters",
-        "item.textarea.word.count": "{{words}} words",
         "item.choice": "Choice",
         "item.choice.no": "No",
         "item.choice.yes": "Yes",
+        "item.customattribute": "Custom attribute",
         "item.description": "Description",
         "item.file": "File",
+        "item.file.help.filetypes": "file types: {{file-types}}",
+        "item.file.help.filetypes.all": "all ",
+        "item.file.help.maxsize": "maximum size: {{size}} MB",
         "item.file.spec.filetypes": "Allowed filetypes",
         "item.file.spec.maxsize": "Maximum size (MB)",
         "item.groupedtext": "Grouped text",
@@ -853,15 +845,16 @@ class Fog {
         "item.singlechoice": "Single choice",
         "item.singlechoice.spec.items": "Items",
         "item.singlechoice.spec.items.help": "(One per line)",
+        "item.singlechoice.value.null": ">> Select",
         "item.text": "Text",
-        "item.customattribute": "Custom attribute",
-        "builder.button.add.textarea": "+ Text area",
-        "builder.button.add.choice": "+ Choice",
-        "builder.button.add.file": "+ File",
-        "builder.button.add.groupedtext": "+ Grouped text",
-        "builder.button.add.multiplechoice": "+ Multiple choice",
-        "builder.button.add.singlechoice": "+ Single choice",
-        "builder.button.add.text": "+ Text",
-        "builder.message.delete": "Are you sure you want to delete item at position {{position}}?"
+        "item.textarea": "Text area",
+        "item.textarea.character.count": "{{chars}} characters",
+        "item.textarea.spec.length.max": "Maximum length",
+        "item.textarea.spec.length.measure": "Restrict length",
+        "item.textarea.spec.length.measure.bycharacter": "By character",
+        "item.textarea.spec.length.measure.byword": "By word",
+        "item.textarea.spec.length.measure.no": "No",
+        "item.textarea.spec.length.min": "Minimum length",
+        "item.textarea.word.count": "{{words}} words"
     };
 }
