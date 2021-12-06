@@ -47,6 +47,11 @@
                 classList: [],
                 style: {},
             },
+            builderTable: { 
+                // css selector: .fog-builder-table
+                classList: ['table'],
+                style: {},
+            },
             builderToolbar: { 
                 // css selector: .fog-builder-toolbar
                 classList: [],
@@ -57,14 +62,9 @@
                 classList: ['btn', 'btn-outline-primary', 'btn-sm'],
                 style: {},
             },
-            builderTable: { 
-                // css selector: .fog-builder-table
-                classList: ['table'],
-                style: {},
-            },
             form: { 
-                // css selector for all forms: .fog-form
-                // css selector for a specific form: #YOUR_FORM_ID
+                // css selector for all fog forms: .fog-form
+                // css selector for a specific fog form: #YOUR_FORM_ID
                 classList: [],
                 style: {},
             },
@@ -227,6 +227,26 @@
         let sampleFogOptions = {
             // 'disabled' makes form and structure read-only when set true. Default is false.
             disabled: false,
+            // 'fileHandler' contains the set of functions needed to deal with files that are
+            // uploaded with Fog. The files in Fog are uploaded assynchronously and, on success,
+            // a text value is returned. With this text value 2 more methods are necessary: One
+            // that converts that name into a display name an the other that convert that name 
+            // into a http link to be clicked by the user. If fileHandler is not supported, the
+            // file operations will return errors
+            fileHandler: {
+                // Returns a string with the name to be displayed
+                displayName: (value) => Fog.dictionary['item.file.vaule.uploaded.file'],
+                // Returns a Promise (fetch can be used!) which will resolve as an object with keys 
+                // 'success' (boolean) and 'value' (string: value to be stored or error message)
+                upload: (file) => {
+                    return new Promise((resolve, reject) => {
+                        console.log(file);
+                        setTimeout(()=>resolve({success: true, value: 'sampleFileName'}), 3000);
+                    });
+                },
+                // Returns the url for the link to be displayed
+                url: (value) => 'https://google.com',
+            },
             // 'onStructureChange' can receive a callback function which is invoked whenever there
             // is a change on the structure of the form caused by the builder
             onStructureChange: () => sampleFog.formUpdate(),

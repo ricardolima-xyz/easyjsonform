@@ -29,7 +29,7 @@ class FogField {
         // Description field
         let lblDescription = document.createElement('label');
         lblDescription.htmlFor = Fog.newElementId();
-        lblDescription.textContent = Fog.dictionary['item.description'];
+        lblDescription.textContent = Fog.dictionary['item.spec.description'];
         let iptDescription = document.createElement('input');
         iptDescription.id = Fog.getElementId();
         iptDescription.type = 'text';
@@ -40,7 +40,7 @@ class FogField {
         // Custom attribute field
         let lblCustomAttribute = document.createElement('label');
         lblCustomAttribute.htmlFor = Fog.newElementId();
-        lblCustomAttribute.textContent = Fog.dictionary['item.customattribute'];
+        lblCustomAttribute.textContent = Fog.dictionary['item.spec.customattribute'];
         let iptCustomAttribute = document.createElement('input');
         iptCustomAttribute.id = Fog.getElementId();
         iptCustomAttribute.type = 'text';
@@ -51,7 +51,7 @@ class FogField {
         // Mandatory field
         let lblMandatory = document.createElement('label');
         lblMandatory.htmlFor = Fog.newElementId();
-        lblMandatory.textContent = Fog.dictionary['item.mandatory'];
+        lblMandatory.textContent = Fog.dictionary['item.spec.mandatory'];
         let iptMandatory = document.createElement('input');
         iptMandatory.id = Fog.getElementId();
         iptMandatory.type = 'checkbox';
@@ -173,28 +173,61 @@ class FogFieldFile extends FogField {
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         lblFormField.htmlFor = `${fog.id}[${position}]`;
         formField.appendChild(lblFormField);
+        formField.appendChild(this.formFieldValue(fog, position, formField));
+        return formField;
+    }
+
+    formFieldValue(fog, position, formField) {
         if (this.value === null) {
             let iptFile = document.createElement('input');
-            iptFile.type = 'file'; // TODO IMPLEMENT ONCHANGE BEHAVIOUR
+            iptFile.type = 'file';
+            iptFile.disabled = fog.options.disabled || false;
+            if (!fog.options.fileHandler)
+                iptFile.disabled = true; // Forcing disable if no handler
+            else 
+                iptFile.onchange = () => {
+                    // TODO VALIDATION BEFORE UPLOAD: SIZE AND FILETYPE
+                    fog.options.fileHandler.upload(iptFile.files[0])
+                    .then((result) => {
+                        if (result.success) {
+                            this.value = result.value;
+                            formField.replaceChild(
+                                this.formFieldValue(fog, position, formField), formField.children[1]);
+                        }
+                        else {
+                            this.value = null;
+                            iptFile.value = null;
+                        }
+                    });
+                };
             fog.applyStyle('fieldFileInput', iptFile);
             iptFile.id = `${fog.id}[${position}]`;
             iptFile.name = `${fog.id}[${position}]`;
-            formField.appendChild(iptFile);
+            return iptFile;
         } else {
             let spnFile = document.createElement('span');
             fog.applyStyle('fieldFileInfo', spnFile);
             let lnkFile = document.createElement('a'); 
             fog.applyStyle('fieldFileLink', lnkFile);
-            lnkFile.textContent = this.value; // TODO IMPLEMENT PROPER DISPLAY
-            lnkFile.href = 'https://google.com';  // TODO IMPLEMENT PROPER LINK
-            let btnClear = document.createElement('button');  // TODO IMPLEMENT CLEAR BEHAVIOUR
+            lnkFile.textContent = (fog.options.fileHandler) ?
+                fog.options.fileHandler.displayName(this.value) : this.value;
+            lnkFile.href = (fog.options.fileHandler) ?
+                fog.options.fileHandler.url(this.value) : '#';
+            let btnClear = document.createElement('button');
             fog.applyStyle('fieldFileClear', btnClear);
-            btnClear.innerHTML = Fog.deleteButton;
+            btnClear.type = 'button';
+            if (!fog.options.fileHandler)
+                btnClear.disabled = true; // Forcing disable if no handler
+            btnClear.onclick = () => {
+                this.value = null;
+                formField.replaceChild(
+                    this.formFieldValue(fog, position, formField), formField.children[1]);
+            };
+            btnClear.innerHTML = Fog.iconDelete;
             spnFile.appendChild(lnkFile);
             spnFile.appendChild(btnClear);
-            formField.appendChild(spnFile);
-        }        
-        return formField;
+            return spnFile;
+        }
     }
 
     generateHelperText() {
@@ -238,8 +271,8 @@ class FogFieldGroupedText extends FogField {
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = Fog.newElementId();;
-        lblItems.innerHTML = `${Fog.dictionary['item.groupedtext.spec.items']}
-        <br/><small>${Fog.dictionary['item.groupedtext.spec.items.help']}</small>`;
+        lblItems.innerHTML = `${Fog.dictionary['item.spec.items']}
+        <br/><small>${Fog.dictionary['item.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
         txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
@@ -302,8 +335,8 @@ class FogFieldMultipleChoice extends FogField {
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = Fog.newElementId();
-        lblItems.innerHTML = `${Fog.dictionary['item.multiplechoice.spec.items']}
-        <br/><small>${Fog.dictionary['item.multiplechoice.spec.items.help']}</small>`;
+        lblItems.innerHTML = `${Fog.dictionary['item.spec.items']}
+        <br/><small>${Fog.dictionary['item.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
         txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
@@ -373,8 +406,8 @@ class FogFieldSingleChoice extends FogField {
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = Fog.newElementId();
-        lblItems.innerHTML = `${Fog.dictionary['item.singlechoice.spec.items']}
-        <br/><small>${Fog.dictionary['item.singlechoice.spec.items.help']}</small>`;
+        lblItems.innerHTML = `${Fog.dictionary['item.spec.items']}
+        <br/><small>${Fog.dictionary['item.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
         txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
@@ -627,7 +660,7 @@ class Fog {
                 this.applyStyle('builderToolbarButton', button);
                 button.disabled = this.options.disabled || false;
                 button.type = 'button';
-                button.innerHTML = Fog.dictionary[`builder.button.add.${type}`];
+                button.innerHTML = Fog.iconAdd + Fog.dictionary[`item.${type}`];
                 button.onclick = () => {
                     this.structure.push(new classs());
                     this.builderUpdate();
@@ -682,7 +715,7 @@ class Fog {
             btnEdit.style.backgroundColor = 'Transparent';
             btnEdit.style.border = 'none';
             btnEdit.style.outline = 'none';
-            btnEdit.innerHTML = Fog.editButton;
+            btnEdit.innerHTML = Fog.iconEdit;
             
             let btnEditFinish = document.createElement('button');
             btnEditFinish.disabled = this.options.disabled || false;
@@ -691,7 +724,7 @@ class Fog {
             btnEditFinish.style.border = 'none';
             btnEditFinish.style.outline = 'none';
             btnEditFinish.style.display = 'none';
-            btnEditFinish.innerHTML = Fog.okButton;
+            btnEditFinish.innerHTML = Fog.iconOK;
 
             btnEdit.onclick = () => {
                 let editor = this.structure[i].builderEditorCreate(() => {
@@ -718,7 +751,7 @@ class Fog {
             btnMoveUp.style.backgroundColor = 'Transparent';
             btnMoveUp.style.border = 'none';
             btnMoveUp.style.outline = 'none';
-            btnMoveUp.innerHTML = Fog.upButton;
+            btnMoveUp.innerHTML = Fog.iconUp;
             btnMoveUp.onclick = () => this.builderMoveItem(i, -1);
             tr.insertCell(-1).appendChild(btnMoveUp);
 
@@ -728,7 +761,7 @@ class Fog {
             btnMoveDown.style.backgroundColor = 'Transparent';
             btnMoveDown.style.border = 'none';
             btnMoveDown.style.outline = 'none';
-            btnMoveDown.innerHTML = Fog.downButton;
+            btnMoveDown.innerHTML = Fog.iconDown;
             btnMoveDown.onclick = () => this.builderMoveItem(i, +1);
             tr.insertCell(-1).appendChild(btnMoveDown);
             
@@ -738,7 +771,7 @@ class Fog {
             btnDelete.style.backgroundColor = 'Transparent';
             btnDelete.style.border = 'none';
             btnDelete.style.outline = 'none';
-            btnDelete.innerHTML = Fog.deleteButton;
+            btnDelete.innerHTML = Fog.iconDelete;
             btnDelete.onclick = () => this.builderDeleteItem(i);
             tr.insertCell(-1).appendChild(btnDelete);
         });
@@ -805,19 +838,13 @@ class Fog {
         'application/vnd.ms-powerpoint': {extensions:['ppt']},
         'application/vnd.openxmlformats-officedocument.presentationml.presentation': {extensions:['pptx']},
     }
-    static editButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>';
-    static deleteButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16"><path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/></svg>';
-    static downButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg>';
-    static okButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg>';
-    static upButton = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
+    static iconAdd = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/></svg>';
+    static iconDelete = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16"><path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/></svg>';
+    static iconDown = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg>';
+    static iconEdit = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>';
+    static iconOK = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg>';
+    static iconUp = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
-        "builder.button.add.choice": "+ Choice",
-        "builder.button.add.file": "+ File",
-        "builder.button.add.groupedtext": "+ Grouped text",
-        "builder.button.add.multiplechoice": "+ Multiple choice",
-        "builder.button.add.singlechoice": "+ Single choice",
-        "builder.button.add.text": "+ Text",
-        "builder.button.add.textarea": "+ Text area",
         "builder.message.delete": "Are you sure you want to delete item at position {{position}}?",
         "form.field.helper.text": " <small>({{helper-text}})</small>",
         "form.field.helper.text.length.by.character": "min. characters: {{min}}, max. characters: {{max}}",
@@ -827,25 +854,22 @@ class Fog {
         "item.choice": "Choice",
         "item.choice.no": "No",
         "item.choice.yes": "Yes",
-        "item.customattribute": "Custom attribute",
-        "item.description": "Description",
         "item.file": "File",
         "item.file.help.filetypes": "file types: {{file-types}}",
         "item.file.help.filetypes.all": "all ",
         "item.file.help.maxsize": "maximum size: {{size}} MB",
         "item.file.spec.filetypes": "Allowed filetypes",
         "item.file.spec.maxsize": "Maximum size (MB)",
+        "item.file.vaule.uploaded.file": "Uploaded file",
         "item.groupedtext": "Grouped text",
-        "item.groupedtext.spec.items": "Items",
-        "item.groupedtext.spec.items.help": "(One per line)",
-        "item.mandatory": "Mandatory",
         "item.multiplechoice": "Multiple choice",
-        "item.multiplechoice.spec.items": "Items",
-        "item.multiplechoice.spec.items.help": "(One per line)",
         "item.singlechoice": "Single choice",
-        "item.singlechoice.spec.items": "Items",
-        "item.singlechoice.spec.items.help": "(One per line)",
         "item.singlechoice.value.null": ">> Select",
+        "item.spec.customattribute": "Custom attribute",
+        "item.spec.description": "Description",
+        "item.spec.items": "Items",
+        "item.spec.items.help": "One per line",
+        "item.spec.mandatory": "Mandatory",
         "item.text": "Text",
         "item.textarea": "Text area",
         "item.textarea.character.count": "{{chars}} characters",
