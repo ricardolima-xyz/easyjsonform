@@ -6,7 +6,7 @@ class FogField {
             this.customattribute = json.customattribute;
             this.mandatory = json.mandatory;
             this.spec = json.spec;
-            this.value = json.value;
+            this.value = json.value || null;
         } else {
             this.type = null;
             this.description = '';
@@ -72,7 +72,7 @@ class FogField {
 class FogFieldChoice extends FogField {
     constructor(json = null) {
         super(json);
-        if (!json) {
+        if (!json || !json.value) {
             this.value = '0';
         }
         this.type = 'choice';
@@ -263,6 +263,7 @@ class FogFieldGroupedText extends FogField {
             this.spec = {items:[]};
             this.value = [];
         }
+        else if (!json.value) this.value = Array(this.spec.items.length).fill('');
         this.type = 'groupedtext';
     }
 
@@ -327,6 +328,7 @@ class FogFieldMultipleChoice extends FogField {
             this.spec = {items:[]};
             this.value = [];
         }
+        else if (!json.value) this.value = Array(this.spec.items.length).fill('0');
         this.type = 'multiplechoice';
     }
 
@@ -340,7 +342,7 @@ class FogFieldMultipleChoice extends FogField {
         let txaItems = document.createElement('textarea');
         txaItems.id = Fog.getElementId();
         txaItems.value = this.spec.items.join('\n');
-        txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill(0); builderUpdateCallback();};
+        txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill('0'); builderUpdateCallback();};
         editor.appendChild(lblItems);
         editor.appendChild(txaItems);
         return editor;
@@ -455,7 +457,7 @@ class FogFieldSingleChoice extends FogField {
 class FogFieldText extends FogField {
     constructor(json = null) {
         super(json);
-        if (!json) {
+        if (!json || !json.value) {
             this.value = '';
         }
         this.type = 'text';
@@ -499,7 +501,7 @@ class FogFieldTextArea extends FogField {
                     max: 0, // nonnegative integer values
                 },
             };
-        }
+        } else if (!json.value) this.value = '';
         this.type = 'textarea';
     }
 
