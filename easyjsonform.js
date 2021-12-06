@@ -1,4 +1,4 @@
-class FogField { 
+class EasyJsonFormField { 
     constructor(json = null) {
         if (json) {
             this.type = json.type;
@@ -28,10 +28,10 @@ class FogField {
         editor.style.whiteSpace = 'nowrap';
         // Description field
         let lblDescription = document.createElement('label');
-        lblDescription.htmlFor = Fog.newElementId();
-        lblDescription.textContent = Fog.dictionary['item.spec.description'];
+        lblDescription.htmlFor = EasyJsonForm.newElementId();
+        lblDescription.textContent = EasyJsonForm.dictionary['item.spec.description'];
         let iptDescription = document.createElement('input');
-        iptDescription.id = Fog.getElementId();
+        iptDescription.id = EasyJsonForm.getElementId();
         iptDescription.type = 'text';
         iptDescription.value = this.description;
         iptDescription.onchange = () => {this.description = iptDescription.value; builderUpdateCallback();};
@@ -39,10 +39,10 @@ class FogField {
         editor.appendChild(iptDescription);
         // Custom attribute field
         let lblCustomAttribute = document.createElement('label');
-        lblCustomAttribute.htmlFor = Fog.newElementId();
-        lblCustomAttribute.textContent = Fog.dictionary['item.spec.customattribute'];
+        lblCustomAttribute.htmlFor = EasyJsonForm.newElementId();
+        lblCustomAttribute.textContent = EasyJsonForm.dictionary['item.spec.customattribute'];
         let iptCustomAttribute = document.createElement('input');
-        iptCustomAttribute.id = Fog.getElementId();
+        iptCustomAttribute.id = EasyJsonForm.getElementId();
         iptCustomAttribute.type = 'text';
         iptCustomAttribute.value = this.customattribute;
         iptCustomAttribute.onchange = () => {this.customattribute = iptCustomAttribute.value; builderUpdateCallback();};
@@ -50,10 +50,10 @@ class FogField {
         editor.appendChild(iptCustomAttribute);
         // Mandatory field
         let lblMandatory = document.createElement('label');
-        lblMandatory.htmlFor = Fog.newElementId();
-        lblMandatory.textContent = Fog.dictionary['item.spec.mandatory'];
+        lblMandatory.htmlFor = EasyJsonForm.newElementId();
+        lblMandatory.textContent = EasyJsonForm.dictionary['item.spec.mandatory'];
         let iptMandatory = document.createElement('input');
-        iptMandatory.id = Fog.getElementId();
+        iptMandatory.id = EasyJsonForm.getElementId();
         iptMandatory.type = 'checkbox';
         iptMandatory.checked = this.mandatory;
         iptMandatory.onchange = () => {this.mandatory = iptMandatory.checked; builderUpdateCallback();};
@@ -64,12 +64,12 @@ class FogField {
 
     generateHelperText() {
         return !this.mandatory ? '' :
-            Fog.dictionary['form.field.helper.text']
-                .replace('{{helper-text}}', Fog.dictionary['form.field.helper.text.mandatory']);
+            EasyJsonForm.dictionary['form.field.helper.text']
+                .replace('{{helper-text}}', EasyJsonForm.dictionary['form.field.helper.text.mandatory']);
     }
 }
 
-class FogFieldChoice extends FogField {
+class EasyJsonFormFieldChoice extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json || !json.value) {
@@ -78,24 +78,24 @@ class FogFieldChoice extends FogField {
         this.type = 'choice';
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-choice');
-        fog.applyStyle('fieldChoice', formField);
+        formField.classList.add('ejf-field-choice');
+        ejf.applyStyle('fieldChoice', formField);
         let lblFormField = document.createElement('label');    
-        fog.applyStyle('fieldChoiceLabel', lblFormField);
+        ejf.applyStyle('fieldChoiceLabel', lblFormField);
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
-        lblFormField.htmlFor = `${fog.id}[${position}]`;
+        lblFormField.htmlFor = `${ejf.id}[${position}]`;
         let iptHidden = document.createElement('input');
         iptHidden.type = 'hidden';
         iptHidden.value = '0';
-        iptHidden.name = `${fog.id}[${position}]`;
+        iptHidden.name = `${ejf.id}[${position}]`;
         let iptCheck = document.createElement('input');
-        fog.applyStyle('fieldChoiceCheckbox', iptCheck);
+        ejf.applyStyle('fieldChoiceCheckbox', iptCheck);
         iptCheck.type = 'checkbox';
-        iptCheck.disabled = fog.options.disabled || false;
-        iptCheck.id = `${fog.id}[${position}]`;
-        iptCheck.name = `${fog.id}[${position}]`;
+        iptCheck.disabled = ejf.options.disabled || false;
+        iptCheck.id = `${ejf.id}[${position}]`;
+        iptCheck.name = `${ejf.id}[${position}]`;
         iptCheck.value = '1';
         iptCheck.checked = parseInt(this.value);
         iptCheck.onchange = () => {this.value = iptCheck.checked ? "1" : "0"};
@@ -106,11 +106,11 @@ class FogFieldChoice extends FogField {
     }
 
     getFormattedValue() {
-        return parseInt(this.value) ? Fog.dictionary['item.choice.yes'] : Fog.dictionary['item.choice.no'];
+        return parseInt(this.value) ? EasyJsonForm.dictionary['item.choice.yes'] : EasyJsonForm.dictionary['item.choice.no'];
     }
 }
 
-class FogFieldFile extends FogField {
+class EasyJsonFormFieldFile extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json) {
@@ -126,25 +126,25 @@ class FogFieldFile extends FogField {
         let editor = super.builderEditorCreate(builderUpdateCallback);
         // Max file size field
         let lblMaxSize = document.createElement('label');
-        lblMaxSize.htmlFor = Fog.newElementId();
-        lblMaxSize.textContent = Fog.dictionary['item.file.spec.maxsize'];
+        lblMaxSize.htmlFor = EasyJsonForm.newElementId();
+        lblMaxSize.textContent = EasyJsonForm.dictionary['item.file.spec.maxsize'];
         let iptMaxSize = document.createElement('input');
         iptMaxSize.type = 'number';
         iptMaxSize.min = 0;
         iptMaxSize.step = 0.1;
-        iptMaxSize.id = Fog.getElementId();
+        iptMaxSize.id = EasyJsonForm.getElementId();
         iptMaxSize.value = this.spec.max_size;
         iptMaxSize.onchange = () => {this.spec.max_size = iptMaxSize.value; builderUpdateCallback();};
         editor.appendChild(lblMaxSize);
         editor.appendChild(iptMaxSize);
         // File types field
         let lblFileTypes = document.createElement('label');
-        lblFileTypes.textContent = Fog.dictionary['item.file.spec.filetypes'];
+        lblFileTypes.textContent = EasyJsonForm.dictionary['item.file.spec.filetypes'];
         let divFileTypes = document.createElement('div');
-        for (const [fileType, properties] of Object.entries(Fog.supportedFileTypes)) {
+        for (const [fileType, properties] of Object.entries(EasyJsonForm.supportedFileTypes)) {
             let divFileType = document.createElement('div');
             let cbxFileType = document.createElement('input');
-            cbxFileType.id = Fog.newElementId();
+            cbxFileType.id = EasyJsonForm.newElementId();
             cbxFileType.type = 'checkbox';
             cbxFileType.checked = this.spec.file_types.indexOf(fileType) > -1;
             cbxFileType.onchange = () => {
@@ -153,7 +153,7 @@ class FogFieldFile extends FogField {
                 builderUpdateCallback();
             };
             let lblFileType = document.createElement('label');
-            lblFileType.htmlFor = Fog.getElementId();
+            lblFileType.htmlFor = EasyJsonForm.getElementId();
             lblFileType.textContent = properties.extensions[0];
             divFileType.appendChild(cbxFileType);
             divFileType.appendChild(lblFileType);
@@ -164,35 +164,35 @@ class FogFieldFile extends FogField {
         return editor;
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-file');
-        fog.applyStyle('fieldFile', formField);
+        formField.classList.add('ejf-field-file');
+        ejf.applyStyle('fieldFile', formField);
         let lblFormField = document.createElement('label');
-        fog.applyStyle('fieldFileLabel', lblFormField);   
+        ejf.applyStyle('fieldFileLabel', lblFormField);   
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
-        lblFormField.htmlFor = `${fog.id}[${position}]`;
+        lblFormField.htmlFor = `${ejf.id}[${position}]`;
         formField.appendChild(lblFormField);
-        formField.appendChild(this.formFieldValue(fog, position, formField));
+        formField.appendChild(this.formFieldValue(ejf, position, formField));
         return formField;
     }
 
-    formFieldValue(fog, position, formField) {
+    formFieldValue(ejf, position, formField) {
         if (this.value === null) {
             let iptFile = document.createElement('input');
             iptFile.type = 'file';
-            iptFile.disabled = fog.options.disabled || false;
-            if (!fog.options.fileHandler)
+            iptFile.disabled = ejf.options.disabled || false;
+            if (!ejf.options.fileHandler)
                 iptFile.disabled = true; // Forcing disable if no handler
             else 
                 iptFile.onchange = () => {
                     // TODO VALIDATION BEFORE UPLOAD: SIZE AND FILETYPE
-                    fog.options.fileHandler.upload(iptFile.files[0])
+                    ejf.options.fileHandler.upload(iptFile.files[0])
                     .then((result) => {
                         if (result.success) {
                             this.value = result.value;
                             formField.replaceChild(
-                                this.formFieldValue(fog, position, formField), formField.children[1]);
+                                this.formFieldValue(ejf, position, formField), formField.children[1]);
                         }
                         else {
                             this.value = null;
@@ -200,30 +200,30 @@ class FogFieldFile extends FogField {
                         }
                     });
                 };
-            fog.applyStyle('fieldFileInput', iptFile);
-            iptFile.id = `${fog.id}[${position}]`;
-            iptFile.name = `${fog.id}[${position}]`;
+            ejf.applyStyle('fieldFileInput', iptFile);
+            iptFile.id = `${ejf.id}[${position}]`;
+            iptFile.name = `${ejf.id}[${position}]`;
             return iptFile;
         } else {
             let spnFile = document.createElement('span');
-            fog.applyStyle('fieldFileInfo', spnFile);
+            ejf.applyStyle('fieldFileInfo', spnFile);
             let lnkFile = document.createElement('a'); 
-            fog.applyStyle('fieldFileLink', lnkFile);
-            lnkFile.textContent = (fog.options.fileHandler) ?
-                fog.options.fileHandler.displayName(this.value) : this.value;
-            lnkFile.href = (fog.options.fileHandler) ?
-                fog.options.fileHandler.url(this.value) : '#';
+            ejf.applyStyle('fieldFileLink', lnkFile);
+            lnkFile.textContent = (ejf.options.fileHandler) ?
+                ejf.options.fileHandler.displayName(this.value) : this.value;
+            lnkFile.href = (ejf.options.fileHandler) ?
+                ejf.options.fileHandler.url(this.value) : '#';
             let btnClear = document.createElement('button');
-            fog.applyStyle('fieldFileClear', btnClear);
+            ejf.applyStyle('fieldFileClear', btnClear);
             btnClear.type = 'button';
-            if (!fog.options.fileHandler)
+            if (!ejf.options.fileHandler)
                 btnClear.disabled = true; // Forcing disable if no handler
             btnClear.onclick = () => {
                 this.value = null;
                 formField.replaceChild(
-                    this.formFieldValue(fog, position, formField), formField.children[1]);
+                    this.formFieldValue(ejf, position, formField), formField.children[1]);
             };
-            btnClear.innerHTML = Fog.iconDelete;
+            btnClear.innerHTML = EasyJsonForm.iconDelete;
             spnFile.appendChild(lnkFile);
             spnFile.appendChild(btnClear);
             return spnFile;
@@ -232,23 +232,23 @@ class FogFieldFile extends FogField {
 
     generateHelperText() {
         let restrictions = [];
-        if (this.mandatory) restrictions.push(Fog.dictionary['form.field.helper.text.mandatory']);
+        if (this.mandatory) restrictions.push(EasyJsonForm.dictionary['form.field.helper.text.mandatory']);
         if (this.spec.max_size > 0)
-            restrictions.push(Fog.dictionary['item.file.help.maxsize'].replace('{{size}}', this.spec.max_size));
+            restrictions.push(EasyJsonForm.dictionary['item.file.help.maxsize'].replace('{{size}}', this.spec.max_size));
         if (this.spec.file_types.length > 0)
-            restrictions.push(Fog.dictionary['item.file.help.filetypes'].replace('{{file-types}}', 
+            restrictions.push(EasyJsonForm.dictionary['item.file.help.filetypes'].replace('{{file-types}}', 
                 this.spec.file_types
-                    .map((x) => Fog.supportedFileTypes[x].extensions[0])
-                    .join(Fog.dictionary['form.field.helper.text.separator'])
+                    .map((x) => EasyJsonForm.supportedFileTypes[x].extensions[0])
+                    .join(EasyJsonForm.dictionary['form.field.helper.text.separator'])
                 )
             );
         else
-            restrictions.push(Fog.dictionary['item.file.help.filetypes'].replace('{{file-types}}', Fog.dictionary['item.file.help.filetypes.all']));
+            restrictions.push(EasyJsonForm.dictionary['item.file.help.filetypes'].replace('{{file-types}}', EasyJsonForm.dictionary['item.file.help.filetypes.all']));
     
         return (restrictions.length == 0) ? 
             '' :
-            Fog.dictionary['form.field.helper.text'].replace('{{helper-text}}',
-            restrictions.join(Fog.dictionary['form.field.helper.text.separator']));
+            EasyJsonForm.dictionary['form.field.helper.text'].replace('{{helper-text}}',
+            restrictions.join(EasyJsonForm.dictionary['form.field.helper.text.separator']));
     }
 
     getFormattedValue() {
@@ -256,7 +256,7 @@ class FogFieldFile extends FogField {
     }
 }
 
-class FogFieldGroupedText extends FogField {
+class EasyJsonFormFieldGroupedText extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json) {
@@ -271,11 +271,11 @@ class FogFieldGroupedText extends FogField {
         let editor = super.builderEditorCreate(builderUpdateCallback);
         // Items field
         let lblItems = document.createElement('label');
-        lblItems.htmlFor = Fog.newElementId();;
-        lblItems.innerHTML = `${Fog.dictionary['item.spec.items']}
-        <br/><small>${Fog.dictionary['item.spec.items.help']}</small>`;
+        lblItems.htmlFor = EasyJsonForm.newElementId();;
+        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.spec.items']}
+        <br/><small>${EasyJsonForm.dictionary['item.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
-        txaItems.id = Fog.getElementId();
+        txaItems.id = EasyJsonForm.getElementId();
         txaItems.value = this.spec.items.join('\n');
         txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill(''); builderUpdateCallback();};
         editor.appendChild(lblItems);
@@ -283,28 +283,28 @@ class FogFieldGroupedText extends FogField {
         return editor;
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-groupedtext');
-        fog.applyStyle('fieldGroupedtext', formField);
+        formField.classList.add('ejf-field-groupedtext');
+        ejf.applyStyle('fieldGroupedtext', formField);
         let lblFormField = document.createElement('label');
-        fog.applyStyle('fieldGroupedtextLabel', lblFormField);
+        ejf.applyStyle('fieldGroupedtextLabel', lblFormField);
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let formGroup = document.createElement('span');
-        fog.applyStyle('fieldGroupedtextGroup', formGroup);
+        ejf.applyStyle('fieldGroupedtextGroup', formGroup);
         this.spec.items.forEach((element, index) => {
             let item = document.createElement('span');
-            fog.applyStyle('fieldGroupedtextItem', item);
+            ejf.applyStyle('fieldGroupedtextItem', item);
             let lblCheck = document.createElement('label');
-            fog.applyStyle('fieldGroupedtextItemLabel', lblCheck);
-            lblCheck.htmlFor = `${fog.id}[${position}][${index}]`;
+            ejf.applyStyle('fieldGroupedtextItemLabel', lblCheck);
+            lblCheck.htmlFor = `${ejf.id}[${position}][${index}]`;
             lblCheck.textContent = element;
             let iptCheck = document.createElement('input');
-            fog.applyStyle('fieldGroupedtextItemInput', iptCheck);
+            ejf.applyStyle('fieldGroupedtextItemInput', iptCheck);
             iptCheck.type = 'text';
-            iptCheck.disabled = fog.options.disabled || false;
-            iptCheck.id = `${fog.id}[${position}][${index}]`;
-            iptCheck.name = `${fog.id}[${position}][${index}]`;
+            iptCheck.disabled = ejf.options.disabled || false;
+            iptCheck.id = `${ejf.id}[${position}][${index}]`;
+            iptCheck.name = `${ejf.id}[${position}][${index}]`;
             iptCheck.value = this.value[index];
             iptCheck.onchange = () => {this.value[index] = iptCheck.value};
             item.appendChild(lblCheck);
@@ -321,7 +321,7 @@ class FogFieldGroupedText extends FogField {
     }
 }
 
-class FogFieldMultipleChoice extends FogField {
+class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json) {
@@ -336,11 +336,11 @@ class FogFieldMultipleChoice extends FogField {
         let editor = super.builderEditorCreate(builderUpdateCallback);
         // Items field
         let lblItems = document.createElement('label');
-        lblItems.htmlFor = Fog.newElementId();
-        lblItems.innerHTML = `${Fog.dictionary['item.spec.items']}
-        <br/><small>${Fog.dictionary['item.spec.items.help']}</small>`;
+        lblItems.htmlFor = EasyJsonForm.newElementId();
+        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.spec.items']}
+        <br/><small>${EasyJsonForm.dictionary['item.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
-        txaItems.id = Fog.getElementId();
+        txaItems.id = EasyJsonForm.getElementId();
         txaItems.value = this.spec.items.join('\n');
         txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill('0'); builderUpdateCallback();};
         editor.appendChild(lblItems);
@@ -348,34 +348,34 @@ class FogFieldMultipleChoice extends FogField {
         return editor;
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-multiplechoice');
-        fog.applyStyle('fieldMultiplechoice', formField);
+        formField.classList.add('ejf-field-multiplechoice');
+        ejf.applyStyle('fieldMultiplechoice', formField);
         let lblFormField = document.createElement('label');
-        fog.applyStyle('fieldMultiplechoiceLabel', lblFormField);    
+        ejf.applyStyle('fieldMultiplechoiceLabel', lblFormField);    
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let formGroup = document.createElement('span');
-        fog.applyStyle('fieldMultiplechoiceGroup', formGroup);
+        ejf.applyStyle('fieldMultiplechoiceGroup', formGroup);
         this.spec.items.forEach((element, index) => {
             let item = document.createElement('span');
-            fog.applyStyle('fieldMultiplechoiceItem', item);
+            ejf.applyStyle('fieldMultiplechoiceItem', item);
             let iptHidden = document.createElement('input');
             iptHidden.type = 'hidden';
             iptHidden.value = '0';
-            iptHidden.name = `${fog.id}[${position}][${index}]`;
+            iptHidden.name = `${ejf.id}[${position}][${index}]`;
             let iptCheck = document.createElement('input');
-            fog.applyStyle('fieldMultiplechoiceItemInput', iptCheck);
+            ejf.applyStyle('fieldMultiplechoiceItemInput', iptCheck);
             iptCheck.type = 'checkbox';
-            iptCheck.disabled = fog.options.disabled || false;
-            iptCheck.id = `${fog.id}[${position}][${index}]`;
-            iptCheck.name = `${fog.id}[${position}][${index}]`;
+            iptCheck.disabled = ejf.options.disabled || false;
+            iptCheck.id = `${ejf.id}[${position}][${index}]`;
+            iptCheck.name = `${ejf.id}[${position}][${index}]`;
             iptCheck.value = '1';
             iptCheck.checked = parseInt(this.value[index]);
             iptCheck.onchange = () => {this.value[index] = iptCheck.checked ? "1" : "0"};
             let lblCheck = document.createElement('label');
-            fog.applyStyle('fieldMultiplechoiceItemLabel', lblCheck);
-            lblCheck.htmlFor = `${fog.id}[${position}][${index}]`;
+            ejf.applyStyle('fieldMultiplechoiceItemLabel', lblCheck);
+            lblCheck.htmlFor = `${ejf.id}[${position}][${index}]`;
             lblCheck.textContent = element;
             item.appendChild(iptHidden);
             item.appendChild(iptCheck);
@@ -389,12 +389,12 @@ class FogFieldMultipleChoice extends FogField {
 
     getFormattedValue() {
         return this.value.map((x) => {
-            return parseInt(x) ? Fog.dictionary['item.choice.yes'] : Fog.dictionary['item.choice.no']; 
+            return parseInt(x) ? EasyJsonForm.dictionary['item.choice.yes'] : EasyJsonForm.dictionary['item.choice.no']; 
         });
     }
 }
 
-class FogFieldSingleChoice extends FogField {
+class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json) {
@@ -407,11 +407,11 @@ class FogFieldSingleChoice extends FogField {
         let editor = super.builderEditorCreate(builderUpdateCallback);
         // Items field
         let lblItems = document.createElement('label');
-        lblItems.htmlFor = Fog.newElementId();
-        lblItems.innerHTML = `${Fog.dictionary['item.spec.items']}
-        <br/><small>${Fog.dictionary['item.spec.items.help']}</small>`;
+        lblItems.htmlFor = EasyJsonForm.newElementId();
+        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.spec.items']}
+        <br/><small>${EasyJsonForm.dictionary['item.spec.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
-        txaItems.id = Fog.getElementId();
+        txaItems.id = EasyJsonForm.getElementId();
         txaItems.value = this.spec.items.join('\n');
         txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); builderUpdateCallback();};
         editor.appendChild(lblItems);
@@ -419,22 +419,22 @@ class FogFieldSingleChoice extends FogField {
         return editor;
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-singlechoice');
-        fog.applyStyle('fieldSinglechoice', formField);
+        formField.classList.add('ejf-field-singlechoice');
+        ejf.applyStyle('fieldSinglechoice', formField);
         let lblFormField = document.createElement('label');
-        fog.applyStyle('fieldSinglechoiceLabel', lblFormField);
-        lblFormField.htmlFor = `${fog.id}[${position}]`;
+        ejf.applyStyle('fieldSinglechoiceLabel', lblFormField);
+        lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let iptFormField = document.createElement('select');
-        fog.applyStyle('fieldSinglechoiceSelect', iptFormField);
-        iptFormField.disabled = fog.options.disabled || false;
-        iptFormField.id = `${fog.id}[${position}]`;
-        iptFormField.name = `${fog.id}[${position}]`;
+        ejf.applyStyle('fieldSinglechoiceSelect', iptFormField);
+        iptFormField.disabled = ejf.options.disabled || false;
+        iptFormField.id = `${ejf.id}[${position}]`;
+        iptFormField.name = `${ejf.id}[${position}]`;
         let nullOption = document.createElement('option');
         nullOption.value = 'null';
-        nullOption.textContent = Fog.dictionary['item.singlechoice.value.null'];
+        nullOption.textContent = EasyJsonForm.dictionary['item.singlechoice.value.null'];
         iptFormField.appendChild(nullOption);
         this.spec.items.forEach((element, index) => {
             let option = document.createElement('option');
@@ -454,7 +454,7 @@ class FogFieldSingleChoice extends FogField {
     }
 }
 
-class FogFieldText extends FogField {
+class EasyJsonFormFieldText extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json || !json.value) {
@@ -463,19 +463,19 @@ class FogFieldText extends FogField {
         this.type = 'text';
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-text');
-        fog.applyStyle('fieldText', formField);
+        formField.classList.add('ejf-field-text');
+        ejf.applyStyle('fieldText', formField);
         let lblFormField = document.createElement('label');
-        fog.applyStyle('fieldTextLabel', lblFormField);
-        lblFormField.htmlFor = `${fog.id}[${position}]`;
+        ejf.applyStyle('fieldTextLabel', lblFormField);
+        lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let iptFormField = document.createElement('input');
-        fog.applyStyle('fieldTextInput', iptFormField);
-        iptFormField.disabled = fog.options.disabled || false;
-        iptFormField.id = `${fog.id}[${position}]`;
-        iptFormField.name = `${fog.id}[${position}]`;
+        ejf.applyStyle('fieldTextInput', iptFormField);
+        iptFormField.disabled = ejf.options.disabled || false;
+        iptFormField.id = `${ejf.id}[${position}]`;
+        iptFormField.name = `${ejf.id}[${position}]`;
         iptFormField.type = 'text';
         iptFormField.value = this.value;
         iptFormField.onchange = () => {this.value = iptFormField.value};
@@ -489,7 +489,7 @@ class FogFieldText extends FogField {
     }
 }
 
-class FogFieldTextArea extends FogField {
+class EasyJsonFormFieldTextArea extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (!json) {
@@ -509,19 +509,19 @@ class FogFieldTextArea extends FogField {
         let editor = super.builderEditorCreate(builderUpdateCallback);
         // Length measure field
         let lblLengthMeasure = document.createElement('label');
-        lblLengthMeasure.htmlFor = Fog.newElementId();
-        lblLengthMeasure.textContent = Fog.dictionary['item.textarea.spec.length.measure'];
+        lblLengthMeasure.htmlFor = EasyJsonForm.newElementId();
+        lblLengthMeasure.textContent = EasyJsonForm.dictionary['item.textarea.spec.length.measure'];
         let optLengthMeasureByCharacter = document.createElement('option');
         optLengthMeasureByCharacter.value = 'bycharacter';
-        optLengthMeasureByCharacter.textContent = Fog.dictionary['item.textarea.spec.length.measure.bycharacter'];
+        optLengthMeasureByCharacter.textContent = EasyJsonForm.dictionary['item.textarea.spec.length.measure.bycharacter'];
         let optLengthMeasureByWord = document.createElement('option');
         optLengthMeasureByWord.value = 'byword';
-        optLengthMeasureByWord.textContent = Fog.dictionary['item.textarea.spec.length.measure.byword'];
+        optLengthMeasureByWord.textContent = EasyJsonForm.dictionary['item.textarea.spec.length.measure.byword'];
         let optLengthMeasureNo = document.createElement('option');
         optLengthMeasureNo.value = 'no';
-        optLengthMeasureNo.textContent = Fog.dictionary['item.textarea.spec.length.measure.no'];
+        optLengthMeasureNo.textContent = EasyJsonForm.dictionary['item.textarea.spec.length.measure.no'];
         let selLengthMeasure = document.createElement('select');
-        selLengthMeasure.id = Fog.getElementId();
+        selLengthMeasure.id = EasyJsonForm.getElementId();
         selLengthMeasure.appendChild(optLengthMeasureByCharacter);
         selLengthMeasure.appendChild(optLengthMeasureByWord);
         selLengthMeasure.appendChild(optLengthMeasureNo);
@@ -531,26 +531,26 @@ class FogFieldTextArea extends FogField {
         editor.appendChild(selLengthMeasure);
         // Length min field
         let lblLengthMin = document.createElement('label');
-        lblLengthMin.htmlFor = Fog.newElementId();
-        lblLengthMin.textContent = Fog.dictionary['item.textarea.spec.length.min'];
+        lblLengthMin.htmlFor = EasyJsonForm.newElementId();
+        lblLengthMin.textContent = EasyJsonForm.dictionary['item.textarea.spec.length.min'];
         let iptLengthMin = document.createElement('input');
         iptLengthMin.type = 'number';
         iptLengthMin.min = 0;
         iptLengthMin.step = 1;
-        iptLengthMin.id = Fog.getElementId();
+        iptLengthMin.id = EasyJsonForm.getElementId();
         iptLengthMin.value = this.spec.length.min;
         iptLengthMin.onchange = () => {this.spec.length.min = iptLengthMin.value; builderUpdateCallback();};
         editor.appendChild(lblLengthMin);
         editor.appendChild(iptLengthMin);
         // Length max field
         let lblLengthMax = document.createElement('label');
-        lblLengthMax.htmlFor = Fog.newElementId();
-        lblLengthMax.textContent = Fog.dictionary['item.textarea.spec.length.max'];
+        lblLengthMax.htmlFor = EasyJsonForm.newElementId();
+        lblLengthMax.textContent = EasyJsonForm.dictionary['item.textarea.spec.length.max'];
         let iptLengthMax = document.createElement('input');
         iptLengthMax.type = 'number';
         iptLengthMax.min = 0;
         iptLengthMax.step = 1;
-        iptLengthMax.id = Fog.getElementId();
+        iptLengthMax.id = EasyJsonForm.getElementId();
         iptLengthMax.value = this.spec.length.max;
         iptLengthMax.onchange = () => {this.spec.length.max = iptLengthMax.value; builderUpdateCallback();};
         editor.appendChild(lblLengthMax);
@@ -558,28 +558,28 @@ class FogFieldTextArea extends FogField {
         return editor;
     }
 
-    formFieldCreate(fog, position) {
+    formFieldCreate(ejf, position) {
         let formField = document.createElement('div');
-        formField.classList.add('fog-field-textarea');
-        fog.applyStyle('fieldTextarea', formField);
+        formField.classList.add('ejf-field-textarea');
+        ejf.applyStyle('fieldTextarea', formField);
         let lblFormField = document.createElement('label');
-        fog.applyStyle('fieldTextareaLabel', lblFormField);
-        lblFormField.htmlFor = `${fog.id}[${position}]`;
+        ejf.applyStyle('fieldTextareaLabel', lblFormField);
+        lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.description}${this.generateHelperText()}`;
         let spnCounter = document.createElement('span');
-        fog.applyStyle('fieldTextareaInfo', spnCounter);
+        ejf.applyStyle('fieldTextareaInfo', spnCounter);
         let iptFormField = document.createElement('textarea');
-        fog.applyStyle('fieldTextareaInput', iptFormField);
-        iptFormField.disabled = fog.options.disabled || false;
-        iptFormField.id = `${fog.id}[${position}]`;
-        iptFormField.name = `${fog.id}[${position}]`;
+        ejf.applyStyle('fieldTextareaInput', iptFormField);
+        iptFormField.disabled = ejf.options.disabled || false;
+        iptFormField.id = `${ejf.id}[${position}]`;
+        iptFormField.name = `${ejf.id}[${position}]`;
         iptFormField.value = this.value;
         iptFormField.onchange = () => {this.value = iptFormField.value};
         iptFormField.onkeyup = () => {
             switch (this.spec.length.measure) {
                 case 'bycharacter':
                     let characters = iptFormField.value;
-                    spnCounter.textContent = Fog.dictionary['item.textarea.character.count'].replace('{{chars}}', characters.length);
+                    spnCounter.textContent = EasyJsonForm.dictionary['item.textarea.character.count'].replace('{{chars}}', characters.length);
                     if (characters.length < this.spec.length.min || characters.length > this.spec.length.max)
                         spnCounter.setAttribute('role', 'alert');
                     else
@@ -587,7 +587,7 @@ class FogFieldTextArea extends FogField {
                     break;
                 case 'byword':
                     let words = iptFormField.value.match(/\S+/g) || [];
-                    spnCounter.textContent = Fog.dictionary['item.textarea.word.count'].replace('{{words}}', words.length);
+                    spnCounter.textContent = EasyJsonForm.dictionary['item.textarea.word.count'].replace('{{words}}', words.length);
                     if (words.length < this.spec.length.min || words.length > this.spec.length.max)
                         spnCounter.setAttribute('role', 'alert');
                     else
@@ -610,19 +610,19 @@ class FogFieldTextArea extends FogField {
 
     generateHelperText() {
         let restrictions = [];
-        if (this.mandatory) restrictions.push(Fog.dictionary['form.field.helper.text.mandatory']);
+        if (this.mandatory) restrictions.push(EasyJsonForm.dictionary['form.field.helper.text.mandatory']);
         if (this.spec.length.measure == 'byword')
-            restrictions.push(Fog.dictionary['form.field.helper.text.length.by.word'].replace('{{min}}', this.spec.length.min).replace('{{max}}', this.spec.length.max));
+            restrictions.push(EasyJsonForm.dictionary['form.field.helper.text.length.by.word'].replace('{{min}}', this.spec.length.min).replace('{{max}}', this.spec.length.max));
         if (this.spec.length.measure == 'bycharacter')
-            restrictions.push(Fog.dictionary['form.field.helper.text.length.by.character'].replace('{{min}}', this.spec.length.min).replace('{{max}}', this.spec.length.max));
+            restrictions.push(EasyJsonForm.dictionary['form.field.helper.text.length.by.character'].replace('{{min}}', this.spec.length.min).replace('{{max}}', this.spec.length.max));
         return (restrictions.length == 0) ? 
             '' :
-            Fog.dictionary['form.field.helper.text'].replace('{{helper-text}}',
-            restrictions.join(Fog.dictionary['form.field.helper.text.separator']));
+            EasyJsonForm.dictionary['form.field.helper.text'].replace('{{helper-text}}',
+            restrictions.join(EasyJsonForm.dictionary['form.field.helper.text.separator']));
     }
 }
 
-class Fog {
+class EasyJsonForm {
     constructor(id, structure = null, style = null, options = null) {
         if (id) this.id = id;
         else throw new Error('Id is mandatory');
@@ -642,27 +642,27 @@ class Fog {
     }
 
     /**
-     * Creates the Fog Builder element to be added in the page.
+     * Creates the EasyJsonForm Builder element to be added in the page.
      */
     builderGet() {
         if (!this.builder) {
             // Creating builder element
             this.builder = document.createElement('div');
-            this.builder.classList.add('fog-builder');
+            this.builder.classList.add('ejf-builder');
             this.applyStyle('builder', this.builder);
 
             // Creating toolbar
             this.builderToolbar = document.createElement('div');
-            this.builderToolbar.classList.add('fog-builder-toolbar');
+            this.builderToolbar.classList.add('ejf-builder-toolbar');
             this.applyStyle('builderToolbar', this.builderToolbar);
 
             // Inserting add buttons to the toolbar 
-            for (const [type, classs] of Object.entries(Fog.registeredClasses)) {
+            for (const [type, classs] of Object.entries(EasyJsonForm.registeredClasses)) {
                 let button = document.createElement('button');
                 this.applyStyle('builderToolbarButton', button);
                 button.disabled = this.options.disabled || false;
                 button.type = 'button';
-                button.innerHTML = Fog.iconAdd + Fog.dictionary[`item.${type}`];
+                button.innerHTML = EasyJsonForm.iconAdd + EasyJsonForm.dictionary[`item.${type}`];
                 button.onclick = () => {
                     this.structure.push(new classs());
                     this.builderUpdate();
@@ -674,7 +674,7 @@ class Fog {
             // Creating table
             let builderTable = document.createElement('table');
             let builderTBody = document.createElement('tbody');
-            builderTable.classList.add('fog-builder-table');
+            builderTable.classList.add('ejf-builder-table');
             this.applyStyle('builderTable', builderTable);
             builderTable.appendChild(builderTBody);
             this.builder.appendChild(builderTable);
@@ -684,7 +684,7 @@ class Fog {
     }
 
     builderDeleteItem(position) {
-        if(confirm(Fog.dictionary['builder.message.delete'].replace('{{position}}', position+1)))
+        if(confirm(EasyJsonForm.dictionary['builder.message.delete'].replace('{{position}}', position+1)))
         {
             this.structure.splice(position, 1);
             this.builderUpdate();
@@ -717,7 +717,7 @@ class Fog {
             btnEdit.style.backgroundColor = 'Transparent';
             btnEdit.style.border = 'none';
             btnEdit.style.outline = 'none';
-            btnEdit.innerHTML = Fog.iconEdit;
+            btnEdit.innerHTML = EasyJsonForm.iconEdit;
             
             let btnEditFinish = document.createElement('button');
             btnEditFinish.disabled = this.options.disabled || false;
@@ -726,7 +726,7 @@ class Fog {
             btnEditFinish.style.border = 'none';
             btnEditFinish.style.outline = 'none';
             btnEditFinish.style.display = 'none';
-            btnEditFinish.innerHTML = Fog.iconOK;
+            btnEditFinish.innerHTML = EasyJsonForm.iconOK;
 
             btnEdit.onclick = () => {
                 let editor = this.structure[i].builderEditorCreate(() => {
@@ -753,7 +753,7 @@ class Fog {
             btnMoveUp.style.backgroundColor = 'Transparent';
             btnMoveUp.style.border = 'none';
             btnMoveUp.style.outline = 'none';
-            btnMoveUp.innerHTML = Fog.iconUp;
+            btnMoveUp.innerHTML = EasyJsonForm.iconUp;
             btnMoveUp.onclick = () => this.builderMoveItem(i, -1);
             tr.insertCell(-1).appendChild(btnMoveUp);
 
@@ -763,7 +763,7 @@ class Fog {
             btnMoveDown.style.backgroundColor = 'Transparent';
             btnMoveDown.style.border = 'none';
             btnMoveDown.style.outline = 'none';
-            btnMoveDown.innerHTML = Fog.iconDown;
+            btnMoveDown.innerHTML = EasyJsonForm.iconDown;
             btnMoveDown.onclick = () => this.builderMoveItem(i, +1);
             tr.insertCell(-1).appendChild(btnMoveDown);
             
@@ -773,7 +773,7 @@ class Fog {
             btnDelete.style.backgroundColor = 'Transparent';
             btnDelete.style.border = 'none';
             btnDelete.style.outline = 'none';
-            btnDelete.innerHTML = Fog.iconDelete;
+            btnDelete.innerHTML = EasyJsonForm.iconDelete;
             btnDelete.onclick = () => this.builderDeleteItem(i);
             tr.insertCell(-1).appendChild(btnDelete);
         });
@@ -786,7 +786,7 @@ class Fog {
         if (!this.form) {
             this.form = document.createElement('form');
             this.form.id = this.id;
-            this.form.classList.add('fog-form');
+            this.form.classList.add('ejf-form');
             this.applyStyle('form', this.form);
             this.formUpdate();
         }
@@ -807,7 +807,7 @@ class Fog {
     structureImport(structure) {
         this.structure = [];
         structure.forEach(element => {
-            let classs = Fog.registeredClasses[element.type];
+            let classs = EasyJsonForm.registeredClasses[element.type];
             if (classs) this.structure.push(new classs(element));
         });
         if (this.builder) this.builderUpdate();
@@ -815,17 +815,17 @@ class Fog {
     }
 
     // Resources
-    static newElementId = () => `fog-${++Fog.elementId}`;
-    static getElementId = () => `fog-${Fog.elementId}`;
+    static newElementId = () => `ejf-${++EasyJsonForm.elementId}`;
+    static getElementId = () => `ejf-${EasyJsonForm.elementId}`;
     static elementId = 0;
     static registeredClasses = {
-        'choice': FogFieldChoice,
-        'file': FogFieldFile,
-        'groupedtext': FogFieldGroupedText,
-        'multiplechoice': FogFieldMultipleChoice,
-        'singlechoice': FogFieldSingleChoice,
-        'text': FogFieldText,
-        'textarea': FogFieldTextArea,
+        'choice': EasyJsonFormFieldChoice,
+        'file': EasyJsonFormFieldFile,
+        'groupedtext': EasyJsonFormFieldGroupedText,
+        'multiplechoice': EasyJsonFormFieldMultipleChoice,
+        'singlechoice': EasyJsonFormFieldSingleChoice,
+        'text': EasyJsonFormFieldText,
+        'textarea': EasyJsonFormFieldTextArea,
     };
     static supportedFileTypes = {
         'application/pdf' : {extensions:['pdf']},

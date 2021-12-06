@@ -1,5 +1,5 @@
 // Atenção: Não altere os valores {{entre chaves duplas}} e não remova itens.
-var fog_pt_BR = {
+var ejf_pt_BR = {
 	"builder.message.delete": "Tem certeza que deseja apagar o item na posição {{position}}?",
 	"form.field.helper.text": " <small>({{helper-text}})</small>",
 	"form.field.helper.text.length.by.character": "min. caracteres: {{min}}, máx. caracteres: {{max}}",

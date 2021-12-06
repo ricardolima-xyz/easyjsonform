@@ -29,13 +29,13 @@
     <script>
         
         /*
-        Fog.dictionary = fog_pt_BR; 
+        EasyJsonForm.dictionary = ejf_pt_BR; 
         */
         let createHeader = (x) => { let r = document.createElement('h2'); r.textContent = x; return r; };
-        let sampleFogStructure = [
+        let sampleEasyJsonFormStructure = [
             {"type":"groupedtext","description":"Autor 1","customattribute":"noreview","mandatory":true,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 2","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 3","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 4","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 5","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"singlechoice","description":"Quem irá apresentar","customattribute":"noreview","mandatory":true,"spec":{"items":["Autor 1","Autor 2","Autor 3","Autor 4","Autor 5"]}},{"type":"text","description":"Título","customattribute":"","mandatory":true,"spec":null},{"type":"text","description":"Palavras-chave","customattribute":"","mandatory":true,"spec":null},{"type":"singlechoice","description":"Sub-área","customattribute":"","mandatory":true,"spec":{"items":["A - Gestão de Eventos Esportivos","B - Gestão de Instalações Esportivas","C - Formação Profissional na Gestão do Esporte","D - Ensino da Gestão do Esporte","E - Gestão de Recursos Humanos","F - Legislação e Ética","G - Marketing Esportivo","H - Mídia e Comunicação do Esporte","I - Políticas Públicas de Esporte","J - Estratégia, Governança e Responsabilidade Social Corporativa","K - Economia e Finanças na Gestão do Esporte","L - Métodos de Pesquisa em Gestão do Esporte","M - Outros temas ligados à Gestão do Esporte"]}},{"type":"singlechoice","description":"Tipo de apresentação","customattribute":"","mandatory":true,"spec":{"items":["Pôster","Comunicação Oral","Pitch"]}},{"type":"bigtext","description":"Resumo","customattribute":"","mandatory":true,"spec":{"min_words":"600","max_words":"900"}},{"type":"bigtext","description":"Referências Bibliográficas","customattribute":"","mandatory":false,"spec":{"min_words":"0","max_words":"0"}}
         ];
-        let xsampleFogStructure = 
+        let xsampleEasyJsonFormStructure = 
         [
             {"type":"text","description":"This is a text field","customattribute":"Custom attribute for text","mandatory":true,"spec":null,"value":"Test value for text"},
             {"type":"textarea","description":"This is a character restricted text area field","customattribute":"Custom attribute for character restricted text area","mandatory":true,"spec":{"length":{"measure":"bycharacter","min":2,"max":100}},"value":"Test value for character restricted text area"},
@@ -48,205 +48,205 @@
             {"type":"file","description":"This is a file field","customattribute":"Custom attribute for file","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null},
             {"type":"file","description":"This is another file field","customattribute":"Custom attribute for another file","mandatory":true,"spec":{"file_types":["image/bmp","image/gif"],"max_size":42},"value":'somefile'},
         ];
-        let sampleFog;
+        let sampleEasyJsonForm;
         // Listing all possible areas that can be styled by applying css classes (using classList) 
         // or using css properties directy (using style). They are all shown just for reference. 
         // In a real-world application, empty entries don't need to be declared.
-        let sampleFogStyle = {
+        let sampleEasyJsonFormStyle = {
             builder: { 
-                // css selector: .fog-builder
+                // css selector: .ejf-builder
                 classList: [],
                 style: {},
             },
             builderTable: { 
-                // css selector: .fog-builder-table
+                // css selector: .ejf-builder-table
                 classList: ['table'],
                 style: {},
             },
             builderToolbar: { 
-                // css selector: .fog-builder-toolbar
+                // css selector: .ejf-builder-toolbar
                 classList: [],
                 style: {},
             },
             builderToolbarButton: { 
-                // css selector: .fog-builder-toolbar > button
+                // css selector: .ejf-builder-toolbar > button
                 classList: ['btn', 'btn-outline-primary', 'btn-sm'],
                 style: {},
             },
             form: { 
-                // css selector for all fog forms: .fog-form
-                // css selector for a specific fog form: #YOUR_FORM_ID
+                // css selector for all ejf forms: .ejf-form
+                // css selector for a specific ejf form: #YOUR_FORM_ID
                 classList: [],
                 style: {},
             },
             fieldChoice: {
-                // css selector: .fog-field-choice
+                // css selector: .ejf-field-choice
                 classList: ['my-3', 'form-check'],
                 style: {},
             },
             fieldChoiceLabel: {
-                // css selector: .fog-field-choice > label
+                // css selector: .ejf-field-choice > label
                 classList: ['form-check-label'],
                 style: {},
             },
             fieldChoiceCheckbox: {
-                // css selector: .fog-field-choice > input[type=checkbox]
+                // css selector: .ejf-field-choice > input[type=checkbox]
                 classList: ['form-check-input'],
                 style: {},
             },
             fieldFile: {
-                // css selector: .fog-field-file
+                // css selector: .ejf-field-file
                 classList: ['my-3'],
                 style: {},
             },
             fieldFileLabel: {
-                // css selector: .fog-field-file > label
+                // css selector: .ejf-field-file > label
                 classList: ['form-label'],
                 style: {},
             },
             fieldFileInput: {
-                // css selector: .fog-field-file > input[type=file]
+                // css selector: .ejf-field-file > input[type=file]
                 classList: ['form-control'],
                 style: {},
             },
             fieldFileInfo: {
-                // css selector: .fog-field-file > span
+                // css selector: .ejf-field-file > span
                 classList: ['d-flex', 'flex-nowrap', 'btn-group'],
                 style: {},
             },
             fieldFileLink: {
-                // css selector: .fog-field-file > span > a
+                // css selector: .ejf-field-file > span > a
                 classList: ['btn', 'btn-outline-primary', 'flex-grow-1', 'text-start'],
                 style: {},
             },
             fieldFileClear: {
-                // css selector: .fog-field-file > span > button
+                // css selector: .ejf-field-file > span > button
                 classList: ['btn', 'btn-outline-danger', 'flex-grow-0'],
                 style: {},
             },
             fieldGroupedtext: {
-                // css selector: .fog-field-groupedtext
+                // css selector: .ejf-field-groupedtext
                 classList: ['my-3'],
                 style: {},
             },
             fieldGroupedtextLabel: {
-                // css selector: .fog-field-groupedtext > label
+                // css selector: .ejf-field-groupedtext > label
                 classList: ['form-label'],
                 style: {},
             },
             fieldGroupedtextGroup: {
-                // css selector: .fog-field-groupedtext > span
+                // css selector: .ejf-field-groupedtext > span
                 classList: ['d-flex','flex-nowrap','justify-content-between','align-items-stretch'],
                 style: {},
             },
             fieldGroupedtextItem: {
-                // css selector: .fog-field-groupedtext > span > span
+                // css selector: .ejf-field-groupedtext > span > span
                 classList: ['input-group','d-inline-flex'],
                 style: {},
             },
             fieldGroupedtextItemLabel: {
-                // css selector: .fog-field-groupedtext > span > span > label
+                // css selector: .ejf-field-groupedtext > span > span > label
                 classList: ['input-group-text'],
                 style: {},
             },
             fieldGroupedtextItemInput: {
-                // css selector: .fog-field-groupedtext > span > span > input[type=text]
+                // css selector: .ejf-field-groupedtext > span > span > input[type=text]
                 classList: ['form-control'],
                 style: {},
             },
             fieldMultiplechoice: {
-                // css selector: .fog-field-multiplechoice
+                // css selector: .ejf-field-multiplechoice
                 classList: ['my-3'],
                 style: {},
             },
             fieldMultiplechoiceLabel: {
-                // css selector: .fog-field-multiplechoice > label
+                // css selector: .ejf-field-multiplechoice > label
                 classList: ['form-label'],
                 style: {},
             },
             fieldMultiplechoiceGroup: {
-                // css selector: .fog-field-multiplechoice > span
+                // css selector: .ejf-field-multiplechoice > span
                 classList: ['d-flex','justify-content-start','align-items-start'],
                 style: {},
             },
             fieldMultiplechoiceItem: {
-                // css selector: .fog-field-multiplechoice > span > span
+                // css selector: .ejf-field-multiplechoice > span > span
                 classList: ['form-check', 'flex-grow-1'],
                 style: {},
             },
             fieldMultiplechoiceItemLabel: {
-                // css selector: .fog-field-multiplechoice > span > span > label
+                // css selector: .ejf-field-multiplechoice > span > span > label
                 classList: ['form-check-label'],
                 style: {},
             },
             fieldMultiplechoiceItemInput: {
-                // css selector: .fog-field-multiplechoice > span > span > input[type=checkbox]
+                // css selector: .ejf-field-multiplechoice > span > span > input[type=checkbox]
                 classList: ['form-check-input'],
                 style: {},
             },
             fieldSinglechoice: {
-                // css selector: .fog-field-singlechoice
+                // css selector: .ejf-field-singlechoice
                 classList: ['my-3'],
                 style: {},
             },
             fieldSinglechoiceLabel: {
-                // css selector: .fog-field-singlechoice > label
+                // css selector: .ejf-field-singlechoice > label
                 classList: ['form-label'],
                 style: {},
             },
             fieldSinglechoiceSelect: {
-                // css selector: .fog-field-singlechoice > select
+                // css selector: .ejf-field-singlechoice > select
                 classList: ['form-select'],
                 style: {},
             },
             fieldText: {
-                // css selector: .fog-field-text
+                // css selector: .ejf-field-text
                 classList: ['my-3'],
                 style: {},
             },
             fieldTextLabel: {
-                // css selector: .fog-field-text > label
+                // css selector: .ejf-field-text > label
                 classList: ['form-label'],
                 style: {},
             },
             fieldTextInput: {
-                // css selector: .fog-field-text > input[type=text]
+                // css selector: .ejf-field-text > input[type=text]
                 classList: ['form-control'],
                 style: {},
             },
             fieldTextarea: {
-                // css selector: .fog-field-textarea
+                // css selector: .ejf-field-textarea
                 classList: ['my-3'],
                 style: {},
             },
             fieldTextareaLabel: {
-                // css selector: .fog-field-textarea > label
+                // css selector: .ejf-field-textarea > label
                 classList: ['form-label'],
                 style: {},
             },
             fieldTextareaInfo: {
-                // css selector: .fog-field-textarea > span
+                // css selector: .ejf-field-textarea > span
                 classList: ['form-text','float-end'],
                 style: {},
             },
             fieldTextareaInput: {
-                // css selector: .fog-field-textarea > textarea
+                // css selector: .ejf-field-textarea > textarea
                 classList: ['form-control'],
                 style: {},
             },
         };
-        let sampleFogOptions = {
+        let sampleEasyJsonFormOptions = {
             // 'disabled' makes form and structure read-only when set true. Default is false.
             disabled: false,
             // 'fileHandler' contains the set of functions needed to deal with files that are
-            // uploaded with Fog. The files in Fog are uploaded assynchronously and, on success,
+            // uploaded with EasyJsonForm. The files in EasyJsonForm are uploaded assynchronously and, on success,
             // a text value is returned. With this text value 2 more methods are necessary: One
             // that converts that name into a display name an the other that convert that name 
             // into a http link to be clicked by the user. If fileHandler is not supported, the
             // file operations will return errors
             fileHandler: {
                 // Returns a string with the name to be displayed
-                displayName: (value) => Fog.dictionary['item.file.vaule.uploaded.file'],
+                displayName: (value) => EasyJsonForm.dictionary['item.file.vaule.uploaded.file'],
                 // Returns a Promise (fetch can be used!) which will resolve as an object with keys 
                 // 'success' (boolean) and 'value' (string: value to be stored or error message)
                 upload: (file) => {
@@ -260,13 +260,13 @@
             },
             // 'onStructureChange' can receive a callback function which is invoked whenever there
             // is a change on the structure of the form caused by the builder
-            onStructureChange: () => sampleFog.formUpdate(),
+            onStructureChange: () => sampleEasyJsonForm.formUpdate(),
         };
-        sampleFog = new Fog('sample', sampleFogStructure, sampleFogStyle, sampleFogOptions);
-        document.querySelector('main').appendChild(createHeader('Fog builder'));
-        document.querySelector('main').appendChild(sampleFog.builderGet());
-        document.querySelector('main').appendChild(createHeader('Fog form'));
-        document.querySelector('main').appendChild(sampleFog.formGet());
+        sampleEasyJsonForm = new EasyJsonForm('sample', sampleEasyJsonFormStructure, sampleEasyJsonFormStyle, sampleEasyJsonFormOptions);
+        document.querySelector('main').appendChild(createHeader('EasyJsonForm builder'));
+        document.querySelector('main').appendChild(sampleEasyJsonForm.builderGet());
+        document.querySelector('main').appendChild(createHeader('EasyJsonForm form'));
+        document.querySelector('main').appendChild(sampleEasyJsonForm.formGet());
 
     </script>
     

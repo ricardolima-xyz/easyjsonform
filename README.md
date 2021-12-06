@@ -2,34 +2,32 @@
 
 ## When you need just a _form_, not a `<form>`.
 
-**EasyJsonForm is a javascript form builder framework. Forms are created visually and are descripted as json objects. The form data is also descripted as json objects.**
+**EasyJsonForm is a javascript form building library. Forms can be visually created and are internally represented as json objects. Form data are also represented as json objects.**
 
-You, developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where users, by nature, need to create forms. Examples of such applications are:**
+## Why a form builder?
+
+You, developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where end users need to create forms. Examples of such applications are:**
 
 - Survey systems
 - Homework submission systems
 
+EasyJsonForm makes that task easy for your application user.
+
 ## Key features
 
-- Real world types: Multiple choice instead of checkbox
-- Visual form builder focused on the end-user
-- Pure javascript, no dependencies
-- ...but easily styled with Bootstrap or your preferred css classes and styles!
-- Forms and form data are descripted in JSON
+- Visual form builder focused on end-users
+- (Forms and form data are descripted in JSON
+- Real world types: "Multiple choice" instead of "checkbox"
+- Pure ES6 javascript, no dependencies
+- Can be easily styled with Bootstrap or your preferred css classes and styles!
 
-## Phase 1: Builder
+## The builder
 
-You can write your own JSON to build a form if you want, but we offer a user interface to visually build your form.
+EasyJsonForm features a user interface that enables users to visually create their forms. Internally, the form data is represented as a json object. This Json can be reloaded by the builder for further changes or be transformed into a form.
 
-- With the builder, users can intuitivelly create their forms.
-- Internally, the builder stores the form structure as a json string that can be easily stored by your application and retrieved by EasyJsonForm.
+## The forms
 
-## Phase 2: Form
-
-Once the form structure is created, now it is time for the other users to fill up the form.
-
-- With the structure, EasyJsonForm can build the form for the other users to fill.
-- The filled-up form is also represented internally by a json file, so you can easily save it on the database and manipulate it in javascript or PHP.
+Once the form json is created, it can be tranformed to a form so other users are able to fill it up. Submitted form data are also represented as json objects so data can be easily manipulated by, for example, your PHP or javascript application.
 
 ---
 
