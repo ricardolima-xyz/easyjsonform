@@ -6,7 +6,7 @@
 
 ## Why a form builder?
 
-You, developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where end users need to create forms. Examples of such applications are:**
+You, developer, probably know how to build `<form>` structures, but let's suppose you are developing an application where end users need to create forms. Examples of such applications are:
 
 - Survey systems
 - Homework submission systems
@@ -15,19 +15,18 @@ EasyJsonForm makes that task easy for your application user.
 
 ## Key features
 
-- Visual form builder focused on end-users
-- (Forms and form data are descripted in JSON
-- Real world types: "Multiple choice" instead of "checkbox"
-- Pure ES6 javascript, no dependencies
-- Can be easily styled with Bootstrap or your preferred css classes and styles!
+- _Easy:_ Visual form builder focused on end-users
+- _Json:_ Forms and form data are represented as JSON objects
+- _Form:_ Real-world approach. We offer "Multiple choice" instead of "checkbox"
+- Pure javascript, no dependencies. Can be easily styled with Bootstrap or your preferred css classes and styles!
 
 ## The builder
 
-EasyJsonForm features a user interface that enables users to visually create their forms. Internally, the form data is represented as a json object. This Json can be reloaded by the builder for further changes or be transformed into a form.
+EasyJsonForm features the Builder, a user interface that enables users to visually create their forms. Builder shows how the form will look like after each edit. Internally, the form data is represented as a json object. This json can be reloaded by the builder for further changes or be transformed into a form.
 
 ## The forms
 
-Once the form json is created, it can be tranformed to a form so other users are able to fill it up. Submitted form data are also represented as json objects so data can be easily manipulated by, for example, your PHP or javascript application.
+Once you have json form is created, it can be tranformed into a form so other users are able to fill it up. Submitted form data are also represented as json objects so data can be easily manipulated by, for example, your PHP or javascript application. We also recommend **EasyJsonStats** for creating beautiful statistics from your EasyJsonForm data.
 
 ---
 
