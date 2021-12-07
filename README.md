@@ -1,6 +1,6 @@
 # EasyJsonForm
 
-## When you need just a _form_, not a `<form>`.
+## When you just need a _form_, not a `<form>`.
 
 **EasyJsonForm is a javascript form building library. Forms can be visually created and are internally represented as json objects. Form data are also represented as json objects.**
 

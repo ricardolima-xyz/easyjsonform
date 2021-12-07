@@ -16,8 +16,30 @@
             <span class="badge rounded-pill bg-primary">easy<br/>json<br/>form</span>
         </h1>
         <h2 class="text-center">
-            <span class="text-muted">When you need just a <span style="font-family: 'Meow Script', cursive; font-size:3.5rem; font-weight: '800';">form</span>, not a &lt;form&gt;</span>
+            <span class="text-muted">When you just need a <span style="font-family: 'Meow Script', cursive; font-size:3.5rem; font-weight: '800';">form</span>, not a &lt;form&gt;</span>
         </h2>
+
+        <p class="lead">
+            EasyJsonForm is a javascript form building library. Forms can be visually created and are internally represented as json objects. Form data are also represented as json objects.
+        </p>
+
+        <h2>Give it a try!</h2>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="builder-tab" data-bs-toggle="tab" data-bs-target="#builder" type="button" role="tab" aria-controls="builder" aria-selected="true">Builder</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="false">Form</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="json-tab" data-bs-toggle="tab" data-bs-target="#json" type="button" role="tab" aria-controls="json" aria-selected="false">Json object</button>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="builder" role="tabpanel" aria-labelledby="builder-tab"></div>
+            <div class="tab-pane fade" id="form" role="tabpanel" aria-labelledby="form-tab"></div>
+            <div class="tab-pane fade" id="json" role="tabpanel" aria-labelledby="json-tab"><pre><code id="jsonData"></code></pre></div>
+          </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="../easyjsonform.js"></script>
@@ -27,18 +49,16 @@
         /*
         EasyJsonForm.dictionary = ejf_pt_BR; 
         */
-        let createHeader = (x) => { let r = document.createElement('h2'); r.textContent = x; return r; };
-        let sampleEasyJsonFormStructure = [
-            {"type":"groupedtext","description":"Autor 1","customattribute":"noreview","mandatory":true,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 2","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 3","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 4","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"groupedtext","description":"Autor 5","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"singlechoice","description":"Quem irá apresentar","customattribute":"noreview","mandatory":true,"spec":{"items":["Autor 1","Autor 2","Autor 3","Autor 4","Autor 5"]}},{"type":"text","description":"Título","customattribute":"","mandatory":true,"spec":null},{"type":"text","description":"Palavras-chave","customattribute":"","mandatory":true,"spec":null},{"type":"singlechoice","description":"Sub-área","customattribute":"","mandatory":true,"spec":{"items":["A - Gestão de Eventos Esportivos","B - Gestão de Instalações Esportivas","C - Formação Profissional na Gestão do Esporte","D - Ensino da Gestão do Esporte","E - Gestão de Recursos Humanos","F - Legislação e Ética","G - Marketing Esportivo","H - Mídia e Comunicação do Esporte","I - Políticas Públicas de Esporte","J - Estratégia, Governança e Responsabilidade Social Corporativa","K - Economia e Finanças na Gestão do Esporte","L - Métodos de Pesquisa em Gestão do Esporte","M - Outros temas ligados à Gestão do Esporte"]}},{"type":"singlechoice","description":"Tipo de apresentação","customattribute":"","mandatory":true,"spec":{"items":["Pôster","Comunicação Oral","Pitch"]}},{"type":"bigtext","description":"Resumo","customattribute":"","mandatory":true,"spec":{"min_words":"600","max_words":"900"}},{"type":"bigtext","description":"Referências Bibliográficas","customattribute":"","mandatory":false,"spec":{"min_words":"0","max_words":"0"}}
+        let xsampleEasyJsonFormStructure = [
+            {"type":"textgroup","description":"Autor 1","customattribute":"noreview","mandatory":true,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 2","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 3","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 4","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 5","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"singlechoice","description":"Quem irá apresentar","customattribute":"noreview","mandatory":true,"spec":{"items":["Autor 1","Autor 2","Autor 3","Autor 4","Autor 5"]}},{"type":"text","description":"Título","customattribute":"","mandatory":true,"spec":null},{"type":"text","description":"Palavras-chave","customattribute":"","mandatory":true,"spec":null},{"type":"singlechoice","description":"Sub-área","customattribute":"","mandatory":true,"spec":{"items":["A - Gestão de Eventos Esportivos","B - Gestão de Instalações Esportivas","C - Formação Profissional na Gestão do Esporte","D - Ensino da Gestão do Esporte","E - Gestão de Recursos Humanos","F - Legislação e Ética","G - Marketing Esportivo","H - Mídia e Comunicação do Esporte","I - Políticas Públicas de Esporte","J - Estratégia, Governança e Responsabilidade Social Corporativa","K - Economia e Finanças na Gestão do Esporte","L - Métodos de Pesquisa em Gestão do Esporte","M - Outros temas ligados à Gestão do Esporte"]}},{"type":"singlechoice","description":"Tipo de apresentação","customattribute":"","mandatory":true,"spec":{"items":["Pôster","Comunicação Oral","Pitch"]}},{"type":"bigtext","description":"Resumo","customattribute":"","mandatory":true,"spec":{"min_words":"600","max_words":"900"}},{"type":"bigtext","description":"Referências Bibliográficas","customattribute":"","mandatory":false,"spec":{"min_words":"0","max_words":"0"}}
         ];
-        let xsampleEasyJsonFormStructure = 
+        let sampleEasyJsonFormStructure = 
         [
-            {"type":"text","description":"This is a text field","customattribute":"Custom attribute for text","mandatory":true,"spec":null,"value":"Test value for text"},
-            {"type":"textarea","description":"This is a character restricted text area field","customattribute":"Custom attribute for character restricted text area","mandatory":true,"spec":{"length":{"measure":"bycharacter","min":2,"max":100}},"value":"Test value for character restricted text area"},
-            {"type":"textarea","description":"This is a word restricted text area field","customattribute":"Custom attribute word restricted for text area","mandatory":true,"spec":{"length":{"measure":"byword","min":2,"max":100}},"value":"Test value for word restricted text area"},
-            {"type":"textarea","description":"This is an unrestricted text area field","customattribute":"Custom attribute for unrestricted text area","mandatory":true,"spec":{"length":{"measure":"no","min":2,"max":100}},"value":"Test value for unrestricted text area"},
-            {"type":"groupedtext","description":"This is a grouped text field","customattribute":"Custom attribute for custom text","mandatory":true,"spec":{"items":["a","b","c"]},"value":['å','∫','ç']},
-            {"type":"choice","description":"This is a choice field","customattribute":"Custom attribute for choice","mandatory":true,"spec":null,"value":"1"},
+            {"type":"text","description":"This is a character restricted text field","customattribute":"Custom attribute for character restricted text","mandatory":true,"spec":{"length":{"measure":"bycharacter","min":2,"max":100}},"value":"Test value for character restricted text area"},
+            {"type":"text","description":"This is a word restricted text field","customattribute":"Custom attribute word restricted for text","mandatory":true,"spec":{"length":{"measure":"byword","min":2,"max":100}},"value":"Test value for word restricted text area"},
+            {"type":"text","description":"This is an unrestricted text field","customattribute":"Custom attribute for unrestricted text","mandatory":true,"spec":{"length":{"measure":"no","min":2,"max":100}},"value":"Test value for unrestricted text area"},
+            {"type":"textgroup","description":"This is a text group field","customattribute":"Custom attribute for text group","mandatory":true,"spec":{"items":["a","b","c"]},"value":['å','∫','ç']},
+            {"type":"number","description":"This is a number field","customattribute":"Custom attribute for number","mandatory":true,"spec":null,"value":null},
             {"type":"singlechoice","description":"This is a single choice field","customattribute":"Custom attribute for single choice","mandatory":true,"spec":{"items":["m","n","o"]},"value":"1"},
             {"type":"multiplechoice","description":"This is a multiple choice field","customattribute":"Custom attribute for multiple choice","mandatory":true,"spec":{"items":["x","y","z"]},"value":["0","1","0"]},
             {"type":"file","description":"This is a file field","customattribute":"Custom attribute for file","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null},
@@ -61,7 +81,7 @@
             },
             builderToolbar: { 
                 // css selector: .ejf-builder-toolbar
-                classList: [],
+                classList: ['btn-group'],
                 style: {},
             },
             builderToolbarButton: { 
@@ -73,21 +93,6 @@
                 // css selector for all ejf forms: .ejf-form
                 // css selector for a specific ejf form: #YOUR_FORM_ID
                 classList: [],
-                style: {},
-            },
-            fieldChoice: {
-                // css selector: .ejf-field-choice
-                classList: ['my-3', 'form-check'],
-                style: {},
-            },
-            fieldChoiceLabel: {
-                // css selector: .ejf-field-choice > label
-                classList: ['form-check-label'],
-                style: {},
-            },
-            fieldChoiceCheckbox: {
-                // css selector: .ejf-field-choice > input[type=checkbox]
-                classList: ['form-check-input'],
                 style: {},
             },
             fieldFile: {
@@ -118,36 +123,6 @@
             fieldFileClear: {
                 // css selector: .ejf-field-file > span > button
                 classList: ['btn', 'btn-outline-danger', 'flex-grow-0'],
-                style: {},
-            },
-            fieldGroupedtext: {
-                // css selector: .ejf-field-groupedtext
-                classList: ['my-3'],
-                style: {},
-            },
-            fieldGroupedtextLabel: {
-                // css selector: .ejf-field-groupedtext > label
-                classList: ['form-label'],
-                style: {},
-            },
-            fieldGroupedtextGroup: {
-                // css selector: .ejf-field-groupedtext > span
-                classList: ['d-flex','flex-nowrap','justify-content-between','align-items-stretch'],
-                style: {},
-            },
-            fieldGroupedtextItem: {
-                // css selector: .ejf-field-groupedtext > span > span
-                classList: ['input-group','d-inline-flex'],
-                style: {},
-            },
-            fieldGroupedtextItemLabel: {
-                // css selector: .ejf-field-groupedtext > span > span > label
-                classList: ['input-group-text'],
-                style: {},
-            },
-            fieldGroupedtextItemInput: {
-                // css selector: .ejf-field-groupedtext > span > span > input[type=text]
-                classList: ['form-control'],
                 style: {},
             },
             fieldMultiplechoice: {
@@ -195,6 +170,21 @@
                 classList: ['form-select'],
                 style: {},
             },
+            fieldNumber: {
+                // css selector: .ejf-field-number
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldNumberLabel: {
+                // css selector: .ejf-field-number > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldNumberInput: {
+                // css selector: .ejf-field-number > input[type=number]
+                classList: ['form-control'],
+                style: {},
+            },
             fieldText: {
                 // css selector: .ejf-field-text
                 classList: ['my-3'],
@@ -205,28 +195,43 @@
                 classList: ['form-label'],
                 style: {},
             },
-            fieldTextInput: {
-                // css selector: .ejf-field-text > input[type=text]
-                classList: ['form-control'],
-                style: {},
-            },
-            fieldTextarea: {
-                // css selector: .ejf-field-textarea
-                classList: ['my-3'],
-                style: {},
-            },
-            fieldTextareaLabel: {
-                // css selector: .ejf-field-textarea > label
-                classList: ['form-label'],
-                style: {},
-            },
-            fieldTextareaInfo: {
-                // css selector: .ejf-field-textarea > span
+            fieldTextInfo: {
+                // css selector: .ejf-field-text > span
                 classList: ['form-text','float-end'],
                 style: {},
             },
-            fieldTextareaInput: {
-                // css selector: .ejf-field-textarea > textarea
+            fieldTextInput: {
+                // css selector: .ejf-field-text > input, .ejf-field-text > textarea 
+                classList: ['form-control'],
+                style: {},
+            },
+            fieldTextgroup: {
+                // css selector: .ejf-field-textgroup
+                classList: ['my-3'],
+                style: {},
+            },
+            fieldTextgroupLabel: {
+                // css selector: .ejf-field-textgroup > label
+                classList: ['form-label'],
+                style: {},
+            },
+            fieldTextgroupGroup: {
+                // css selector: .ejf-field-textgroup > span
+                classList: ['d-flex','flex-nowrap','justify-content-between','align-items-stretch'],
+                style: {},
+            },
+            fieldTextgroupItem: {
+                // css selector: .ejf-field-textgroup > span > span
+                classList: ['input-group','d-inline-flex'],
+                style: {},
+            },
+            fieldTextgroupItemLabel: {
+                // css selector: .ejf-field-textgroup > span > span > label
+                classList: ['input-group-text'],
+                style: {},
+            },
+            fieldTextgroupItemInput: {
+                // css selector: .ejf-field-textgroup > span > span > input[type=text]
                 classList: ['form-control'],
                 style: {},
             },
@@ -256,13 +261,14 @@
             },
             // 'onStructureChange' can receive a callback function which is invoked whenever there
             // is a change on the structure of the form caused by the builder
-            onStructureChange: () => sampleEasyJsonForm.formUpdate(),
+            onStructureChange: () => {
+                sampleEasyJsonForm.formUpdate();
+                document.querySelector('#jsonData').textContent = JSON.stringify(sampleEasyJsonForm.structureExport(), null, 4);
+            },
         };
-        sampleEasyJsonForm = new EasyJsonForm('sample', sampleEasyJsonFormStructure, sampleEasyJsonFormStyle, sampleEasyJsonFormOptions);
-        document.querySelector('main').appendChild(createHeader('EasyJsonForm builder'));
-        document.querySelector('main').appendChild(sampleEasyJsonForm.builderGet());
-        document.querySelector('main').appendChild(createHeader('EasyJsonForm form'));
-        document.querySelector('main').appendChild(sampleEasyJsonForm.formGet());
+        sampleEasyJsonForm = new EasyJsonForm('sample', [], sampleEasyJsonFormStyle, sampleEasyJsonFormOptions);
+        document.querySelector('#builder').appendChild(sampleEasyJsonForm.builderGet());
+        document.querySelector('#form').appendChild(sampleEasyJsonForm.formGet());
 
     </script>
     
