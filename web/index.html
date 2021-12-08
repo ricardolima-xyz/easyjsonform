@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Meow+Script&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style> .custom-class {
+        background-color: yellowgreen;
+    }
+    </style>
 </head>
 <body>
     <main class="container my-4">
@@ -50,189 +54,179 @@
         EasyJsonForm.dictionary = ejf_pt_BR; 
         */
         let xsampleEasyJsonFormStructure = [
-            {"type":"textgroup","description":"Autor 1","customattribute":"noreview","mandatory":true,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 2","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 3","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 4","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","description":"Autor 5","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"singlechoice","description":"Quem irá apresentar","customattribute":"noreview","mandatory":true,"spec":{"items":["Autor 1","Autor 2","Autor 3","Autor 4","Autor 5"]}},{"type":"text","description":"Título","customattribute":"","mandatory":true,"spec":null},{"type":"text","description":"Palavras-chave","customattribute":"","mandatory":true,"spec":null},{"type":"singlechoice","description":"Sub-área","customattribute":"","mandatory":true,"spec":{"items":["A - Gestão de Eventos Esportivos","B - Gestão de Instalações Esportivas","C - Formação Profissional na Gestão do Esporte","D - Ensino da Gestão do Esporte","E - Gestão de Recursos Humanos","F - Legislação e Ética","G - Marketing Esportivo","H - Mídia e Comunicação do Esporte","I - Políticas Públicas de Esporte","J - Estratégia, Governança e Responsabilidade Social Corporativa","K - Economia e Finanças na Gestão do Esporte","L - Métodos de Pesquisa em Gestão do Esporte","M - Outros temas ligados à Gestão do Esporte"]}},{"type":"singlechoice","description":"Tipo de apresentação","customattribute":"","mandatory":true,"spec":{"items":["Pôster","Comunicação Oral","Pitch"]}},{"type":"bigtext","description":"Resumo","customattribute":"","mandatory":true,"spec":{"min_words":"600","max_words":"900"}},{"type":"bigtext","description":"Referências Bibliográficas","customattribute":"","mandatory":false,"spec":{"min_words":"0","max_words":"0"}}
+            {"type":"textgroup","label":"Autor 1","customattribute":"noreview","mandatory":true,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","label":"Autor 2","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","label":"Autor 3","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","label":"Autor 4","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"textgroup","label":"Autor 5","customattribute":"noreview","mandatory":false,"spec":{"items":["Nome","Instituição","E-mail"]}},{"type":"singlechoice","label":"Quem irá apresentar","customattribute":"noreview","mandatory":true,"spec":{"items":["Autor 1","Autor 2","Autor 3","Autor 4","Autor 5"]}},{"type":"text","label":"Título","customattribute":"","mandatory":true,"spec":null},{"type":"text","label":"Palavras-chave","customattribute":"","mandatory":true,"spec":null},{"type":"singlechoice","label":"Sub-área","customattribute":"","mandatory":true,"spec":{"items":["A - Gestão de Eventos Esportivos","B - Gestão de Instalações Esportivas","C - Formação Profissional na Gestão do Esporte","D - Ensino da Gestão do Esporte","E - Gestão de Recursos Humanos","F - Legislação e Ética","G - Marketing Esportivo","H - Mídia e Comunicação do Esporte","I - Políticas Públicas de Esporte","J - Estratégia, Governança e Responsabilidade Social Corporativa","K - Economia e Finanças na Gestão do Esporte","L - Métodos de Pesquisa em Gestão do Esporte","M - Outros temas ligados à Gestão do Esporte"]}},{"type":"singlechoice","label":"Tipo de apresentação","customattribute":"","mandatory":true,"spec":{"items":["Pôster","Comunicação Oral","Pitch"]}},{"type":"bigtext","label":"Resumo","customattribute":"","mandatory":true,"spec":{"min_words":"600","max_words":"900"}},{"type":"bigtext","label":"Referências Bibliográficas","customattribute":"","mandatory":false,"spec":{"min_words":"0","max_words":"0"}}
         ];
         let sampleEasyJsonFormStructure = 
         [
-            {"type":"text","description":"This is a character restricted text field","customattribute":"Custom attribute for character restricted text","mandatory":true,"spec":{"length":{"measure":"bycharacter","min":2,"max":100}},"value":"Test value for character restricted text area"},
-            {"type":"text","description":"This is a word restricted text field","customattribute":"Custom attribute word restricted for text","mandatory":true,"spec":{"length":{"measure":"byword","min":2,"max":100}},"value":"Test value for word restricted text area"},
-            {"type":"text","description":"This is an unrestricted text field","customattribute":"Custom attribute for unrestricted text","mandatory":true,"spec":{"length":{"measure":"no","min":2,"max":100}},"value":"Test value for unrestricted text area"},
-            {"type":"textgroup","description":"This is a text group field","customattribute":"Custom attribute for text group","mandatory":true,"spec":{"items":["a","b","c"]},"value":['å','∫','ç']},
-            {"type":"number","description":"This is a number field","customattribute":"Custom attribute for number","mandatory":true,"spec":null,"value":null},
-            {"type":"singlechoice","description":"This is a single choice field","customattribute":"Custom attribute for single choice","mandatory":true,"spec":{"items":["m","n","o"]},"value":"1"},
-            {"type":"multiplechoice","description":"This is a multiple choice field","customattribute":"Custom attribute for multiple choice","mandatory":true,"spec":{"items":["x","y","z"]},"value":["0","1","0"]},
-            {"type":"file","description":"This is a file field","customattribute":"Custom attribute for file","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null},
-            {"type":"file","description":"This is another file field","customattribute":"Custom attribute for another file","mandatory":true,"spec":{"file_types":["image/bmp","image/gif"],"max_size":42},"value":'somefile'},
+            {"type":"text","label":"This is a character restricted text field","customattribute":"Custom attribute for character restricted text","mandatory":true,"spec":{"length":{"measure":"bycharacter","min":2,"max":100}},"value":"Test value for character restricted text area"},
+            {"type":"text","label":"This is a word restricted text field","customattribute":"Custom attribute word restricted for text","mandatory":true,"spec":{"length":{"measure":"byword","min":2,"max":100}},"value":"Test value for word restricted text area"},
+            {"type":"text","label":"This is an unrestricted text field","customattribute":"Custom attribute for unrestricted text","mandatory":true,"spec":{"length":{"measure":"no","min":2,"max":100}},"value":"Test value for unrestricted text area"},
+            {"type":"textgroup","label":"This is a text group field","customattribute":"Custom attribute for text group","mandatory":true,"spec":{"items":["a","b","c"]},"value":['å','∫','ç']},
+            {"type":"number","label":"This is a number field","customattribute":"Custom attribute for number","mandatory":true,"spec":null,"value":null},
+            {"type":"singlechoice","label":"This is a single choice field","customattribute":"Custom attribute for single choice","mandatory":true,"spec":{"items":["m","n","o"]},"value":"1"},
+            {"type":"multiplechoice","label":"This is a multiple choice field","customattribute":"Custom attribute for multiple choice","mandatory":true,"spec":{"items":["x","y","z"]},"value":["0","1","0"]},
+            {"type":"file","label":"This is a file field","customattribute":"Custom attribute for file","mandatory":true,"spec":{"file_types":["application/pdf","image/jpeg","image/bmp","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint"],"max_size":42},"value":null},
+            {"type":"file","label":"This is another file field","customattribute":"Custom attribute for another file","mandatory":true,"spec":{"file_types":["image/bmp","image/gif"],"max_size":42},"value":'somefile'},
         ];
         let sampleEasyJsonForm;
         // Listing all possible areas that can be styled by applying css classes (using classList) 
         // or using css properties directy (using style). They are all shown just for reference. 
         // In a real-world application, empty entries don't need to be declared.
         let sampleEasyJsonFormStyle = {
-            builder: { 
-                // css selector: .ejf-builder
+            Builder: { 
                 classList: [],
                 style: {},
             },
-            builderTable: { 
-                // css selector: .ejf-builder-table
+            BuilderTable: {
                 classList: ['table'],
                 style: {},
             },
-            builderToolbar: { 
-                // css selector: .ejf-builder-toolbar
-                classList: ['btn-group'],
+            BuilderToolbar: { 
+                classList: ['btn-group', 'mx-auto'],
                 style: {},
             },
-            builderToolbarButton: { 
-                // css selector: .ejf-builder-toolbar > button
+            BuilderToolbarButton: { 
                 classList: ['btn', 'btn-outline-primary', 'btn-sm'],
                 style: {},
             },
-            form: { 
-                // css selector for all ejf forms: .ejf-form
-                // css selector for a specific ejf form: #YOUR_FORM_ID
+            BuilderFieldTooldbar: {
+                classList: ['btn-group','w-100'],
+                style: {},
+            },
+            BuilderFieldTooldbarButton: {
+                classList: ['btn','btn-outline-primary', 'p-2'],
+                style: {},
+            },
+            BuilderFieldTooldbarDeleteButton: {
+                classList: ['btn','btn-outline-danger', 'p-2'],
+                style: {},
+            },
+            Form: { 
                 classList: [],
                 style: {},
             },
-            fieldFile: {
-                // css selector: .ejf-field-file
+            FieldFile: {
                 classList: ['my-3'],
                 style: {},
             },
-            fieldFileLabel: {
-                // css selector: .ejf-field-file > label
+            FieldFileLabel: {
                 classList: ['form-label'],
                 style: {},
             },
-            fieldFileInput: {
-                // css selector: .ejf-field-file > input[type=file]
+            FieldFileInput: {
                 classList: ['form-control'],
                 style: {},
             },
-            fieldFileInfo: {
-                // css selector: .ejf-field-file > span
+            FieldFileValue: {
                 classList: ['d-flex', 'flex-nowrap', 'btn-group'],
                 style: {},
             },
-            fieldFileLink: {
-                // css selector: .ejf-field-file > span > a
+            FieldFileLink: {
                 classList: ['btn', 'btn-outline-primary', 'flex-grow-1', 'text-start'],
                 style: {},
             },
-            fieldFileClear: {
-                // css selector: .ejf-field-file > span > button
+            FieldFileClear: {
                 classList: ['btn', 'btn-outline-danger', 'flex-grow-0'],
                 style: {},
             },
-            fieldMultiplechoice: {
-                // css selector: .ejf-field-multiplechoice
+            FieldMultiplechoice: {
                 classList: ['my-3'],
                 style: {},
             },
-            fieldMultiplechoiceLabel: {
-                // css selector: .ejf-field-multiplechoice > label
+            FieldMultiplechoiceLabel: {
                 classList: ['form-label'],
                 style: {},
             },
-            fieldMultiplechoiceGroup: {
-                // css selector: .ejf-field-multiplechoice > span
+            FieldMultiplechoiceGroup: {
                 classList: ['d-flex','justify-content-start','align-items-start'],
                 style: {},
             },
-            fieldMultiplechoiceItem: {
-                // css selector: .ejf-field-multiplechoice > span > span
+            FieldMultiplechoiceItem: {
                 classList: ['form-check', 'flex-grow-1'],
                 style: {},
             },
-            fieldMultiplechoiceItemLabel: {
-                // css selector: .ejf-field-multiplechoice > span > span > label
+            FieldMultiplechoiceItemLabel: {
                 classList: ['form-check-label'],
                 style: {},
             },
-            fieldMultiplechoiceItemInput: {
-                // css selector: .ejf-field-multiplechoice > span > span > input[type=checkbox]
+            FieldMultiplechoiceItemInput: {
                 classList: ['form-check-input'],
                 style: {},
             },
-            fieldSinglechoice: {
-                // css selector: .ejf-field-singlechoice
+            FieldSinglechoice: {
                 classList: ['my-3'],
                 style: {},
             },
-            fieldSinglechoiceLabel: {
-                // css selector: .ejf-field-singlechoice > label
+            FieldSinglechoiceLabel: {
                 classList: ['form-label'],
                 style: {},
             },
-            fieldSinglechoiceSelect: {
-                // css selector: .ejf-field-singlechoice > select
+            FieldSinglechoiceSelect: {
                 classList: ['form-select'],
                 style: {},
             },
-            fieldNumber: {
-                // css selector: .ejf-field-number
+            FieldNumber: {
                 classList: ['my-3'],
                 style: {},
             },
-            fieldNumberLabel: {
-                // css selector: .ejf-field-number > label
+            FieldNumberLabel: {
                 classList: ['form-label'],
                 style: {},
             },
-            fieldNumberInput: {
-                // css selector: .ejf-field-number > input[type=number]
+            FieldNumberInput: {
                 classList: ['form-control'],
                 style: {},
             },
-            fieldText: {
-                // css selector: .ejf-field-text
+            FieldText: {
                 classList: ['my-3'],
                 style: {},
             },
-            fieldTextLabel: {
-                // css selector: .ejf-field-text > label
+            FieldTextLabel: {
                 classList: ['form-label'],
                 style: {},
             },
-            fieldTextInfo: {
-                // css selector: .ejf-field-text > span
+            FieldTextInfo: {
                 classList: ['form-text','float-end'],
                 style: {},
             },
             fieldTextInput: {
-                // css selector: .ejf-field-text > input, .ejf-field-text > textarea 
                 classList: ['form-control'],
                 style: {},
             },
-            fieldTextgroup: {
-                // css selector: .ejf-field-textgroup
+            FieldTextgroup: {
                 classList: ['my-3'],
                 style: {},
             },
-            fieldTextgroupLabel: {
-                // css selector: .ejf-field-textgroup > label
+            FieldTextgroupLabel: {
                 classList: ['form-label'],
                 style: {},
             },
-            fieldTextgroupGroup: {
-                // css selector: .ejf-field-textgroup > span
+            FieldTextgroupGroup: {
                 classList: ['d-flex','flex-nowrap','justify-content-between','align-items-stretch'],
                 style: {},
             },
-            fieldTextgroupItem: {
-                // css selector: .ejf-field-textgroup > span > span
+            FieldTextgroupItem: {
                 classList: ['input-group','d-inline-flex'],
                 style: {},
             },
-            fieldTextgroupItemLabel: {
-                // css selector: .ejf-field-textgroup > span > span > label
+            FieldTextgroupItemLabel: {
                 classList: ['input-group-text'],
                 style: {},
             },
-            fieldTextgroupItemInput: {
-                // css selector: .ejf-field-textgroup > span > span > input[type=text]
+            FieldTextgroupItemInput: {
                 classList: ['form-control'],
+                style: {},
+            },
+            ValidationErrorLabel: {
+                classList: [],
+                style: {}
+            },
+            ValidationErrorInput: {
+                classList: ['is-invalid'],
+                style: {}
+            },
+            ValidationErrorMessage: {
+                classList: ['invalid-feedback'],
                 style: {},
             },
         };
@@ -269,7 +263,11 @@
         sampleEasyJsonForm = new EasyJsonForm('sample', [], sampleEasyJsonFormStyle, sampleEasyJsonFormOptions);
         document.querySelector('#builder').appendChild(sampleEasyJsonForm.builderGet());
         document.querySelector('#form').appendChild(sampleEasyJsonForm.formGet());
-
+        let btnValidateForm = document.createElement('button');
+        btnValidateForm.classList.add('btn', 'btn-sm', 'btn-outline-primary');
+        btnValidateForm.textContent = "Validate Form";
+        btnValidateForm.onclick = () => sampleEasyJsonForm.formUpdate(true);
+        document.querySelector('#form').appendChild(btnValidateForm);
     </script>
     
 </body>
