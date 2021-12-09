@@ -1,6 +1,9 @@
-// Atenção: Não altere os valores {{entre chaves duplas}} e não remova itens.
+// Atenção: Não altere e não remova os valores {{entre chaves duplas}}.
+// Eles podem, porém aparecer, em qualquer ordem e em qualquer lugar da respectiva string.
 var ejf_pt_BR = {
 	"builder.message.delete": "Tem certeza que deseja apagar o item na posição {{position}}?",
+	"builder.message.label.name.already.in.use": "Este nome já está sendo usado, por favor escolha outro.",
+	"builder.message.label.name.cannot.be.numeric": "O nome do campo não pode conter apenas números.",
 	"common.export.compound.field": "{{1st-level-label}}: {{2nd-lebel-label}}",
 	"common.helptext": " <small>({{help-text}})</small>",
 	"common.helptext.min.length.by.character": "min. caracteres: {{min}}",
@@ -9,7 +12,7 @@ var ejf_pt_BR = {
 	"common.helptext.max.length.by.word": "máx. palavras: {{max}}",
 	"common.helptext.mandatory": "obrigatório",
 	"common.helptext.separator": ", ",
-	"common.label.new": "Novo {{field-type}}",
+	"common.label.new": "Novo {{field-type}} {{field-number}}",
 	"common.value.no": "Não",
 	"common.value.yes": "Sim",
 	"item.file": "Arquivo",

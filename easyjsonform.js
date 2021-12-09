@@ -9,7 +9,7 @@ class EasyJsonFormField {
         this.value = json.value || null;
     }
 
-    builderEditor(updateCallback) {
+    builderEditor(ejf, updateCallback) {
         // Creating editor
         let editor = document.createElement('div');
         Object.assign(editor.style,{
@@ -24,7 +24,16 @@ class EasyJsonFormField {
         iptLabel.id = EasyJsonForm.getElementId();
         iptLabel.type = 'text';
         iptLabel.value = this.label;
-        iptLabel.onchange = () => {this.label = iptLabel.value; updateCallback();};
+        iptLabel.onchange = () => {
+            let labelCheckErrors = ejf.labelCheckErrors(iptLabel.value);
+            if (labelCheckErrors) {
+                alert(labelCheckErrors);
+                iptLabel.value = this.label;
+            } else {
+                this.label = iptLabel.value;
+                updateCallback();
+            }
+        };
         editor.appendChild(lblLabel);
         editor.appendChild(iptLabel);
         // Custom attribute field
@@ -88,8 +97,8 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
         this.type = 'file';
     }
 
-    builderEditor(updateCallback) {
-        let editor = super.builderEditor(updateCallback);
+    builderEditor(ejf, updateCallback) {
+        let editor = super.builderEditor(ejf, updateCallback);
         // Max file size field
         let lblMaxSize = document.createElement('label');
         lblMaxSize.htmlFor = EasyJsonForm.newElementId();
@@ -252,8 +261,8 @@ class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
         this.type = 'multiplechoice';
     }
 
-    builderEditor(updateCallback) {
-        let editor = super.builderEditor(updateCallback);
+    builderEditor(ejf, updateCallback) {
+        let editor = super.builderEditor(ejf, updateCallback);
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = EasyJsonForm.newElementId();
@@ -380,8 +389,8 @@ class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
         this.type = 'singlechoice';
     }
 
-    builderEditor(updateCallback) {
-        let editor = super.builderEditor(updateCallback);
+    builderEditor(ejf, updateCallback) {
+        let editor = super.builderEditor(ejf, updateCallback);
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = EasyJsonForm.newElementId();
@@ -451,8 +460,8 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
         this.type = 'text';
     }
 
-    builderEditor(updateCallback) {
-        let editor = super.builderEditor(updateCallback);
+    builderEditor(ejf, updateCallback) {
+        let editor = super.builderEditor(ejf, updateCallback);
         // Multiline field
         let lblMultiline = document.createElement('label');
         lblMultiline.htmlFor = EasyJsonForm.newElementId();
@@ -623,8 +632,8 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
         this.type = 'textgroup';
     }
 
-    builderEditor(updateCallback) {
-        let editor = super.builderEditor(updateCallback);
+    builderEditor(ejf, updateCallback) {
+        let editor = super.builderEditor(ejf, updateCallback);
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = EasyJsonForm.newElementId();;
@@ -727,9 +736,9 @@ class EasyJsonForm {
                 button.type = 'button';
                 button.innerHTML = EasyJsonForm.iconAdd + EasyJsonForm.dictionary[`item.${type}`];
                 button.onclick = () => {
-                    this.structure.push(new classs(
-                        {label: EasyJsonForm.dictionary[`common.label.new`].replace('{{field-type}}', EasyJsonForm.dictionary[`item.${type}`])}
-                    ));
+                    let fieldName = EasyJsonForm.dictionary[`common.label.new`]
+                        .replace('{{field-type}}', EasyJsonForm.dictionary[`item.${type}`]);
+                    this.structure.push(new classs({label: this.labelFind(fieldName)}));
                     this.builderUpdate();
                     if (this.options.onStructureChange) this.options.onStructureChange();
                 };
@@ -801,7 +810,7 @@ class EasyJsonForm {
             toolbar.appendChild(btnDelete);
 
             btnEdit.onclick = () => {
-                let editor = this.structure[i].builderEditor(() => {
+                let editor = this.structure[i].builderEditor(this, () => {
                     mainTd.replaceChild(this.structure[i].formFieldCreate(this, i), mainTd.children[0]);
                     if (this.options.onStructureChange) this.options.onStructureChange();
                 });
@@ -844,6 +853,36 @@ class EasyJsonForm {
         this.structure.forEach((element, index) => {
             this.form.appendChild(element.formFieldCreate(this, index, withValidation));
         });
+    }
+
+    labelFind(label) {
+        console.log(this.structure);
+        let i = 1;
+        let found = false;
+        while (!found) {
+            let labelCandidate = label.replace('{{field-number}}', i);
+            found = true;
+            for (const formField of this.structure) {
+                if (formField.label == labelCandidate) {
+                    i++; found = false;
+                }
+            }
+        }
+        return label.replace('{{field-number}}', i);
+    }
+
+    labelCheckErrors(labelCandidate) {
+        // Labels cannot be numbers
+        const reg = new RegExp('^[0-9]+$');
+        if (reg.test(labelCandidate))
+            return EasyJsonForm.dictionary['builder.message.label.name.cannot.be.numeric'];
+        // Labels cannot repeat themselves
+        for (const formField of this.structure) {
+            if (formField.label == labelCandidate) {
+                return EasyJsonForm.dictionary['builder.message.label.name.already.in.use'];
+            }
+        return false;
+        }
     }
 
     structureExport() {
@@ -945,6 +984,8 @@ class EasyJsonForm {
     static iconUp = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
         "builder.message.delete": "Are you sure you want to delete item at position {{position}}?",
+        "builder.message.label.name.already.in.use": "This label is already in use. Please choose another one.",
+        "builder.message.label.name.cannot.be.numeric": "Label cannot contain only numbers.",
         "common.export.compound.field": "{{1st-level-label}} - {{2nd-lebel-label}}",
         "common.helptext": " <small>({{help-text}})</small>",
         "common.helptext.min.length.by.character": "min. characters: {{min}}",
@@ -953,7 +994,7 @@ class EasyJsonForm {
         "common.helptext.max.length.by.word": "max. words: {{max}}",
         "common.helptext.mandatory": "mandatory",
         "common.helptext.separator": ", ",
-        "common.label.new": "New {{field-type}}",
+        "common.label.new": "New {{field-type}} {{field-number}}",
         "common.value.no": "No",
         "common.value.yes": "Yes",
         "item.file": "File",
