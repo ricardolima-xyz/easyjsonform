@@ -5,7 +5,7 @@ class EasyJsonFormField {
         this.label = json.label || '';
         this.customattribute = json.customattribute || '';
         this.mandatory = json.mandatory || false;
-        this.spec = json.spec || null;
+        this.properties = json.properties || null;
         this.value = json.value || null;
     }
 
@@ -19,7 +19,7 @@ class EasyJsonFormField {
         // Label field
         let lblLabel = document.createElement('label');
         lblLabel.htmlFor = EasyJsonForm.newElementId();
-        lblLabel.textContent = EasyJsonForm.dictionary['item.spec.label'];
+        lblLabel.textContent = EasyJsonForm.dictionary['item.properties.label'];
         let iptDescription = document.createElement('input');
         iptDescription.id = EasyJsonForm.getElementId();
         iptDescription.type = 'text';
@@ -30,7 +30,7 @@ class EasyJsonFormField {
         // Custom attribute field
         let lblCustomAttribute = document.createElement('label');
         lblCustomAttribute.htmlFor = EasyJsonForm.newElementId();
-        lblCustomAttribute.textContent = EasyJsonForm.dictionary['item.spec.customattribute'];
+        lblCustomAttribute.textContent = EasyJsonForm.dictionary['item.properties.customattribute'];
         let iptCustomAttribute = document.createElement('input');
         iptCustomAttribute.id = EasyJsonForm.getElementId();
         iptCustomAttribute.type = 'text';
@@ -41,7 +41,7 @@ class EasyJsonFormField {
         // Mandatory field
         let lblMandatory = document.createElement('label');
         lblMandatory.htmlFor = EasyJsonForm.newElementId();
-        lblMandatory.textContent = EasyJsonForm.dictionary['item.spec.mandatory'];
+        lblMandatory.textContent = EasyJsonForm.dictionary['item.properties.mandatory'];
         let iptMandatory = document.createElement('input');
         iptMandatory.id = EasyJsonForm.getElementId();
         iptMandatory.type = 'checkbox';
@@ -66,15 +66,24 @@ class EasyJsonFormField {
         lblValidation.textContent = validationInfo;
         return lblValidation;
     }
+
+    valueExport(ejf, mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html': return `<tr><td>${this.label}</td><td>${this.value || ''}</td></tr>`;
+            case 'raw': return this.value;
+            case 'simple': return [{key: this.label, value: this.value || ''}];
+        }
+    }
 }
 
 class EasyJsonFormFieldFile extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
-        if (this.spec === null) this.spec = 
+        if (this.properties === null) this.properties = 
         {
-            file_types: [], // array containing mimetypes
-            max_size: 0,    // nonnegative float values
+            filetypes: [], // array containing mimetypes
+            maxsize: 0,    // nonnegative float values
         };
         this.type = 'file';
     }
@@ -84,28 +93,28 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
         // Max file size field
         let lblMaxSize = document.createElement('label');
         lblMaxSize.htmlFor = EasyJsonForm.newElementId();
-        lblMaxSize.textContent = EasyJsonForm.dictionary['item.file.spec.maxsize'];
+        lblMaxSize.textContent = EasyJsonForm.dictionary['item.file.properties.maxsize'];
         let iptMaxSize = document.createElement('input');
         iptMaxSize.id = EasyJsonForm.getElementId();
         iptMaxSize.type = 'number';
         iptMaxSize.min = 0;
         iptMaxSize.step = 0.1;
-        iptMaxSize.value = this.spec.max_size;
-        iptMaxSize.onchange = () => {this.spec.max_size = iptMaxSize.value; updateCallback();};
+        iptMaxSize.value = this.properties.maxsize;
+        iptMaxSize.onchange = () => {this.properties.maxsize = iptMaxSize.value; updateCallback();};
         editor.appendChild(lblMaxSize);
         editor.appendChild(iptMaxSize);
         // File types field
         let lblFileTypes = document.createElement('label');
-        lblFileTypes.textContent = EasyJsonForm.dictionary['item.file.spec.filetypes'];
+        lblFileTypes.textContent = EasyJsonForm.dictionary['item.file.properties.filetypes'];
         let divFileTypes = document.createElement('div');
         for (const [fileType, properties] of Object.entries(EasyJsonForm.supportedFileTypes)) {
             let cbxFileType = document.createElement('input');
             cbxFileType.id = EasyJsonForm.newElementId();
             cbxFileType.type = 'checkbox';
-            cbxFileType.checked = this.spec.file_types.indexOf(fileType) > -1;
+            cbxFileType.checked = this.properties.filetypes.indexOf(fileType) > -1;
             cbxFileType.onchange = () => {
-                if (cbxFileType.checked) this.spec.file_types.push(fileType);
-                else this.spec.file_types.splice(this.spec.file_types.indexOf(fileType),1);
+                if (cbxFileType.checked) this.properties.filetypes.push(fileType);
+                else this.properties.filetypes.splice(this.properties.filetypes.indexOf(fileType),1);
                 updateCallback();
             };
             let lblFileType = document.createElement('label');
@@ -186,11 +195,11 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
     helpText() {
         let restrictions = [];
         if (this.mandatory) restrictions.push(EasyJsonForm.dictionary['common.helptext.mandatory']);
-        if (this.spec.max_size > 0)
-            restrictions.push(EasyJsonForm.dictionary['item.file.helptext.maxsize'].replace('{{size}}', this.spec.max_size));
-        if (this.spec.file_types.length > 0)
+        if (this.properties.maxsize > 0)
+            restrictions.push(EasyJsonForm.dictionary['item.file.helptext.maxsize'].replace('{{size}}', this.properties.maxsize));
+        if (this.properties.filetypes.length > 0)
             restrictions.push(EasyJsonForm.dictionary['item.file.helptext.filetypes'].replace('{{file-types}}', 
-                this.spec.file_types
+                this.properties.filetypes
                     .map((x) => EasyJsonForm.supportedFileTypes[x].extensions[0])
                     .join(EasyJsonForm.dictionary['common.helptext.separator'])
                 )
@@ -204,8 +213,23 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
             restrictions.join(EasyJsonForm.dictionary['common.helptext.separator']));
     }
 
-    formattedValue() {
-        return value || '';
+    valueExport(ejf, mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html':
+                let result = `<tr><td>${this.label}</td>`;
+                if (this.value === null)
+                    result += `<td></td></tr>`;
+                else if (!ejf.options.fileHandler)
+                    result += `<td>${this.value}</td></tr>`;
+                else
+                    result += `<td><a href="${ejf.options.fileHandler.url(this.value)}">
+                                ${ejf.options.fileHandler.displayName(this.value)}
+                                </a></td></tr>`;
+                return result;
+            default:
+                return super.valueExport(ejf, mode);
+        }
     }
 
     validate() {
@@ -219,11 +243,11 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
 class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
-        if (this.spec === null) this.spec = 
+        if (this.properties === null) this.properties = 
         {
             items:[1, 2, 3],   // array containing values
         };
-        if (this.value === null) this.value = Array(this.spec.items.length).fill('0');
+        if (this.value === null) this.value = Array(this.properties.items.length).fill('0');
         this.type = 'multiplechoice';
     }
 
@@ -232,12 +256,12 @@ class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = EasyJsonForm.newElementId();
-        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.spec.items']}
-        <br/><small>${EasyJsonForm.dictionary['item.spec.items.help']}</small>`;
+        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.properties.items']}
+        <br/><small>${EasyJsonForm.dictionary['item.properties.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
         txaItems.id = EasyJsonForm.getElementId();
-        txaItems.value = this.spec.items.join('\n');
-        txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill('0'); updateCallback();};
+        txaItems.value = this.properties.items.join('\n');
+        txaItems.onchange = () => {this.properties.items = txaItems.value.split('\n'); this.value = Array(this.properties.items.length).fill('0'); updateCallback();};
         editor.appendChild(lblItems);
         editor.appendChild(txaItems);
         return editor;
@@ -248,7 +272,7 @@ class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
         let lblFormField = ejf.ejfElement('label', 'FieldMultiplechoiceLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
         let formGroup = ejf.ejfElement('span', 'FieldMultiplechoiceGroup');
-        this.spec.items.forEach((element, index) => {
+        this.properties.items.forEach((element, index) => {
             let iptHidden = ejf.ejfElement('input');
             iptHidden.type = 'hidden';
             iptHidden.value = '0';
@@ -277,10 +301,27 @@ class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
         return formField;
     }
 
-    formattedValue() {
-        return this.value.map((x) => {
-            return parseInt(x) ? EasyJsonForm.dictionary['common.value.yes'] : EasyJsonForm.dictionary['common.value.no']; 
-        });
+    valueExport(ejf, mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html': 
+                let result = `<tr><td>${this.label}</td><td><ul>`;
+                this.properties.items.forEach((element, index) => {
+                    result += `<li>${element}: `;
+                    result += parseInt(this.value[index]) ? EasyJsonForm.dictionary['common.value.yes'] : EasyJsonForm.dictionary['common.value.no'];
+                    result += `</li>`;
+                });
+                result += `</ul></td></tr>`;
+                return result;
+            case 'simple': 
+                return this.value.map((x, i) => {
+                    return parseInt(x) ? 
+                        {key: `${this.label}: ${this.properties.items[i]}`, value: EasyJsonForm.dictionary['common.value.yes']} :
+                        {key: `${this.label}: ${this.properties.items[i]}`, value: EasyJsonForm.dictionary['common.value.no']};
+                });
+            default:
+                return super.valueExport(ejf, mode);
+        }
     }
 
     validate() {
@@ -319,10 +360,6 @@ class EasyJsonFormFieldNumber extends EasyJsonFormField {
         return formField;
     }
 
-    formattedValue() {
-        return this.value;
-    }
-
     validate() {
         return (this.mandatory && this.value === null) ? ['validation.error.mandatory'] : [];
     }
@@ -331,7 +368,7 @@ class EasyJsonFormFieldNumber extends EasyJsonFormField {
 class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
-        if (this.spec === null) this.spec = 
+        if (this.properties === null) this.properties = 
         {
             items:[1, 2, 3],   // array containing values
         };
@@ -343,12 +380,12 @@ class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = EasyJsonForm.newElementId();
-        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.spec.items']}
-        <br/><small>${EasyJsonForm.dictionary['item.spec.items.help']}</small>`;
+        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.properties.items']}
+        <br/><small>${EasyJsonForm.dictionary['item.properties.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
         txaItems.id = EasyJsonForm.getElementId();
-        txaItems.value = this.spec.items.join('\n');
-        txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); updateCallback();};
+        txaItems.value = this.properties.items.join('\n');
+        txaItems.onchange = () => {this.properties.items = txaItems.value.split('\n'); updateCallback();};
         editor.appendChild(lblItems);
         editor.appendChild(txaItems);
         return editor;
@@ -367,7 +404,7 @@ class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
         nullOption.value = 'null';
         nullOption.textContent = EasyJsonForm.dictionary['item.singlechoice.value.null'];
         iptFormField.appendChild(nullOption);
-        this.spec.items.forEach((element, index) => {
+        this.properties.items.forEach((element, index) => {
             let option = ejf.ejfElement('option');
             option.value = index;
             option.textContent = element;
@@ -381,9 +418,14 @@ class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
         if (validationError) formField.appendChild(this.validationErrorMessage(ejf));
         return formField;
     }
-
-    formattedValue() {
-        return this.spec.items[this.value];
+    
+    valueExport(ejf, mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html': return `<tr><td>${this.label}</td><td>${this.value === null ? '' : this.properties.items[this.value]}</td></tr>`;
+            case 'simple': return [{key: this.label, value: this.value === null ? '' : this.properties.items[this.value]}];
+            default: return super.valueExport(ejf, mode);
+        }
     }
 
     validate() {
@@ -395,13 +437,11 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
         if (this.value === null) this.value = '';
-        if (this.spec === null) this.spec = {
+        if (this.properties === null) this.properties = {
+            lengthmeasurement: 'no',
+            lengthmax: 0,
+            lengthmin: 0, 
             multiline: false,
-            length: {
-                measure: 'no', // Can also be 'bycharacter' or 'byword'
-                min: 0, // nonnegative integer values
-                max: 0, // nonnegative integer values
-            },
         };
         this.type = 'text';
     }
@@ -411,60 +451,60 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
         // Multiline field
         let lblMultiline = document.createElement('label');
         lblMultiline.htmlFor = EasyJsonForm.newElementId();
-        lblMultiline.textContent = EasyJsonForm.dictionary['item.text.spec.multiline'];
+        lblMultiline.textContent = EasyJsonForm.dictionary['item.text.properties.multiline'];
         let iptMultiline = document.createElement('input');
         iptMultiline.id = EasyJsonForm.getElementId();
         iptMultiline.type = 'checkbox';
-        iptMultiline.checked = this.spec.multiline;
-        iptMultiline.onchange = () => {this.spec.multiline = iptMultiline.checked; updateCallback();};
+        iptMultiline.checked = this.properties.multiline;
+        iptMultiline.onchange = () => {this.properties.multiline = iptMultiline.checked; updateCallback();};
         editor.appendChild(lblMultiline);
         editor.appendChild(iptMultiline);
         // Length measure field
         let lblLengthMeasure = document.createElement('label');
         lblLengthMeasure.htmlFor = EasyJsonForm.newElementId();
-        lblLengthMeasure.textContent = EasyJsonForm.dictionary['item.text.spec.length.measure'];
+        lblLengthMeasure.textContent = EasyJsonForm.dictionary['item.text.properties.length.measure'];
         let optLengthMeasureByCharacter = document.createElement('option');
         optLengthMeasureByCharacter.value = 'bycharacter';
-        optLengthMeasureByCharacter.textContent = EasyJsonForm.dictionary['item.text.spec.length.measure.bycharacter'];
+        optLengthMeasureByCharacter.textContent = EasyJsonForm.dictionary['item.text.properties.length.measure.bycharacter'];
         let optLengthMeasureByWord = document.createElement('option');
         optLengthMeasureByWord.value = 'byword';
-        optLengthMeasureByWord.textContent = EasyJsonForm.dictionary['item.text.spec.length.measure.byword'];
+        optLengthMeasureByWord.textContent = EasyJsonForm.dictionary['item.text.properties.length.measure.byword'];
         let optLengthMeasureNo = document.createElement('option');
         optLengthMeasureNo.value = 'no';
-        optLengthMeasureNo.textContent = EasyJsonForm.dictionary['item.text.spec.length.measure.no'];
+        optLengthMeasureNo.textContent = EasyJsonForm.dictionary['item.text.properties.length.measure.no'];
         let selLengthMeasure = document.createElement('select');
         selLengthMeasure.id = EasyJsonForm.getElementId();
         selLengthMeasure.appendChild(optLengthMeasureByCharacter);
         selLengthMeasure.appendChild(optLengthMeasureByWord);
         selLengthMeasure.appendChild(optLengthMeasureNo);
-        selLengthMeasure.value = this.spec.length.measure;
-        selLengthMeasure.onchange = () => {this.spec.length.measure = selLengthMeasure.value; updateCallback();};
+        selLengthMeasure.value = this.properties.lengthmeasurement;
+        selLengthMeasure.onchange = () => {this.properties.lengthmeasurement = selLengthMeasure.value; updateCallback();};
         editor.appendChild(lblLengthMeasure);
         editor.appendChild(selLengthMeasure);
         // Length min field
         let lblLengthMin = document.createElement('label');
         lblLengthMin.htmlFor = EasyJsonForm.newElementId();
-        lblLengthMin.textContent = EasyJsonForm.dictionary['item.text.spec.length.min'];
+        lblLengthMin.textContent = EasyJsonForm.dictionary['item.text.properties.length.min'];
         let iptLengthMin = document.createElement('input');
         iptLengthMin.type = 'number';
         iptLengthMin.min = 0;
         iptLengthMin.step = 1;
         iptLengthMin.id = EasyJsonForm.getElementId();
-        iptLengthMin.value = this.spec.length.min;
-        iptLengthMin.onchange = () => {this.spec.length.min = iptLengthMin.value; updateCallback();};
+        iptLengthMin.value = this.properties.lengthmin;
+        iptLengthMin.onchange = () => {this.properties.lengthmin = iptLengthMin.value; updateCallback();};
         editor.appendChild(lblLengthMin);
         editor.appendChild(iptLengthMin);
         // Length max field
         let lblLengthMax = document.createElement('label');
         lblLengthMax.htmlFor = EasyJsonForm.newElementId();
-        lblLengthMax.textContent = EasyJsonForm.dictionary['item.text.spec.length.max'];
+        lblLengthMax.textContent = EasyJsonForm.dictionary['item.text.properties.length.max'];
         let iptLengthMax = document.createElement('input');
         iptLengthMax.type = 'number';
         iptLengthMax.min = 0;
         iptLengthMax.step = 1;
         iptLengthMax.id = EasyJsonForm.getElementId();
-        iptLengthMax.value = this.spec.length.max;
-        iptLengthMax.onchange = () => {this.spec.length.max = iptLengthMax.value; updateCallback();};
+        iptLengthMax.value = this.properties.lengthmax;
+        iptLengthMax.onchange = () => {this.properties.lengthmax = iptLengthMax.value; updateCallback();};
         editor.appendChild(lblLengthMax);
         editor.appendChild(iptLengthMax);
         return editor;
@@ -476,7 +516,7 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
         lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
         let spnCounter = ejf.ejfElement('span', 'FieldTextInfo');
-        let iptFormField = this.spec.multiline ? 
+        let iptFormField = this.properties.multiline ? 
             ejf.ejfElement('textarea', 'fieldTextInput', validationError ? 'ValidationErrorInput' : null):
             ejf.ejfElement('input', 'fieldTextInput', validationError ? 'ValidationErrorInput' : null);
         iptFormField.disabled = ejf.options.disabled || false;
@@ -485,11 +525,11 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
         iptFormField.value = this.value;
         iptFormField.onkeyup = () => {
             this.value = iptFormField.value;
-            switch (this.spec.length.measure) {
+            switch (this.properties.lengthmeasurement) {
                 case 'bycharacter':
                     let characters = iptFormField.value;
                     spnCounter.textContent = EasyJsonForm.dictionary['item.text.character.count'].replace('{{chars}}', characters.length);
-                    if (characters.length < this.spec.length.min || characters.length > this.spec.length.max)
+                    if (characters.length < this.properties.lengthmin || characters.length > this.properties.lengthmax)
                         spnCounter.setAttribute('role', 'alert');
                     else
                         spnCounter.removeAttribute('role');
@@ -497,7 +537,7 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
                 case 'byword':
                     let words = iptFormField.value.match(/\S+/g) || [];
                     spnCounter.textContent = EasyJsonForm.dictionary['item.text.word.count'].replace('{{words}}', words.length);
-                    if (words.length < this.spec.length.min || words.length > this.spec.length.max)
+                    if (words.length < this.properties.lengthmin || words.length > this.properties.lengthmax)
                         spnCounter.setAttribute('role', 'alert');
                     else
                         spnCounter.removeAttribute('role');
@@ -515,39 +555,43 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
         return formField;
     }
 
-    formattedValue() {
-        return this.value;
-    }
-
     helpText() {
         let restrictions = [];
         if (this.mandatory) restrictions.push(EasyJsonForm.dictionary['common.helptext.mandatory']);
-        if (this.spec.length.measure == 'byword')
-            restrictions.push(EasyJsonForm.dictionary['common.helptext.length.by.word'].replace('{{min}}', this.spec.length.min).replace('{{max}}', this.spec.length.max));
-        if (this.spec.length.measure == 'bycharacter')
-            restrictions.push(EasyJsonForm.dictionary['common.helptext.length.by.character'].replace('{{min}}', this.spec.length.min).replace('{{max}}', this.spec.length.max));
+        if (this.properties.lengthmeasurement == 'byword')
+            restrictions.push(EasyJsonForm.dictionary['common.helptext.length.by.word'].replace('{{min}}', this.properties.lengthmin).replace('{{max}}', this.properties.lengthmax));
+        if (this.properties.lengthmeasurement == 'bycharacter')
+            restrictions.push(EasyJsonForm.dictionary['common.helptext.length.by.character'].replace('{{min}}', this.properties.lengthmin).replace('{{max}}', this.properties.lengthmax));
         return (restrictions.length == 0) ? 
             '' :
             EasyJsonForm.dictionary['common.helptext'].replace('{{help-text}}',
             restrictions.join(EasyJsonForm.dictionary['common.helptext.separator']));
     }
 
+    valueExport(ejf, mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html': return `<tr><td>${this.label}</td><td><pre>${this.value === null ? '' : this.value}</pre></td></tr>`;
+            default: return super.valueExport(ejf, mode);
+        }
+    }
+
     validate() {
         let result = [];
         if (this.mandatory && this.value == '') 
             result.push(['validation.error.mandatory']);
-        if (this.spec.length.measure == 'bycharacter') {
+        if (this.properties.lengthmeasurement == 'bycharacter') {
             let numberOfCharacters = this.value.length;
-            if (numberOfCharacters < this.spec.length.min)
+            if (numberOfCharacters < this.properties.lengthmin)
                 result.push(['validation.error.less.than.minimum.chars.accepted']);
-            else if (numberOfCharacters > this.spec.length.max)
+            else if (numberOfCharacters > this.properties.lengthmax)
                 result.push(['validation.error.more.than.maximum.chars.accepted']);
         }
-        else if (this.spec.length.measure == 'byword') {
+        else if (this.properties.lengthmeasurement == 'byword') {
             let words = this.value.match(/\S+/g) || [];
-            if (words.length < this.spec.length.min)
+            if (words.length < this.properties.lengthmin)
                 result.push(['validation.error.less.than.minimum.words.accepted']);
-            else if (words.length > this.spec.length.max)
+            else if (words.length > this.properties.lengthmax)
                 result.push(['validation.error.more.than.maximum.words.accepted']);
         }
         return result;
@@ -557,11 +601,11 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
 class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
     constructor(json = null) {
         super(json);
-        if (this.spec === null) this.spec = 
+        if (this.properties === null) this.properties = 
         {
             items:[1, 2, 3],   // array containing values
         };
-        if (this.value === null) this.value = Array(this.spec.items.length).fill('');
+        if (this.value === null) this.value = Array(this.properties.items.length).fill('');
         this.type = 'textgroup';
     }
 
@@ -570,12 +614,12 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
         // Items field
         let lblItems = document.createElement('label');
         lblItems.htmlFor = EasyJsonForm.newElementId();;
-        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.spec.items']}
-        <br/><small>${EasyJsonForm.dictionary['item.spec.items.help']}</small>`;
+        lblItems.innerHTML = `${EasyJsonForm.dictionary['item.properties.items']}
+        <br/><small>${EasyJsonForm.dictionary['item.properties.items.help']}</small>`;
         let txaItems = document.createElement('textarea');
         txaItems.id = EasyJsonForm.getElementId();
-        txaItems.value = this.spec.items.join('\n');
-        txaItems.onchange = () => {this.spec.items = txaItems.value.split('\n'); this.value = Array(this.spec.items.length).fill(''); updateCallback();};
+        txaItems.value = this.properties.items.join('\n');
+        txaItems.onchange = () => {this.properties.items = txaItems.value.split('\n'); this.value = Array(this.properties.items.length).fill(''); updateCallback();};
         editor.appendChild(lblItems);
         editor.appendChild(txaItems);
         return editor;
@@ -586,7 +630,7 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
         let lblFormField = ejf.ejfElement('label', 'FieldTextgroupLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
         let formGroup = ejf.ejfElement('span', 'FieldTextgroupGroup');
-        this.spec.items.forEach((element, index) => {
+        this.properties.items.forEach((element, index) => {
             let lblCheck = ejf.ejfElement('label', 'FieldTextgroupItemLabel');
             lblCheck.htmlFor = `${ejf.id}[${position}][${index}]`;
             lblCheck.textContent = element;
@@ -609,8 +653,28 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
         return formField;
     }
 
-    formattedValue() {
-        return this.value;
+    valueExport(ejf, mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html': 
+                let result = `<tr><td>${this.label}</td><td><ul>`;
+                this.properties.items.forEach((element, index) => {
+                    result += `<li>${element}: ${this.value[index]}</li>`;
+                });
+                result += `</ul></td></tr>`;
+                return result;
+            case 'simple': 
+                let resultArray = [];
+                this.properties.items.forEach((element, index) => {
+                    resultArray.push({
+                        key: `${this.label}: ${element}`,
+                        value: this.value[index],
+                    });
+                });
+                return resultArray;
+            default:
+                return super.valueExport(ejf, mode);
+        }
     }
 
     validate() {
@@ -805,6 +869,29 @@ class EasyJsonForm {
         if (this.form) this.formUpdate();
     }
 
+    valueExport(mode = 'raw') {
+        switch (mode) 
+        {
+            case 'html': 
+                let table = this.ejfElement('table', 'ValueExportTable');
+                let innerContent = '';
+                this.structure.forEach(element => {innerContent += element.valueExport(this, 'html');});
+                table.innerHTML = innerContent;
+                return table.outerHTML;
+            case 'raw':
+                let rawResult = [];
+                this.structure.forEach(element => rawResult.push(element.valueExport(this, 'raw')));
+                return rawResult;
+            case 'simple': 
+                let simpleResult = {};
+                this.structure.forEach(element => {
+                    let tableEntries = element.valueExport(this, 'simple');
+                    for (const tableEntry of tableEntries) simpleResult[tableEntry.key] = tableEntry.value; 
+                });
+                return simpleResult;
+        }
+    }
+
     // Resources
     static newElementId = () => `ejf-${++EasyJsonForm.elementId}`;
     static getElementId = () => `ejf-${EasyJsonForm.elementId}`;
@@ -850,28 +937,28 @@ class EasyJsonForm {
         "item.file.helptext.filetypes": "file types: {{file-types}}",
         "item.file.helptext.filetypes.all": "all",
         "item.file.helptext.maxsize": "maximum size: {{size}} MB",
-        "item.file.spec.filetypes": "Allowed filetypes",
-        "item.file.spec.maxsize": "Maximum size (MB)",
+        "item.file.properties.filetypes": "Allowed filetypes",
+        "item.file.properties.maxsize": "Maximum size (MB)",
         "item.file.vaule.uploaded.file": "Uploaded file",
         "item.textgroup": "Text group",
         "item.multiplechoice": "Multiple choice",
         "item.singlechoice": "Single choice",
         "item.singlechoice.value.null": ">> Select",
-        "item.spec.customattribute": "Custom attribute",
-        "item.spec.label": "Label",
-        "item.spec.items": "Items",
-        "item.spec.items.help": "One per line",
-        "item.spec.mandatory": "Mandatory",
+        "item.properties.customattribute": "Custom attribute",
+        "item.properties.label": "Label",
+        "item.properties.items": "Items",
+        "item.properties.items.help": "One per line",
+        "item.properties.mandatory": "Mandatory",
         "item.number": "Number",
         "item.text": "Text",
         "item.text.character.count": "{{chars}} characters",
-        "item.text.spec.length.max": "Maximum length",
-        "item.text.spec.length.measure": "Restrict length",
-        "item.text.spec.length.measure.bycharacter": "By character",
-        "item.text.spec.length.measure.byword": "By word",
-        "item.text.spec.length.measure.no": "No",
-        "item.text.spec.length.min": "Minimum length",
-        "item.text.spec.multiline": "Multiple lines (text area)",
+        "item.text.properties.length.max": "Maximum length",
+        "item.text.properties.length.measure": "Restrict length",
+        "item.text.properties.length.measure.bycharacter": "By character",
+        "item.text.properties.length.measure.byword": "By word",
+        "item.text.properties.length.measure.no": "No",
+        "item.text.properties.length.min": "Minimum length",
+        "item.text.properties.multiline": "Multiple lines (text area)",
         "item.text.word.count": "{{words}} words",
         "validation.error.mandatory": "{{field-label}} is mandatory",
         "validation.error.please.select.one.option": "Please select at least one option",
