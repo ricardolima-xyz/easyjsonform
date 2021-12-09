@@ -1,9 +1,12 @@
 // Atenção: Não altere os valores {{entre chaves duplas}} e não remova itens.
 var ejf_pt_BR = {
 	"builder.message.delete": "Tem certeza que deseja apagar o item na posição {{position}}?",
+	"common.export.compound.field": "{{1st-level-label}}: {{2nd-lebel-label}}",
 	"common.helptext": " <small>({{help-text}})</small>",
-	"common.helptext.length.by.character": "min. caracteres: {{min}}, máx. caracteres: {{max}}",
-	"common.helptext.length.by.word": "min. palavras: {{min}}, máx. palavras: {{max}}",
+	"common.helptext.min.length.by.character": "min. caracteres: {{min}}",
+	"common.helptext.max.length.by.character": "máx. caracteres: {{max}}",
+	"common.helptext.min.length.by.word": "min. palavras: {{min}}",
+	"common.helptext.max.length.by.word": "máx. palavras: {{max}}",
 	"common.helptext.mandatory": "obrigatório",
 	"common.helptext.separator": ", ",
 	"common.label.new": "Novo {{field-type}}",

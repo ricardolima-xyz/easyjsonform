@@ -20,13 +20,13 @@ class EasyJsonFormField {
         let lblLabel = document.createElement('label');
         lblLabel.htmlFor = EasyJsonForm.newElementId();
         lblLabel.textContent = EasyJsonForm.dictionary['item.properties.label'];
-        let iptDescription = document.createElement('input');
-        iptDescription.id = EasyJsonForm.getElementId();
-        iptDescription.type = 'text';
-        iptDescription.value = this.label;
-        iptDescription.onchange = () => {this.label = iptDescription.value; updateCallback();};
+        let iptLabel = document.createElement('input');
+        iptLabel.id = EasyJsonForm.getElementId();
+        iptLabel.type = 'text';
+        iptLabel.value = this.label;
+        iptLabel.onchange = () => {this.label = iptLabel.value; updateCallback();};
         editor.appendChild(lblLabel);
-        editor.appendChild(iptDescription);
+        editor.appendChild(iptLabel);
         // Custom attribute field
         let lblCustomAttribute = document.createElement('label');
         lblCustomAttribute.htmlFor = EasyJsonForm.newElementId();
@@ -62,7 +62,7 @@ class EasyJsonFormField {
         let validationInfo = this.validate().map(x => {
             return EasyJsonForm.dictionary[x].replace('{{field-label}}', this.label);
         }).join(EasyJsonForm.dictionary['common.helptext.separator']);
-        let lblValidation = ejf.ejfElement('div', 'ValidationErrorMessage');
+        let lblValidation = ejf.element('div', 'ValidationErrorMessage');
         lblValidation.textContent = validationInfo;
         return lblValidation;
     }
@@ -132,10 +132,10 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
 
     formFieldCreate(ejf, position, withValidation = false) {
         let validationError = (withValidation && this.validate().length > 0);
-        let lblFormField = ejf.ejfElement('label', 'FieldFileLabel', validationError ? 'ValidationErrorLabel' : null);
+        let lblFormField = ejf.element('label', 'FieldFileLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
         lblFormField.htmlFor = `${ejf.id}[${position}]`;
-        let formField = ejf.ejfElement('div', 'FieldFile');
+        let formField = ejf.element('div', 'FieldFile');
         formField.appendChild(lblFormField);
         formField.appendChild(this.formFieldControl(ejf, position, formField, validationError));
         if (validationError) formField.appendChild(this.validationErrorMessage(ejf));
@@ -144,17 +144,17 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
 
     formFieldControl(ejf, position, formField, validationError) {
         if (this.value === null) {
-            let iptFile = ejf.ejfElement('input', 'FieldFileInput', validationError ? 'ValidationErrorInput' : null);
+            let iptFile = ejf.element('input', 'FieldFileInput', validationError ? 'ValidationErrorInput' : null);
             iptFile.type = 'file';
             iptFile.id = `${ejf.id}[${position}]`;
             iptFile.name = `${ejf.id}[${position}]`;
             iptFile.disabled = ejf.options.disabled || false;
             if (!ejf.options.fileHandler) iptFile.disabled = true; // Disabled if no handler
             else iptFile.onchange = () => {
-                // TODO VALIDATION BEFORE UPLOAD: SIZE AND FILETYPE
                 ejf.options.fileHandler.upload(iptFile.files[0])
                 .then((result) => {
                     if (result.success) {
+                        if (ejf.options.onValueChange) ejf.options.onValueChange();
                         this.value = result.value;
                         formField.replaceChild(
                             this.formFieldControl(ejf, position, formField),
@@ -165,26 +165,27 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
             };
             return iptFile;
         } else {
-            let iptFile = ejf.ejfElement('input');
+            let iptFile = ejf.element('input');
             iptFile.type = 'hidden';
             iptFile.id = `${ejf.id}[${position}]`;
             iptFile.name = `${ejf.id}[${position}]`;
             iptFile.value = this.value;
-            let lnkFile = ejf.ejfElement('a', 'FieldFileLink');
+            let lnkFile = ejf.element('a', 'FieldFileLink');
             lnkFile.textContent = (ejf.options.fileHandler) ?
                 ejf.options.fileHandler.displayName(this.value) : this.value;
             lnkFile.href = (ejf.options.fileHandler) ?
                 ejf.options.fileHandler.url(this.value) : '#';
-            let btnClear = ejf.ejfElement('button', 'FieldFileClear');
+            let btnClear = ejf.element('button', 'FieldFileClear');
             btnClear.type = 'button';
             if (!ejf.options.fileHandler) btnClear.disabled = true; // Disabled if no handler
             btnClear.onclick = () => {
+                if (ejf.options.onValueChange) ejf.options.onValueChange();
                 this.value = null;
                 formField.replaceChild(
                     this.formFieldControl(ejf, position, formField), formField.children[1]);
             };
             btnClear.innerHTML = EasyJsonForm.iconDelete;
-            let spnFile = ejf.ejfElement('span', 'FieldFileValue');
+            let spnFile = ejf.element('span', 'FieldFileValue');
             spnFile.appendChild(iptFile);
             spnFile.appendChild(lnkFile);
             spnFile.appendChild(btnClear);
@@ -269,33 +270,33 @@ class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
 
     formFieldCreate(ejf, position, withValidation = false) {
         let validationError = (withValidation && this.validate().length > 0);
-        let lblFormField = ejf.ejfElement('label', 'FieldMultiplechoiceLabel', validationError ? 'ValidationErrorLabel' : null);
+        let lblFormField = ejf.element('label', 'FieldMultiplechoiceLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
-        let formGroup = ejf.ejfElement('span', 'FieldMultiplechoiceGroup');
+        let formGroup = ejf.element('span', 'FieldMultiplechoiceGroup');
         this.properties.items.forEach((element, index) => {
-            let iptHidden = ejf.ejfElement('input');
+            let iptHidden = ejf.element('input');
             iptHidden.type = 'hidden';
             iptHidden.value = '0';
             iptHidden.name = `${ejf.id}[${position}][${index}]`;
-            let iptCheck = ejf.ejfElement('input', 'FieldMultiplechoiceItemInput', validationError ? 'ValidationErrorInput' : null);
+            let iptCheck = ejf.element('input', 'FieldMultiplechoiceItemInput', validationError ? 'ValidationErrorInput' : null);
             iptCheck.type = 'checkbox';
             iptCheck.disabled = ejf.options.disabled || false;
             iptCheck.id = `${ejf.id}[${position}][${index}]`;
             iptCheck.name = `${ejf.id}[${position}][${index}]`;
             iptCheck.value = '1';
             iptCheck.checked = parseInt(this.value[index]);
-            iptCheck.onchange = () => {this.value[index] = iptCheck.checked ? "1" : "0"};
-            let lblCheck = ejf.ejfElement('label', 'FieldMultiplechoiceItemLabel');
+            iptCheck.onchange = () => {this.value[index] = iptCheck.checked ? "1" : "0"; if (ejf.options.onValueChange) ejf.options.onValueChange();};
+            let lblCheck = ejf.element('label', 'FieldMultiplechoiceItemLabel');
             lblCheck.htmlFor = `${ejf.id}[${position}][${index}]`;
             lblCheck.textContent = element;
-            let item = ejf.ejfElement('span', 'FieldMultiplechoiceItem');
+            let item = ejf.element('span', 'FieldMultiplechoiceItem');
             item.appendChild(iptHidden);
             item.appendChild(iptCheck);
             item.appendChild(lblCheck);
             if (validationError) item.appendChild(this.validationErrorMessage(ejf));
             formGroup.appendChild(item);
         });
-        let formField = ejf.ejfElement('div', 'FieldMultiplechoice');
+        let formField = ejf.element('div', 'FieldMultiplechoice');
         formField.appendChild(lblFormField);
         formField.appendChild(formGroup);
         return formField;
@@ -315,9 +316,13 @@ class EasyJsonFormFieldMultipleChoice extends EasyJsonFormField {
                 return result;
             case 'simple': 
                 return this.value.map((x, i) => {
-                    return parseInt(x) ? 
-                        {key: `${this.label}: ${this.properties.items[i]}`, value: EasyJsonForm.dictionary['common.value.yes']} :
-                        {key: `${this.label}: ${this.properties.items[i]}`, value: EasyJsonForm.dictionary['common.value.no']};
+                    let itemKey = EasyJsonForm.dictionary['common.export.compound.field']
+                        .replace('{{1st-level-label}}', this.label)
+                        .replace('{{2nd-lebel-label}}', this.properties.items[i]);
+                    let itemValue = parseInt(x) ? 
+                        EasyJsonForm.dictionary['common.value.yes']:
+                        EasyJsonForm.dictionary['common.value.no'];
+                    return {key: itemKey, value: itemValue};
                 });
             default:
                 return super.valueExport(ejf, mode);
@@ -343,17 +348,17 @@ class EasyJsonFormFieldNumber extends EasyJsonFormField {
 
     formFieldCreate(ejf, position, withValidation = false) {
         let validationError = (withValidation && this.validate().length > 0);
-        let lblFormField = ejf.ejfElement('label', 'FieldNumberLabel', validationError ? 'ValidationErrorLabel' : null);
+        let lblFormField = ejf.element('label', 'FieldNumberLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
-        let iptFormField = ejf.ejfElement('input', 'FieldNumberInput', validationError ? 'ValidationErrorInput' : null);
+        let iptFormField = ejf.element('input', 'FieldNumberInput', validationError ? 'ValidationErrorInput' : null);
         iptFormField.disabled = ejf.options.disabled || false;
         iptFormField.id = `${ejf.id}[${position}]`;
         iptFormField.name = `${ejf.id}[${position}]`;
         iptFormField.type = 'number';
         iptFormField.value = this.value;
-        iptFormField.onchange = () => {this.value = iptFormField.value};
-        let formField = ejf.ejfElement('div', 'FieldNumber');
+        iptFormField.onchange = () => {this.value = iptFormField.value; if (ejf.options.onValueChange) ejf.options.onValueChange();};
+        let formField = ejf.element('div', 'FieldNumber');
         formField.appendChild(lblFormField);
         formField.appendChild(iptFormField);
         if (validationError) formField.appendChild(this.validationErrorMessage(ejf));
@@ -393,26 +398,26 @@ class EasyJsonFormFieldSingleChoice extends EasyJsonFormField {
 
     formFieldCreate(ejf, position, withValidation = false) {
         let validationError = (withValidation && this.validate().length > 0);
-        let lblFormField = ejf.ejfElement('label', 'FieldSinglechoiceLabel', validationError ? 'ValidationErrorLabel' : null);
+        let lblFormField = ejf.element('label', 'FieldSinglechoiceLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
-        let iptFormField = ejf.ejfElement('select', 'FieldSinglechoiceSelect', validationError ? 'ValidationErrorInput' : null);
+        let iptFormField = ejf.element('select', 'FieldSinglechoiceSelect', validationError ? 'ValidationErrorInput' : null);
         iptFormField.disabled = ejf.options.disabled || false;
         iptFormField.id = `${ejf.id}[${position}]`;
         iptFormField.name = `${ejf.id}[${position}]`;
-        let nullOption = ejf.ejfElement('option');
+        let nullOption = ejf.element('option');
         nullOption.value = 'null';
         nullOption.textContent = EasyJsonForm.dictionary['item.singlechoice.value.null'];
         iptFormField.appendChild(nullOption);
         this.properties.items.forEach((element, index) => {
-            let option = ejf.ejfElement('option');
+            let option = ejf.element('option');
             option.value = index;
             option.textContent = element;
             iptFormField.appendChild(option);
         });
         iptFormField.value = this.value;
-        iptFormField.onchange = () => {this.value = iptFormField.value == 'null' ? null : iptFormField.value};
-        let formField = ejf.ejfElement('div', 'FieldSinglechoice');
+        iptFormField.onchange = () => {this.value = (iptFormField.value == 'null') ? null : iptFormField.value; if (ejf.options.onValueChange) ejf.options.onValueChange();};
+        let formField = ejf.element('div', 'FieldSinglechoice');
         formField.appendChild(lblFormField);
         formField.appendChild(iptFormField);
         if (validationError) formField.appendChild(this.validationErrorMessage(ejf));
@@ -512,13 +517,13 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
 
     formFieldCreate(ejf, position, withValidation = false) {
         let validationError = (withValidation && this.validate().length > 0);
-        let lblFormField = ejf.ejfElement('label', 'FieldTextLabel', validationError ? 'ValidationErrorLabel' : null);
+        let lblFormField = ejf.element('label', 'FieldTextLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.htmlFor = `${ejf.id}[${position}]`;
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
-        let spnCounter = ejf.ejfElement('span', 'FieldTextInfo');
+        let spnCounter = ejf.element('span', 'FieldTextInfo');
         let iptFormField = this.properties.multiline ? 
-            ejf.ejfElement('textarea', 'fieldTextInput', validationError ? 'ValidationErrorInput' : null):
-            ejf.ejfElement('input', 'fieldTextInput', validationError ? 'ValidationErrorInput' : null);
+            ejf.element('textarea', 'fieldTextInput', validationError ? 'ValidationErrorInput' : null):
+            ejf.element('input', 'fieldTextInput', validationError ? 'ValidationErrorInput' : null);
         iptFormField.disabled = ejf.options.disabled || false;
         iptFormField.id = `${ejf.id}[${position}]`;
         iptFormField.name = `${ejf.id}[${position}]`;
@@ -545,9 +550,10 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
                 default:
                     break;
             }
+            if (ejf.options.onValueChange) ejf.options.onValueChange();
         };
         iptFormField.onkeyup();
-        let formField = ejf.ejfElement('div', 'FieldText');
+        let formField = ejf.element('div', 'FieldText');
         formField.appendChild(lblFormField);
         formField.appendChild(spnCounter);
         formField.appendChild(iptFormField);
@@ -558,10 +564,18 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
     helpText() {
         let restrictions = [];
         if (this.mandatory) restrictions.push(EasyJsonForm.dictionary['common.helptext.mandatory']);
-        if (this.properties.lengthmeasurement == 'byword')
-            restrictions.push(EasyJsonForm.dictionary['common.helptext.length.by.word'].replace('{{min}}', this.properties.lengthmin).replace('{{max}}', this.properties.lengthmax));
-        if (this.properties.lengthmeasurement == 'bycharacter')
-            restrictions.push(EasyJsonForm.dictionary['common.helptext.length.by.character'].replace('{{min}}', this.properties.lengthmin).replace('{{max}}', this.properties.lengthmax));
+        if (this.properties.lengthmeasurement == 'byword') {
+            if(this.properties.lengthmin > 0)
+                restrictions.push(EasyJsonForm.dictionary['common.helptext.min.length.by.word'].replace('{{min}}', this.properties.lengthmin));
+            if(this.properties.lengthmax > 0)
+                restrictions.push(EasyJsonForm.dictionary['common.helptext.max.length.by.word'].replace('{{max}}', this.properties.lengthmax));
+        }
+        else if (this.properties.lengthmeasurement == 'bycharacter') {
+            if(this.properties.lengthmin > 0)
+                restrictions.push(EasyJsonForm.dictionary['common.helptext.min.length.by.character'].replace('{{min}}', this.properties.lengthmin));
+            if(this.properties.lengthmax > 0)
+                restrictions.push(EasyJsonForm.dictionary['common.helptext.max.length.by.character'].replace('{{max}}', this.properties.lengthmax));
+        }
         return (restrictions.length == 0) ? 
             '' :
             EasyJsonForm.dictionary['common.helptext'].replace('{{help-text}}',
@@ -627,27 +641,27 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
 
     formFieldCreate(ejf, position, withValidation = false) {
         let validationError = (withValidation && this.validate().length > 0);
-        let lblFormField = ejf.ejfElement('label', 'FieldTextgroupLabel', validationError ? 'ValidationErrorLabel' : null);
+        let lblFormField = ejf.element('label', 'FieldTextgroupLabel', validationError ? 'ValidationErrorLabel' : null);
         lblFormField.innerHTML = `${this.label}${this.helpText()}`;
-        let formGroup = ejf.ejfElement('span', 'FieldTextgroupGroup');
+        let formGroup = ejf.element('span', 'FieldTextgroupGroup');
         this.properties.items.forEach((element, index) => {
-            let lblCheck = ejf.ejfElement('label', 'FieldTextgroupItemLabel');
+            let lblCheck = ejf.element('label', 'FieldTextgroupItemLabel');
             lblCheck.htmlFor = `${ejf.id}[${position}][${index}]`;
             lblCheck.textContent = element;
-            let iptCheck = ejf.ejfElement('input', 'FieldTextgroupItemInput', validationError ? 'ValidationErrorInput' : null);
+            let iptCheck = ejf.element('input', 'FieldTextgroupItemInput', validationError ? 'ValidationErrorInput' : null);
             iptCheck.type = 'text';
             iptCheck.disabled = ejf.options.disabled || false;
             iptCheck.id = `${ejf.id}[${position}][${index}]`;
             iptCheck.name = `${ejf.id}[${position}][${index}]`;
             iptCheck.value = this.value[index];
-            iptCheck.onchange = () => {this.value[index] = iptCheck.value};
-            let item = ejf.ejfElement('span', 'FieldTextgroupItem');
+            iptCheck.onchange = () => {this.value[index] = iptCheck.value; if (ejf.options.onValueChange) ejf.options.onValueChange(); };
+            let item = ejf.element('span', 'FieldTextgroupItem');
             item.appendChild(lblCheck);
             item.appendChild(iptCheck);
             if (validationError) item.appendChild(this.validationErrorMessage(ejf));
             formGroup.appendChild(item);
         });
-        let formField = ejf.ejfElement('div', 'FieldTextgroup');
+        let formField = ejf.element('div', 'FieldTextgroup');
         formField.appendChild(lblFormField);
         formField.appendChild(formGroup);
         return formField;
@@ -663,15 +677,13 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
                 });
                 result += `</ul></td></tr>`;
                 return result;
-            case 'simple': 
-                let resultArray = [];
-                this.properties.items.forEach((element, index) => {
-                    resultArray.push({
-                        key: `${this.label}: ${element}`,
-                        value: this.value[index],
-                    });
-                });
-                return resultArray;
+            case 'simple':
+                return this.value.map((x, i) => {
+                    let itemKey = EasyJsonForm.dictionary['common.export.compound.field']
+                        .replace('{{1st-level-label}}', this.label)
+                        .replace('{{2nd-lebel-label}}', this.properties.items[i]);
+                    return {key: itemKey, value: x};
+                }); 
             default:
                 return super.valueExport(ejf, mode);
         }
@@ -697,41 +709,20 @@ class EasyJsonForm {
         this.options = options || {};
     }
 
-    ejfElement(htmlTagName, styleName = null, validationStyleName = null) {
-        let element = document.createElement(htmlTagName);
-        if (styleName && this.style[styleName]) {
-            if (this.style[styleName].classList)
-                this.style[styleName].classList.forEach(x =>element.classList.add(x));
-            if (this.style[styleName].style)
-                for (const [key, value] of Object.entries(this.style[styleName].style))
-                    element.style[`${key}`] = value;
-        }
-        if (styleName) element.classList.add(`ejf${styleName}`);
-        if (validationStyleName && this.style[validationStyleName]) {
-            if (this.style[validationStyleName].classList)
-                this.style[validationStyleName].classList.forEach(x =>element.classList.add(x));
-            if (this.style[validationStyleName].style)
-                for (const [key, value] of Object.entries(this.style[validationStyleName].style))
-                    element.style[`${key}`] = value;
-        }
-        if (validationStyleName) element.classList.add(`ejf${validationStyleName}`);
-        return element;
-    }
-
     /**
      * Creates the EasyJsonForm Builder element to be added in the page.
      */
     builderGet() {
         if (!this.builder) {
             // Creating builder element
-            this.builder = this.ejfElement('div', 'Builder');
+            this.builder = this.element('div', 'Builder');
 
             // Creating toolbar
-            this.builderToolbar = this.ejfElement('div', 'BuilderToolbar');
+            this.builderToolbar = this.element('div', 'BuilderToolbar');
 
             // Inserting add buttons to the toolbar 
             for (const [type, classs] of Object.entries(EasyJsonForm.registeredClasses)) {
-                let button = this.ejfElement('button', 'BuilderToolbarButton');
+                let button = this.element('button', 'BuilderToolbarButton');
                 button.disabled = this.options.disabled || false;
                 button.type = 'button';
                 button.innerHTML = EasyJsonForm.iconAdd + EasyJsonForm.dictionary[`item.${type}`];
@@ -746,7 +737,7 @@ class EasyJsonForm {
             }
 
             // Creating table
-            let builderTable = this.ejfElement('table', 'BuilderTable');
+            let builderTable = this.element('table', 'BuilderTable');
             builderTable.appendChild(document.createElement('tbody'));
             this.builder.appendChild(builderTable);
             this.builderUpdate();
@@ -775,35 +766,35 @@ class EasyJsonForm {
             mainTd.style.width = '90%';
 
             let toolbarTd = tr.insertCell(-1);
-            let toolbar = this.ejfElement('div', 'BuilderFieldTooldbar');
+            let toolbar = this.element('div', 'BuilderFieldTooldbar');
             toolbarTd.appendChild(toolbar);
 
-            let btnEdit = this.ejfElement('button', 'BuilderFieldTooldbarButton');
+            let btnEdit = this.element('button', 'BuilderFieldTooldbarButton');
             btnEdit.disabled = this.options.disabled || false;
             btnEdit.type = 'button';
             btnEdit.innerHTML = EasyJsonForm.iconEdit;
             toolbar.appendChild(btnEdit);
 
-            let btnEditFinish = this.ejfElement('button', 'BuilderFieldTooldbarButton');
+            let btnEditFinish = this.element('button', 'BuilderFieldTooldbarButton');
             btnEditFinish.disabled = this.options.disabled || false;
             btnEditFinish.type = 'button';
             btnEditFinish.style.display = 'none';
             btnEditFinish.innerHTML = EasyJsonForm.iconOK;
             toolbar.appendChild(btnEditFinish);
 
-            let btnMoveUp = this.ejfElement('button', 'BuilderFieldTooldbarButton');
+            let btnMoveUp = this.element('button', 'BuilderFieldTooldbarButton');
             btnMoveUp.disabled = this.options.disabled || false;
             btnMoveUp.type = 'button';
             btnMoveUp.innerHTML = EasyJsonForm.iconUp;
             toolbar.appendChild(btnMoveUp);
 
-            let btnMoveDown = this.ejfElement('button', 'BuilderFieldTooldbarButton');
+            let btnMoveDown = this.element('button', 'BuilderFieldTooldbarButton');
             btnMoveDown.disabled = this.options.disabled || false;
             btnMoveDown.type = 'button';
             btnMoveDown.innerHTML = EasyJsonForm.iconDown;
             toolbar.appendChild(btnMoveDown);
             
-            let btnDelete = this.ejfElement('button', 'BuilderFieldTooldbarDeleteButton');
+            let btnDelete = this.element('button', 'BuilderFieldTooldbarDeleteButton');
             btnDelete.disabled = this.options.disabled || false;
             btnDelete.type = 'button';
             btnDelete.innerHTML = EasyJsonForm.iconDelete;
@@ -841,7 +832,7 @@ class EasyJsonForm {
 
     formGet() {
         if (!this.form) {
-            this.form = this.ejfElement('form', 'Form');
+            this.form = this.element('form', 'Form');
             this.form.id = this.id;
             this.formUpdate();
         }
@@ -873,7 +864,7 @@ class EasyJsonForm {
         switch (mode) 
         {
             case 'html': 
-                let table = this.ejfElement('table', 'ValueExportTable');
+                let table = this.element('table', 'ValueExportTable');
                 let innerContent = '';
                 this.structure.forEach(element => {innerContent += element.valueExport(this, 'html');});
                 table.innerHTML = innerContent;
@@ -892,10 +883,39 @@ class EasyJsonForm {
         }
     }
 
-    // Resources
+    valueImport(rawValues) {
+        this.structure.forEach((element, index) => {
+            element.value = rawValues[index];
+        });
+        if (this.options.onValueChange) this.options.onValueChange();
+    }
+
+    // Internal methods and properties. Don't need to be called externally.
     static newElementId = () => `ejf-${++EasyJsonForm.elementId}`;
     static getElementId = () => `ejf-${EasyJsonForm.elementId}`;
     static elementId = 0;
+    element(htmlTagName, styleName = null, validationStyleName = null) {
+        let element = document.createElement(htmlTagName);
+        if (styleName && this.style[styleName]) {
+            if (this.style[styleName].classList)
+                this.style[styleName].classList.forEach(x =>element.classList.add(x));
+            if (this.style[styleName].style)
+                for (const [key, value] of Object.entries(this.style[styleName].style))
+                    element.style[`${key}`] = value;
+        }
+        if (styleName) element.classList.add(`ejf${styleName}`);
+        if (validationStyleName && this.style[validationStyleName]) {
+            if (this.style[validationStyleName].classList)
+                this.style[validationStyleName].classList.forEach(x =>element.classList.add(x));
+            if (this.style[validationStyleName].style)
+                for (const [key, value] of Object.entries(this.style[validationStyleName].style))
+                    element.style[`${key}`] = value;
+        }
+        if (validationStyleName) element.classList.add(`ejf${validationStyleName}`);
+        return element;
+    }
+
+    // Resources. Can be modified for extra customization of the library.
     static registeredClasses = {
         'text': EasyJsonFormFieldText,
         'textgroup': EasyJsonFormFieldTextgroup,
@@ -925,9 +945,12 @@ class EasyJsonForm {
     static iconUp = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg>';
     static dictionary = {
         "builder.message.delete": "Are you sure you want to delete item at position {{position}}?",
+        "common.export.compound.field": "{{1st-level-label}} - {{2nd-lebel-label}}",
         "common.helptext": " <small>({{help-text}})</small>",
-        "common.helptext.length.by.character": "min. characters: {{min}}, max. characters: {{max}}",
-        "common.helptext.length.by.word": "min. words: {{min}}, max. words: {{max}}",
+        "common.helptext.min.length.by.character": "min. characters: {{min}}",
+        "common.helptext.max.length.by.character": "max. characters: {{max}}",
+        "common.helptext.min.length.by.word": "min. words: {{min}}",
+        "common.helptext.max.length.by.word": "max. words: {{max}}",
         "common.helptext.mandatory": "mandatory",
         "common.helptext.separator": ", ",
         "common.label.new": "New {{field-type}}",
