@@ -906,6 +906,7 @@ class EasyJsonForm {
         });
         if (this.builder) this.builderUpdate();
         if (this.form) this.formUpdate();
+        if (this.onStructureChange) this.onStructureChange();
     }
 
     valueExport(mode = 'raw') {
