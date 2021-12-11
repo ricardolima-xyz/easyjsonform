@@ -55,6 +55,7 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="../easyjsonform.js"></script>
+    <script src="../easyjsonform-bootstrap.js"></script>
     <!-- <script src="../lang/pt_BR.js"></script> -->
     <script>
         
@@ -77,171 +78,6 @@
             {"type":"file","label":"This is another file field","customattribute":"Custom attribute for another file","mandatory":true,"properties":{"filetypes":["image/bmp","image/gif"],"maxsize":42},"value":'somefile'},
         ];
         let sampleEasyJsonForm;
-        // Listing all possible areas that can be styled by applying css classes (using classList) 
-        // or using css properties directy (using style). They are all shown just for reference. 
-        // In a real-world application, empty entries don't need to be declared.
-        let sampleEasyJsonFormStyle = {
-            Builder: { 
-                classList: [],
-                style: {},
-            },
-            BuilderTable: {
-                classList: ['table'],
-                style: {},
-            },
-            BuilderToolbar: { 
-                classList: ['btn-group', 'mx-auto'],
-                style: {},
-            },
-            BuilderToolbarButton: { 
-                classList: ['btn', 'btn-outline-primary', 'btn-sm'],
-                style: {},
-            },
-            BuilderFieldTooldbar: {
-                classList: ['btn-group','w-100'],
-                style: {},
-            },
-            BuilderFieldTooldbarButton: {
-                classList: ['btn','btn-outline-primary', 'p-2'],
-                style: {},
-            },
-            BuilderFieldTooldbarDeleteButton: {
-                classList: ['btn','btn-outline-danger', 'p-2'],
-                style: {},
-            },
-            Form: { 
-                classList: [],
-                style: {},
-            },
-            FieldFile: {
-                classList: ['my-3'],
-                style: {},
-            },
-            FieldFileLabel: {
-                classList: ['form-label'],
-                style: {},
-            },
-            FieldFileInput: {
-                classList: ['form-control'],
-                style: {},
-            },
-            FieldFileValue: {
-                classList: ['d-flex', 'flex-nowrap', 'btn-group'],
-                style: {},
-            },
-            FieldFileLink: {
-                classList: ['btn', 'btn-outline-primary', 'flex-grow-1', 'text-start'],
-                style: {},
-            },
-            FieldFileClear: {
-                classList: ['btn', 'btn-outline-danger', 'flex-grow-0'],
-                style: {},
-            },
-            FieldMultiplechoice: {
-                classList: ['my-3'],
-                style: {},
-            },
-            FieldMultiplechoiceLabel: {
-                classList: ['form-label'],
-                style: {},
-            },
-            FieldMultiplechoiceGroup: {
-                classList: ['d-flex','justify-content-start','align-items-start'],
-                style: {},
-            },
-            FieldMultiplechoiceItem: {
-                classList: ['form-check', 'flex-grow-1'],
-                style: {},
-            },
-            FieldMultiplechoiceItemLabel: {
-                classList: ['form-check-label'],
-                style: {},
-            },
-            FieldMultiplechoiceItemInput: {
-                classList: ['form-check-input'],
-                style: {},
-            },
-            FieldSinglechoice: {
-                classList: ['my-3'],
-                style: {},
-            },
-            FieldSinglechoiceLabel: {
-                classList: ['form-label'],
-                style: {},
-            },
-            FieldSinglechoiceSelect: {
-                classList: ['form-select'],
-                style: {},
-            },
-            FieldNumber: {
-                classList: ['my-3'],
-                style: {},
-            },
-            FieldNumberLabel: {
-                classList: ['form-label'],
-                style: {},
-            },
-            FieldNumberInput: {
-                classList: ['form-control'],
-                style: {},
-            },
-            FieldText: {
-                classList: ['my-3'],
-                style: {},
-            },
-            FieldTextLabel: {
-                classList: ['form-label'],
-                style: {},
-            },
-            FieldTextInfo: {
-                classList: ['form-text','float-end'],
-                style: {},
-            },
-            fieldTextInput: {
-                classList: ['form-control'],
-                style: {},
-            },
-            FieldTextgroup: {
-                classList: ['my-3'],
-                style: {},
-            },
-            FieldTextgroupLabel: {
-                classList: ['form-label'],
-                style: {},
-            },
-            FieldTextgroupGroup: {
-                classList: ['d-flex','flex-nowrap','justify-content-between','align-items-stretch'],
-                style: {},
-            },
-            FieldTextgroupItem: {
-                classList: ['input-group','d-inline-flex'],
-                style: {},
-            },
-            FieldTextgroupItemLabel: {
-                classList: ['input-group-text'],
-                style: {},
-            },
-            FieldTextgroupItemInput: {
-                classList: ['form-control'],
-                style: {},
-            },
-            ValidationErrorLabel: {
-                classList: [],
-                style: {}
-            },
-            ValidationErrorInput: {
-                classList: ['is-invalid'],
-                style: {}
-            },
-            ValidationErrorMessage: {
-                classList: ['invalid-feedback'],
-                style: {},
-            },
-            ValueExportTable: {
-                classList: ['table'],
-                style: {},
-            },
-        };
         let sampleEasyJsonFormOptions = {
             // 'disabled' makes form and structure read-only when set true. Default is false.
             disabled: false,
@@ -265,6 +101,12 @@
                 // Returns the url for the link to be displayed
                 url: (value) => 'https://google.com',
             },
+            // Possible values: 'form', 'div' (form is default)
+            formContainer: 'form',
+            // If not null (and if formContainer is 'form'), sets this form's action
+            formAction: null,
+            // If not null (and if formConatiner is 'form'), sets this form's method
+            formMethod: null,
             // 'onStructureChange' can receive a callback function which is invoked whenever there
             // is a change on the structure of the form caused by the builder
             onStructureChange: () => {
@@ -283,7 +125,7 @@
                 document.querySelector('#htmlValueExport').innerHTML = sampleEasyJsonForm.valueExport('html');
             },
         };
-        sampleEasyJsonForm = new EasyJsonForm('sample', [], sampleEasyJsonFormStyle, sampleEasyJsonFormOptions);
+        sampleEasyJsonForm = new EasyJsonForm('sample', [], ejfBootstrapStyle, sampleEasyJsonFormOptions);
         document.querySelector('#builder').appendChild(sampleEasyJsonForm.builderGet());
         document.querySelector('#form').appendChild(sampleEasyJsonForm.formGet());
         let btnValidateForm = document.createElement('button');

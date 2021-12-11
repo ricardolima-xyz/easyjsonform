@@ -163,12 +163,12 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
                 ejf.options.fileHandler.upload(iptFile.files[0])
                 .then((result) => {
                     if (result.success) {
-                        if (ejf.options.onValueChange) ejf.options.onValueChange();
                         this.value = result.value;
                         formField.replaceChild(
                             this.formFieldControl(ejf, position, formField),
                             formField.children[1]
-                        );
+                            );
+                        if (ejf.options.onValueChange) ejf.options.onValueChange();
                     }
                 });
             };
@@ -187,11 +187,11 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
             let btnClear = ejf.element('button', 'FieldFileClear');
             btnClear.type = 'button';
             if (!ejf.options.fileHandler) btnClear.disabled = true; // Disabled if no handler
-            btnClear.onclick = () => {
-                if (ejf.options.onValueChange) ejf.options.onValueChange();
+            btnClear.onclick = () => {    
                 this.value = null;
                 formField.replaceChild(
                     this.formFieldControl(ejf, position, formField), formField.children[1]);
+                if (ejf.options.onValueChange) ejf.options.onValueChange();
             };
             btnClear.innerHTML = EasyJsonForm.iconDelete;
             let spnFile = ejf.element('span', 'FieldFileValue');
@@ -841,8 +841,18 @@ class EasyJsonForm {
 
     formGet() {
         if (!this.form) {
-            this.form = this.element('form', 'Form');
+            // Resolving formContainer (default and acceped values, case sensitivity)
+            if (!this.options.formContainer) this.options.formContainer = 'form';
+            else this.options.formContainer = this.options.formContainer.toLowerCase().trim();
+            if (!['div','form'].includes(this.options.formContainer))
+                this.options.formContainer = 'form';
+            // Creating container
+            this.form = this.element(this.options.formContainer, 'Form');
             this.form.id = this.id;
+            if (this.options.formContainer == 'form') {
+                if (this.options.formAction) this.form.action = this.options.formAction;
+                if (this.options.formMethod) this.form.method = this.options.formMethod;
+            }
             this.formUpdate();
         }
         return this.form;
@@ -856,7 +866,6 @@ class EasyJsonForm {
     }
 
     labelFind(label) {
-        console.log(this.structure);
         let i = 1;
         let found = false;
         while (!found) {
