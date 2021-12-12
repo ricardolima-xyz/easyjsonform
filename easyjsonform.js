@@ -858,6 +858,12 @@ class EasyJsonForm {
         return this.form;
     }
 
+    formIsValid() {
+        let valid = true;
+        this.structure.forEach((element) => {valid &&= (element.validate().length == 0) });
+        return valid;
+    }
+
     formUpdate(withValidation = false) {
         while (this.form.firstChild) this.form.removeChild(this.form.firstChild);
         this.structure.forEach((element, index) => {
