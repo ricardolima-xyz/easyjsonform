@@ -20,7 +20,7 @@
         </h2>
 
         <p class="lead">
-            EasyJsonForm is a javascript form library <strong>for the cases where end users need to create forms</strong>, such as survey or homework submission systems. Users can easily create forms. The forms structures (and filled-in values) can be exported as json, saved in your database and be rebuilt as forms.
+            EasyJsonForm is the javascript solution when <strong>end-users need to create forms</strong>, such as in survey or homework submission systems. Users can easily create forms. The forms structures (and filled-in values) can be exported as json, saved in your database and be rebuilt as forms.
         </p>
 
         <h2>Give it a try!</h2>
@@ -115,15 +115,17 @@
                 document.querySelector('#htmlValueExport').innerHTML = sampleEasyJsonForm.valueExport('html');
             },
         };
-        sampleEasyJsonForm = new EasyJsonForm('sample', [], ejfStyle, sampleEasyJsonFormOptions);
+        let str = [];
+        sampleEasyJsonForm = new EasyJsonForm('sample', str, ejfStyle, sampleEasyJsonFormOptions);
         document.querySelector('#builder').appendChild(sampleEasyJsonForm.builderGet());
         document.querySelector('#form').appendChild(sampleEasyJsonForm.formGet());
         let btnValidateForm = document.createElement('button');
         btnValidateForm.classList.add('btn', 'btn-sm', 'btn-outline-primary');
         btnValidateForm.textContent = "Validate Form";
         btnValidateForm.onclick = () => {
+          sampleEasyJsonForm.formUpdate(true);
           if (sampleEasyJsonForm.formIsValid()) alert('No validation errors found');
-          else sampleEasyJsonForm.formUpdate(true);
+          else alert('Validation errors found');
         };
         document.querySelector('#form').appendChild(btnValidateForm);
     </script>
