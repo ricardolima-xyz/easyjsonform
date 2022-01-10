@@ -6,7 +6,7 @@ class EasyJsonFormField {
         this.customattribute = json.customattribute || '';
         this.mandatory = json.mandatory || false;
         this.properties = json.properties || null;
-        this.value = json.value || null;
+        this.value = (typeof json.value !== 'undefined') ? json.value : null;
     }
 
     builderEditor(ejf, updateCallback) {
