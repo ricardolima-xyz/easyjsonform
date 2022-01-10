@@ -594,7 +594,7 @@ class EasyJsonFormFieldText extends EasyJsonFormField {
     valueExport(ejf, mode = 'raw') {
         switch (mode) 
         {
-            case 'html': return `<tr><td>${this.label}</td><td><pre>${this.value === null ? '' : this.value}</pre></td></tr>`;
+            case 'html': return `<tr><td>${this.label}</td><td style="white-space: pre-wrap;">${this.value === null ? '' : this.value}</td></tr>`;
             default: return super.valueExport(ejf, mode);
         }
     }
