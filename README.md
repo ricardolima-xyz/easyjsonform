@@ -2,7 +2,7 @@
 
 ## When you just need a _form_, not a `<form>`.
 
-**EasyJsonForm is a javascript form library for the cases where end users need to create forms, such as survey or homework submission systems. Users can easily create forms. The forms structures (and filled-in values) can be exported as json, saved in your database and be rebuilt as forms.**
+**EasyJsonForm is a javascript form creation library for the cases when end-users need to create forms, such as survey or homework submission systems. With EasyJsonForm, users can easily create forms. The forms structures (and filled-in values) can be exported as json, saved in your database and be rebuilt as forms.**
 
 ## Key features
 
@@ -11,7 +11,54 @@
 - Simplified form model with a real-world approach. There is "Single choice" instead of `<select>`. "Text" can be rendered as `<input>` or `<textarea>` according to what is set in its properties.
 - Form validation.
 - Pure javascript, no dependencies.
-- Extensive styling capabilites. Easy Bootstrap integration.
+
+## Getting started
+
+1. First of all, download the latest version of the library, add the file to a folder in your project.
+
+2. Add `easyjsonform.js` to your javascript code.
+
+```
+<script src="PATH/easyjsonform.js">
+
+// your code here...
+
+</script>
+```
+
+... or if you are using ES6 modules, use the `easyjsonform-module.js` instead
+
+```
+import EasyJsonForm from 'PATH/easyjsonform-module.js';
+
+// your code here...
+
+</script>
+```
+Both files are identical, execpt that the module exports the EasyJsonForm object, which will be used directly in your code.
+
+2. Create the EasyJsonForm object. It is used to create both the form builder and the form for the user.
+
+```
+let ejf = new EasyJsonForm('sample-form');
+```
+
+The `EasyJsonForm`constructor takes four parameters, but just the first is mandatory. It is the id of the form, which can be any string that uniquely identifies your form. 
+
+3. To create a form builder on your page, use the method builderGet().
+
+
+```
+<div id="my-container"></div>
+...
+<script src="PATH/easyjsonform.js">
+
+let ejf = new EasyJsonForm('sample-form');
+document.getElementById('my-container').appendChild(ejf.builderGet());
+
+</script>
+```
+
 
 ---
 
