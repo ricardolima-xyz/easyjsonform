@@ -14,7 +14,7 @@
 
 ## Getting started
 
-1. First of all, download the latest version of the library, add the file to a folder in your project.
+1. First of all, download the latest version of the library, and add the file to a folder in your project.
 
 2. Add `easyjsonform.js` to your javascript code.
 
@@ -26,40 +26,98 @@
 </script>
 ```
 
-... or if you are using ES6 modules, use the `easyjsonform-module.js` instead
+... or if you are using ES6 modules, use `easyjsonform-module.js` instead
 
 ```
 import EasyJsonForm from 'PATH/easyjsonform-module.js';
 
 // your code here...
 
-</script>
 ```
-Both files are identical, execpt that the module exports the EasyJsonForm object, which will be used directly in your code.
+Both files are identical, execpt that the module exports the EasyJsonForm class, which will be used to manipulate your forms.
 
-2. Create the EasyJsonForm object. It is used to create both the form builder and the form for the user.
+2. Create an instance of the EasyJsonForm class. The object used to create both the form builder and the form for the user.
 
 ```
 let ejf = new EasyJsonForm('sample-form');
 ```
 
-The `EasyJsonForm`constructor takes four parameters, but just the first is mandatory. It is the id of the form, which can be any string that uniquely identifies your form. 
+The `EasyJsonForm`constructor takes four parameters, but just the first is mandatory. It is the id of the form, which can be any string that uniquely identifies your form.
 
-3. To create a form builder on your page, use the method builderGet().
-
+3. To create a form builder on your page, we use the `builderGet()` method.
 
 ```
 <div id="my-container"></div>
 ...
 <script src="PATH/easyjsonform.js">
 
-let ejf = new EasyJsonForm('sample-form');
+// Initializing form on the page
+var ejf = new EasyJsonForm('sample-form');
 document.getElementById('my-container').appendChild(ejf.builderGet());
 
 </script>
 ```
 
+4. After the user has created the form, you'll want to have in your hand that json form structure. For that, we use the `structureExport()` method
 
+```
+<div id="my-container"></div>
+<button onclick="saveForm()">Save Form</button>
+...
+<script src="PATH/easyjsonform.js">
+
+// Initializing form on the page
+var ejf = new EasyJsonForm('sample-form');
+document.getElementById('my-container').appendChild(ejf.builderGet());
+
+// Save method when user click on "Save form" button
+function saveForm() {
+    // structure is a javascript object. It can be used to recreate the form
+    // using a EasyJsonForm object or can be saved in your database. For that,
+    // the object needs to be converted as a json string using JSON.stringify
+
+    let structure = ejf.structureExport();
+    let jsonStructure = JSON.stringify(structure);
+    
+    // Now you can save jsonStructure in your database
+}
+
+</script>
+```
+
+5. If you want to load a previously saved structure into your builder, you need to pass the structure as the second argument of the EasyJsonForm constructor.
+
+```
+<div id="my-container"></div>
+...
+<script src="PATH/easyjsonform.js">
+
+// Loading the structure. In the real life, this structure would be
+// retrieved from a database. In this example, we just hardcoded a
+// structure (you don't need to know exactly how it is built).
+let jsonStructure = `[
+    {
+        "type": "text",
+        "label": "New Text 1",
+        "customattribute": "",
+        "mandatory": false,
+        "properties": {
+            "lengthmeasurement": "no",
+            "lengthmax": 0,
+            "lengthmin": 0,
+            "multiline": false
+        },
+        "value": ""
+    }
+]`;
+let structure = JSON.parse(jsonStructure);
+// Creating the EasyJsonForm, now with the structure of the saved form
+var ejf = new EasyJsonForm('sample-form', structure);
+// Initializing form on the page
+document.getElementById('my-container').appendChild(ejf.builderGet());
+
+</script>
+```
 ---
 
 ## Changelog
