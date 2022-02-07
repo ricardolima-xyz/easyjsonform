@@ -19,10 +19,10 @@
 2. Add `easyjsonform.js` to your Javascript/HTML code.
 
 ```
-<script src="PATH/easyjsonform.js">
+<script src="PATH/easyjsonform.js"></script>
 
+<script>
 // your code here...
-
 </script>
 ```
 
@@ -48,7 +48,9 @@ The `EasyJsonForm`constructor takes four parameters, but just the first is manda
 ```
 <div id="my-container"></div>
 ...
-<script src="PATH/easyjsonform.js">
+<script src="PATH/easyjsonform.js"></script>
+
+<script>
 
 // Initializing form on the page
 var ejf = new EasyJsonForm('my-form');
@@ -65,7 +67,9 @@ myContainer.appendChild(ejf.builderGet());
 <div id="my-container"></div>
 <button onclick="saveForm()">Save Form</button>
 ...
-<script src="PATH/easyjsonform.js">
+<script src="PATH/easyjsonform.js"></script>
+
+<script>
 
 // Initializing form on the page
 var ejf = new EasyJsonForm('my-form');
@@ -91,7 +95,9 @@ function saveForm() {
 ```
 <div id="my-container"></div>
 ...
-<script src="PATH/easyjsonform.js">
+<script src="PATH/easyjsonform.js"></script>
+
+<script>
 
 // Loading the structure. In the real life, this structure would be
 // retrieved from a database. In this example, we just hardcoded a
@@ -133,7 +139,9 @@ you'll need to use the method `formGet()` instead of `builderGet()`. The rest re
 ```
 <div id="my-container"></div>
 ...
-<script src="PATH/easyjsonform.js">
+<script src="PATH/easyjsonform.js"></script>
+
+<script>
 
 // Loading the structure. In the real life, this structure would be
 // retrieved from a database. In this example, we just hardcoded a
@@ -172,8 +180,10 @@ document.getElementById('my-container').appendChild(ejf.formGet());
 ```
 <div id="my-container"></div>
 ...
-<script src="PATH/easyjsonform-bootstrap.js">
-<script src="PATH/easyjsonform.js">
+<script src="PATH/easyjsonform-bootstrap.js"></script>
+<script src="PATH/easyjsonform.js"></script>
+
+<script>
 
 // Initializing form on the page with bootstrap styling
 // The variable ejfBootstrapStyle is located at easyjsonform-bootstrap.js
