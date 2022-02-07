@@ -84,7 +84,12 @@ function saveForm() {
     let structure = ejf.structureExport();
     let jsonStructure = JSON.stringify(structure);
     
-    // Now you can save jsonStructure in your database
+    // Replace console.log by your API call to save jsonStructure into your db
+    console.log(jsonStructure);
+    
+    // If you want to update an input field (usually a hidden field) with the
+    // JSON representation of this form, you must provide a callback function.
+    // This is explained when we present the options (4th) argument.
 }
 
 </script>
@@ -117,7 +122,7 @@ let jsonStructure = `[
     }
 ]`;
 
-// The JSON needs to be converted to an object, before it is passed to EasyJsonForm
+// The JSON needs to be converted to an object before it is passed to EasyJsonForm
 let structure = JSON.parse(jsonStructure);
 
 // Creating the EasyJsonForm, now with the structure of the saved form
