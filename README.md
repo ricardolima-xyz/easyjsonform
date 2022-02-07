@@ -2,13 +2,13 @@
 
 ## When you just need a _form_, not a `<form>`.
 
-**EasyJsonForm is a javascript form creation library for the cases when end-users need to create forms, such as survey or homework submission systems. With EasyJsonForm, users can easily create forms. The forms structures (and filled-in values) can be exported as json, saved in your database and be rebuilt as forms.**
+**EasyJsonForm is a javascript form creation library for the cases when end-users need to create forms, such as survey or homework submission systems. With EasyJsonForm, users can easily create forms. Forms and form data are represented as objects that can be exported as JSON, retrieved and rebuilt whenever you can.**
 
 ## Key features
 
 - Visual, intuitive form builder for end-users
-- Forms and form data are represented as JSON objects and can be exported and retrieved whenever you can.
-- Simplified form model with a real-world approach. There is "Single choice" instead of `<select>`. "Text" can be rendered as `<input>` or `<textarea>` according to what is set in its properties.
+- Forms and form data are represented as objects that can be exported as JSON, retrieved and rebuilt whenever you can.
+- Real-world approach. There are "Single choice" form fields instead of `<select>`. "Text" fields can be rendered as `<input>` or `<textarea>` according to what is set in its properties.
 - Form validation.
 - Pure javascript, no dependencies.
 
