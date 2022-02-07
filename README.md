@@ -14,9 +14,9 @@
 
 ## Getting started
 
-1. First of all, download the latest version of the library, and add the file to a folder in your project. This folder will be referred as `PATH` througout the examples.
+1. Download the library and unzip its contents into a folder in your project. This folder will be referred as `PATH` througout the examples.
 
-2. Add `easyjsonform.js` to your javascript code.
+2. Add `easyjsonform.js` to your Javascript/HTML code.
 
 ```
 <script src="PATH/easyjsonform.js">
@@ -33,12 +33,12 @@ import EasyJsonForm from './PATH/easyjsonform-module.js';
 
 // your code here...
 ```
-Both files are identical, execpt that the module exports the EasyJsonForm class, which will be used to manipulate your forms.
+Both files are identical, execpt that the module file exports the EasyJsonForm class in a ES6/Javascript fashion.
 
-2. Create an instance of the EasyJsonForm class. The object used to create both the form builder and the form for the user.
+2. Create an instance of the EasyJsonForm class. This object is used to create form builders, forms and to parse and export JSON forms.
 
 ```
-let ejf = new EasyJsonForm('sample-form');
+var ejf = new EasyJsonForm('my-form');
 ```
 
 The `EasyJsonForm`constructor takes four parameters, but just the first is mandatory. It is the id of the form, which can be any string that uniquely identifies your form.
@@ -51,8 +51,10 @@ The `EasyJsonForm`constructor takes four parameters, but just the first is manda
 <script src="PATH/easyjsonform.js">
 
 // Initializing form on the page
-var ejf = new EasyJsonForm('sample-form');
-document.getElementById('my-container').appendChild(ejf.builderGet());
+var ejf = new EasyJsonForm('my-form');
+var myContainer = document.getElementById('my-container');
+
+myContainer.appendChild(ejf.builderGet());
 
 </script>
 ```
@@ -66,7 +68,7 @@ document.getElementById('my-container').appendChild(ejf.builderGet());
 <script src="PATH/easyjsonform.js">
 
 // Initializing form on the page
-var ejf = new EasyJsonForm('sample-form');
+var ejf = new EasyJsonForm('my-form');
 document.getElementById('my-container').appendChild(ejf.builderGet());
 
 // Save method when user click on "Save form" button
@@ -115,7 +117,7 @@ let jsonStructure = `[
 let structure = JSON.parse(jsonStructure);
 
 // Creating the EasyJsonForm, now with the structure of the saved form
-var ejf = new EasyJsonForm('sample-form', structure);
+var ejf = new EasyJsonForm('my-form', structure);
 
 // Initializing the form builder on the page
 document.getElementById('my-container').appendChild(ejf.builderGet());
@@ -157,7 +159,7 @@ let jsonStructure = `[
 let structure = JSON.parse(jsonStructure);
 
 // Creating the EasyJsonForm, now with the structure of the saved form
-var ejf = new EasyJsonForm('sample-form', structure);
+var ejf = new EasyJsonForm('my-form', structure);
 
 // Initializing the form the page
 document.getElementById('my-container').appendChild(ejf.formGet());
@@ -175,7 +177,7 @@ document.getElementById('my-container').appendChild(ejf.formGet());
 
 // Initializing form on the page with bootstrap styling
 // The variable ejfBootstrapStyle is located at easyjsonform-bootstrap.js
-var ejf = new EasyJsonForm('sample-form', null, ejfBootstrapStyle);
+var ejf = new EasyJsonForm('my-form', null, ejfBootstrapStyle);
 document.getElementById('my-container').appendChild(ejf.builderGet());
 
 </script>
@@ -191,7 +193,7 @@ import EasyJsonForm from './PATH/easyjsonform-module.js';
 import ejfBootstrapStyle from './PATH/easyjsonform-bootstrap-module.js';
 
 // Initializing form on the page with bootstrap styling
-var ejf = new EasyJsonForm('sample-form', null, ejfBootstrapStyle);
+var ejf = new EasyJsonForm('my-form', null, ejfBootstrapStyle);
 document.getElementById('my-container').appendChild(ejf.builderGet());
 
 </script>
