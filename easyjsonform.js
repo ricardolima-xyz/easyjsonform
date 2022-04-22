@@ -207,7 +207,7 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
         if (this.mandatory) restrictions.push(EasyJsonForm.dictionary['common.helptext.mandatory']);
         if (this.properties.maxsize > 0)
             restrictions.push(EasyJsonForm.dictionary['item.file.helptext.maxsize'].replace('{{size}}', this.properties.maxsize));
-        if (this.properties.filetypes.length > 0)
+        if (this.properties.filetypes && this.properties.filetypes.length > 0)
             restrictions.push(EasyJsonForm.dictionary['item.file.helptext.filetypes'].replace('{{file-types}}', 
                 this.properties.filetypes
                     .map((x) => EasyJsonForm.supportedFileTypes[x].extensions[0])
