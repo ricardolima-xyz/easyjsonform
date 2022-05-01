@@ -42,7 +42,7 @@ var ejf_pt_BR = {
 	"item.text.properties.length.min": "Tamanho mínimo",
 	"item.text.properties.multiline": "Múltiplas linhas (área de texto)",
 	"item.text.word.count": "{{words}} palavras",
-	"validation.error.mandatory": "{{field-label}} é obrigatório",
+	"validation.error.mandatory": "{{field-label}} é um campo obrigatório",
 	"validation.error.please.select.one.option": "Por favor selecione ao menos uma opção",
 	"validation.error.less.than.minimum.chars.accepted":"Menos caracteres do que o mínimo aceito",
 	"validation.error.more.than.maximum.chars.accepted":"Mais caracteres do que o máximo aceito",
