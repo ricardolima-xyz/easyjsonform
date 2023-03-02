@@ -1,5 +1,6 @@
 // Atenção: Não altere e não remova os valores {{entre chaves duplas}}.
 // Eles podem, porém aparecer, em qualquer ordem e em qualquer lugar da respectiva string.
+// Não coloque vírgula após o último elemento (pode acarretar erros em serviços externos)
 var ejf_pt_BR = {
 	"builder.message.delete": "Tem certeza que deseja apagar o item na posição {{position}}?",
 	"builder.message.label.name.already.in.use": "Este nome já está sendo usado, por favor escolha outro.",
@@ -48,5 +49,5 @@ var ejf_pt_BR = {
 	"validation.error.more.than.maximum.chars.accepted":"Mais caracteres do que o máximo aceito",
 	"validation.error.less.than.minimum.words.accepted":"Menos palavras do que o mínimo aceito",
 	"validation.error.more.than.maximum.words.accepted":"Mais palavras do que o máximo aceito",
-	"validation.error.please.fill.all.fields":"Por favor preencha todos os campos",
+	"validation.error.please.fill.all.fields":"Por favor preencha todos os campos"
 };

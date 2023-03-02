@@ -1046,6 +1046,7 @@ class EasyJsonForm {
         "validation.error.more.than.maximum.chars.accepted":"More characters than the maximum accepted",
         "validation.error.less.than.minimum.words.accepted":"Less words than the minimum accepted",
         "validation.error.more.than.maximum.words.accepted":"More words than the maximum accepted",
-        "validation.error.please.fill.all.fields":"Please fill all fields",
+        "validation.error.please.fill.all.fields":"Please fill all fields"
     };
+    // Do not leave a trailing comma on the last dictionary element. This can produce errors on external services
 }
