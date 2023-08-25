@@ -33,7 +33,7 @@ class EJFExporter {
 			case 'multiplechoice':
 				foreach ($item->value as $i => $textItem)
 					$result["{$item->label} - {$item->properties->items[$i]}"] = 
-						$textItem ? self::$dictionary['common.label.yes'] : self::$dictionary['common.label.no'];
+						$textItem ? self::$dictionary['common.value.yes'] : self::$dictionary['common.value.no'];
 				break;
 			case 'singlechoice':
 				$result[$item->label] = ($item->value === null || $item->value == 'null') ? '' :
@@ -41,7 +41,7 @@ class EJFExporter {
 				break;
 			case 'file':
 				$result[$item->label] = ($item->value === null || $item->value == '') ? '' :
-					self::$dictionary['common.label.file.selected'];
+					self::$dictionary['item.file.vaule.uploaded.file'];
 				break;
 			default:
 				$result[$item->label] = ($item->value === null || $item->value == '') ? '' :
