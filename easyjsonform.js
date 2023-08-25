@@ -233,7 +233,7 @@ class EasyJsonFormFieldFile extends EasyJsonFormField {
                 else if (!ejf.options.fileHandler)
                     result += `<td>${this.value}</td></tr>`;
                 else
-                    result += `<td><a href="${ejf.options.fileHandler.url(this.value)}">
+                    result += `<td><a href="${ejf.options.fileHandler.url(this.value)}" target="_blank">
                                 ${ejf.options.fileHandler.displayName(this.value)}
                                 </a></td></tr>`;
                 return result;
