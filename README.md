@@ -213,7 +213,8 @@ document.getElementById('my-container').appendChild(ejf.builderGet());
 ---
 
 ## Changelog
-- 2022-12-07 **(new version!)** The dynamicform PHP library evolved into a new javascript implementation. The old PHP code used to write a lot of javascript already, so the transition to a pure javascript implementation was natual. The file upload capabilities now has to be implemented by the developer, but the library has got new powerful capabilities now the work is all made in the front-end. With a new code, a new name: EasyJsonForm!
+- 2021-09-28 **Version 1.0.1** Codebase contains only javascript code. PHP Exporter moved into a separate project and demo files are acessible in project's webpage.
+- 2021-12-07 **Version 1.0.0** The dynamicform PHP library evolved into a new javascript implementation. The old PHP code used to write a lot of javascript already, so the transition to a pure javascript implementation was natual. The file upload capabilities now has to be implemented by the developer, but the library has got new powerful capabilities now the work is all made in the front-end. With a new code, a new name: EasyJsonForm!
 - 2021-05-11 **(feature)** The `outputStructureTable` method now receives one parameter, the structure name `$strname`. No more parameters for classes names. If the client needs style modifications, it can do throgh the ids of elements. This function now outputs 4 HTML elements. 1: The toolbar, in a div with its own id (new), 2: the structure table with its id, 3: the HTML hidden `input` element with the value that can be used in a form, and 4: the javascript code all contained in one script tag.
 - 2021-05-11 **(feature)** Table structure icons are svgs. The function `find_relative_path` was removed, since there is no need to search for png files. There is no more http requests in the strcuture table.
 - 2021-05-01 **(bug fix)** function `find_relative_path` is static
