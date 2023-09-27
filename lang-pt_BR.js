@@ -1,6 +1,5 @@
 // Atenção: Não altere e não remova os valores {{entre chaves duplas}}.
 // Eles podem, porém aparecer, em qualquer ordem e em qualquer lugar da respectiva string.
-// Não coloque vírgula após o último elemento (pode acarretar erros em serviços externos)
 var ejf_pt_BR = {
 	"builder.message.delete": "Tem certeza que deseja apagar o item na posição {{position}}?",
 	"builder.message.label.name.already.in.use": "Este nome já está sendo usado, por favor escolha outro.",
