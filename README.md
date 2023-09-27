@@ -13,4 +13,4 @@ Check out the [EasyJsonForm webpage](http://ricardolima.xyz/easyjsonform) for in
 - Forms and form data are represented as objects that can be exported as JSON, retrieved and rebuilt whenever you can.
 - Real-world input types. There are "Single choice" form fields instead of `<select>`. "Text" fields can be rendered as `<input>` or `<textarea>` according to what is set in its properties.
 - Form validation.
-- Vanilla javascript, no dependencies.
+- Pure javascript, no dependencies.
