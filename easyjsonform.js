@@ -710,16 +710,28 @@ class EasyJsonFormFieldTextgroup extends EasyJsonFormField {
 }
 
 class EasyJsonForm {
-    constructor(id, structure = null, style = null, options = null) {
+
+    /**
+     * Class constructor.
+     * 
+     * @param {string} id Id HTML attribute of the form 
+     * @param {Array|String} structure Structure of the form. Can be passed as an array or its JSON string representation.
+     * @param {Object} options Options for EasyJsonForm.
+     * @param {Object} style Deprecated. Sets the CSS and classes for the HTML elements.
+     */
+    constructor(id, structure = null, options = null, style = null) {
         if (id) this.id = id;
         else throw new Error('Id is mandatory');
         this.structureImport(structure || []);
-        this.style = style || {};
         this.options = options || {};
+        this.disabled = options.disabled || false; // TODO: Forms, not only the builder, should also be disabled
+        this.style = options.style || style || {};
+        this.onStructureChange = options.onStructureChange || (()=>{});
+        this.onValueChange = options.onValueChange || (()=>{});
     }
 
     /**
-     * Creates the EasyJsonForm Builder element to be added in the page.
+     * Returns the the EasyJsonForm Builder HTML element.
      */
     builderGet() {
         if (!this.builder) {
@@ -732,7 +744,7 @@ class EasyJsonForm {
             // Inserting add buttons to the toolbar 
             for (const [type, classs] of Object.entries(EasyJsonForm.registeredClasses)) {
                 let button = this.element('button', 'BuilderToolbarButton');
-                button.disabled = this.options.disabled || false;
+                button.disabled = this.disabled;
                 button.type = 'button';
                 button.innerHTML = EasyJsonForm.iconAdd + EasyJsonForm.dictionary[`item.${type}`];
                 button.onclick = () => {
@@ -740,7 +752,7 @@ class EasyJsonForm {
                         .replace('{{field-type}}', EasyJsonForm.dictionary[`item.${type}`]);
                     this.structure.push(new classs({label: this.labelFind(fieldName)}));
                     this.builderUpdate();
-                    if (this.options.onStructureChange) this.options.onStructureChange();
+                    this.onStructureChange();
                 };
                 this.builderToolbar.appendChild(button);
             }
@@ -761,7 +773,7 @@ class EasyJsonForm {
         this.structure[position+offset] = currentItem;
         this.structure[position] = movedItem;
         this.builderUpdate();
-        if (this.options.onStructureChange) this.options.onStructureChange();
+        this.onStructureChange();
     }
 
     builderUpdate() {
@@ -779,32 +791,32 @@ class EasyJsonForm {
             toolbarTd.appendChild(toolbar);
 
             let btnEdit = this.element('button', 'BuilderFieldTooldbarButton');
-            btnEdit.disabled = this.options.disabled || false;
+            btnEdit.disabled = this.disabled;
             btnEdit.type = 'button';
             btnEdit.innerHTML = EasyJsonForm.iconEdit;
             toolbar.appendChild(btnEdit);
 
             let btnEditFinish = this.element('button', 'BuilderFieldTooldbarButton');
-            btnEditFinish.disabled = this.options.disabled || false;
+            btnEditFinish.disabled = this.disabled;
             btnEditFinish.type = 'button';
             btnEditFinish.style.display = 'none';
             btnEditFinish.innerHTML = EasyJsonForm.iconOK;
             toolbar.appendChild(btnEditFinish);
 
             let btnMoveUp = this.element('button', 'BuilderFieldTooldbarButton');
-            btnMoveUp.disabled = this.options.disabled || false;
+            btnMoveUp.disabled = this.disabled;
             btnMoveUp.type = 'button';
             btnMoveUp.innerHTML = EasyJsonForm.iconUp;
             toolbar.appendChild(btnMoveUp);
 
             let btnMoveDown = this.element('button', 'BuilderFieldTooldbarButton');
-            btnMoveDown.disabled = this.options.disabled || false;
+            btnMoveDown.disabled = this.disabled;
             btnMoveDown.type = 'button';
             btnMoveDown.innerHTML = EasyJsonForm.iconDown;
             toolbar.appendChild(btnMoveDown);
             
             let btnDelete = this.element('button', 'BuilderFieldTooldbarDeleteButton');
-            btnDelete.disabled = this.options.disabled || false;
+            btnDelete.disabled = this.disabled;
             btnDelete.type = 'button';
             btnDelete.innerHTML = EasyJsonForm.iconDelete;
             toolbar.appendChild(btnDelete);
@@ -812,7 +824,7 @@ class EasyJsonForm {
             btnEdit.onclick = () => {
                 let editor = this.structure[i].builderEditor(this, () => {
                     mainTd.replaceChild(this.structure[i].formFieldCreate(this, i), mainTd.children[0]);
-                    if (this.options.onStructureChange) this.options.onStructureChange();
+                    this.onStructureChange();
                 });
                 mainTd.appendChild(editor);
                 btnEdit.style.display = 'none';
@@ -830,7 +842,7 @@ class EasyJsonForm {
                 {
                     this.structure.splice(i, 1);
                     this.builderUpdate();
-                    if (this.options.onStructureChange) this.options.onStructureChange();
+                    this.onStructureChange();
                 }
             };
         });
@@ -912,7 +924,7 @@ class EasyJsonForm {
         });
         if (this.builder) this.builderUpdate();
         if (this.form) this.formUpdate();
-        if (this.onStructureChange) this.onStructureChange();
+        this.onStructureChange();
     }
 
     valueExport(mode = 'raw') {
@@ -942,7 +954,7 @@ class EasyJsonForm {
         this.structure.forEach((element, index) => {
             element.value = rawValues[index];
         });
-        if (this.options.onValueChange) this.options.onValueChange();
+        this.onValueChange();
     }
 
     // Internal methods and properties. Don't need to be called externally.
